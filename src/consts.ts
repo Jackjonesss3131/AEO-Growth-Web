@@ -1,5 +1,6 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
+export const SITE_TITLE = 'AEO Growth';
+export const SITE_DESCRIPTION =
+	'AEO & GEO for B2B SaaS. I help companies get found, cited, and described correctly in AI-generated answers.';
 
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+export const CALENDLY_URL = 'https://calendly.com/geraldgerez/growth-plg';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/geraldgerez/';

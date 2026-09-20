@@ -2,7 +2,45 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { SITE_DESCRIPTION, SITE_TITLE, CALENDLY_URL } from '../consts';
+
+const stages = [
+	{ n: 1, name: 'Retrieval', q: 'Does the model pull your content at all?' },
+	{ n: 2, name: 'Citation', q: 'Does it use your content as a source?' },
+	{ n: 3, name: 'Interpretation', q: 'Does it understand what your content says?' },
+	{ n: 4, name: 'Expression', q: 'How does it describe your company in the final answer?', key: true },
+];
+
+const phases = [
+	{
+		n: '01',
+		title: 'AI Mention Audit',
+		lead: 'Where you stand today, measured rather than assumed.',
+		body: 'Hundreds of real buyer prompts run across ChatGPT, Perplexity, Gemini and AI Overviews to map your share of voice against your competitors — and to identify which sources those models actually cite in your category.',
+		tags: ['Share of voice', 'Competitor mapping', 'Source analysis'],
+	},
+	{
+		n: '02',
+		title: 'Data Architecture & Schema',
+		lead: 'Make your site legible to the systems doing the reading.',
+		body: 'Technical setup so AI agents can crawl, parse and attribute your platform without friction. Structured data, entity consistency, and a single canonical record of what your company is and who it sells to.',
+		tags: ['Schema markup', 'Entity resolution', 'Crawlability'],
+	},
+	{
+		n: '03',
+		title: 'Citation Alignment Campaigns',
+		lead: 'Become the page worth citing.',
+		body: 'Content built for the specific questions your buyer asks before purchase — far more volume and specificity than traditional SEO — paired with external mentions and category listings, because models cite third parties more readily than they cite you.',
+		tags: ['Buyer-intent content', 'Directory placement', 'Third-party mentions'],
+	},
+	{
+		n: '04',
+		title: 'AI Measurement Dashboards',
+		lead: 'Know what changed, and what it produced.',
+		body: 'A dashboard tracking how often ChatGPT and Perplexity recommend you each month, how your positioning is being described, and how that maps to inbound leads.',
+		tags: ['Monthly tracking', 'Positioning accuracy', 'Lead attribution'],
+	},
+];
 ---
 
 <!doctype html>
@@ -12,38 +50,77 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	</head>
 	<body>
 		<Header />
+
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your{' '}
-				<code>astro.config.mjs</code> file. You can customize your setup with{' '}
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to{' '}
-				<a href="https://docs.astro.build/">read the docs</a>{' '}
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out{' '}
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>{' '}
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<section class="hero">
+				<p class="eyebrow">AEO &amp; GEO for B2B SaaS</p>
+				<h1>Being cited isn't the same as being understood.</h1>
+				<p class="hero-sub">
+					Most tools tell you whether your brand appeared in an AI answer. That's a yes or no, and it
+					misses where the real failures are. I look at what the model actually says about you — and
+					whether it matches what you sell today.
+				</p>
+				<div class="hero-cta">
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
+					<a href="/blog" class="btn-ghost">Read the blog</a>
+				</div>
+			</section>
+
+			<section class="framework">
+				<div class="stages">
+					{stages.map((s) => (
+						<div class:list={['stage', { 'is-key': s.key }]}>
+							<span class="stage-n">{s.n}</span>
+							<div>
+								<h3>{s.name}</h3>
+								<p>{s.q}</p>
+							</div>
+						</div>
+					))}
+				</div>
+				<p class="framework-note">
+					Most audits measure the first two. The interesting failures live in the fourth — companies
+					cited accurately, in the category they've already moved away from.
+				</p>
+			</section>
+
+			<section class="offer">
+				<div class="section-head">
+					<p class="eyebrow">How I work</p>
+					<h2>Four phases, in order</h2>
+					<p>
+						Each one builds on the last. Content published on top of an unresolved entity doesn't
+						compound — it gets attributed to whichever record the model settled on.
+					</p>
+				</div>
+
+				<div class="phases">
+					{phases.map((p) => (
+						<article class="phase">
+							<div class="phase-n">{p.n}</div>
+							<div>
+								<h3>{p.title}</h3>
+								<p class="phase-lead">{p.lead}</p>
+								<p class="phase-desc">{p.body}</p>
+								<ul class="tags">
+									{p.tags.map((t) => <li>{t}</li>)}
+								</ul>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="close-cta">
+				<h2>Want to know what AI says about your company?</h2>
+				<p>
+					I'll run the audit on your domain before we talk, so the call starts with findings instead
+					of questions.
+				</p>
+				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
+			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
