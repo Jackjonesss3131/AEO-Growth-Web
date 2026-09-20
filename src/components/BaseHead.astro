@@ -31,6 +31,40 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.aeogrowth.co/#gerald",
+      "name": "Gerald Gerez",
+      "url": "https://www.aeogrowth.co/about",
+      "sameAs": ["https://www.linkedin.com/in/geraldgerez/"],
+      "jobTitle": "AEO & GEO Specialist",
+      "description": "AEO and GEO for B2B SaaS. Helping companies get found, cited, and described correctly in AI-generated answers."
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.aeogrowth.co/#business",
+      "name": "AEO Growth",
+      "url": "https://www.aeogrowth.co",
+      "founder": { "@id": "https://www.aeogrowth.co/#gerald" },
+      "description": "Answer Engine Optimization and Generative Engine Optimization for B2B SaaS companies. Services include AI mention audits, schema architecture, citation alignment campaigns, and AI measurement dashboards.",
+      "areaServed": "Worldwide",
+      "knowsAbout": ["Answer Engine Optimization","Generative Engine Optimization","B2B SaaS Marketing","AI Search Visibility","Content Strategy"],
+      "sameAs": ["https://www.linkedin.com/in/geraldgerez/"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.aeogrowth.co/#website",
+      "url": "https://www.aeogrowth.co",
+      "name": "AEO Growth",
+      "publisher": { "@id": "https://www.aeogrowth.co/#gerald" }
+    }
+  ]
+}
+</script>
 
 <Font cssVariable="--font-atkinson" preload />
 
