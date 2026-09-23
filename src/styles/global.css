@@ -226,6 +226,8 @@ main { flex: 1; width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 
 .prose h2 { font-size: 1.35rem; letter-spacing: -.02em; margin: 2.6rem 0 .9rem; }
 .prose h3 { font-size: 1.1rem; margin: 2rem 0 .7rem; }
 .prose p { font-size: 1.02rem; line-height: 1.78; margin: 0 0 1.25rem; }
+.prose a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+.prose a:hover { color: var(--accent); }
 .prose ul, .prose ol { padding-left: 1.2rem; margin: 0 0 1.25rem; }
 .prose li { margin-bottom: .5rem; line-height: 1.7; }
 .prose .lead { font-size: 1.14rem; line-height: 1.65; color: var(--ink); }
