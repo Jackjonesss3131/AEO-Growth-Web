@@ -1,5 +1,5 @@
 ---
-title: "How to Appear in ChatGPT Answers as a B2B SaaS Company"
+title: "How to Rank in ChatGPT (You Don't — Here's What Actually Happens)"
 description: "A prioritized checklist for B2B SaaS: what actually determines whether AI engines can read, use and recommend your site — starting with the technical failure that makes everything else pointless."
 pubDate: 'Sep 27 2026'
 ---
