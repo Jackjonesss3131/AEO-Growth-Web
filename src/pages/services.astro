@@ -1,0 +1,268 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { CALENDLY_URL } from '../consts';
+
+const phases = [
+	{
+		n: '01',
+		title: 'AI Mention Audit',
+		lead: 'Where you stand today, measured rather than assumed.',
+		body: 'I run the unbranded questions your buyers actually ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. For every answer I record whether you were recommended, only mentioned, or absent; the exact sentence describing you; whether the category and segment are right; which competitors appeared instead; and which pages the engine cited.',
+		deliverable: 'A findings document with the specific pages shaping each answer, and a prioritized list of what to fix first.',
+		tags: ['Prompt set design', 'Per-engine tracking', 'Competitor mapping', 'Source analysis'],
+	},
+	{
+		n: '02',
+		title: 'Data Architecture & Schema',
+		lead: 'Make your site legible to the systems doing the reading.',
+		body: 'Most AI crawlers don\'t execute JavaScript, so a client-rendered marketing site can rank on Google and still be invisible to ChatGPT. I check crawler access end to end — rendering, robots.txt, firewall and CDN rules — then set up structured data and a single canonical record of what your company is and who it sells to.',
+		deliverable: 'Crawler access confirmed per engine, schema implemented, canonical entity defined, and any domain or redirect conflicts resolved.',
+		tags: ['Crawlability', 'Schema markup', 'Entity resolution', 'Canonical domain'],
+	},
+	{
+		n: '03',
+		title: 'Citation Alignment',
+		lead: 'Make the rest of the web agree with you.',
+		body: 'Models look for agreement across sources. When your site says one thing and your directory profiles, review listings and old roundups say another, the description with more weight behind it wins — usually the outdated one. I inventory every source describing you, correct the ones that disagree, then fill the content gaps your buyers\' constrained questions require.',
+		deliverable: 'Corrected listings and profiles, plus the "best for", integration, comparison and alternatives pages your category needs.',
+		tags: ['Source inventory', 'Directory corrections', 'Buyer-intent content', 'Third-party placement'],
+	},
+	{
+		n: '04',
+		title: 'Measurement',
+		lead: 'Know what changed, and what caused it.',
+		body: 'The same prompt set, rerun monthly, per engine. Not a visibility score — the five things that actually matter: recommended or not, position in the shortlist, whether the fit is right, whether the description is right, and who took your place. When something moves, we trace it back to the source that moved it.',
+		deliverable: 'A monthly report tying changes in AI answers back to specific sources and specific work.',
+		tags: ['Monthly re-measurement', 'Description accuracy', 'Attribution to source'],
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title="AEO Services for B2B SaaS — AEO Growth"
+			description="Answer engine optimization and GEO for B2B SaaS. Audit, technical architecture, citation alignment and monthly measurement — run by one specialist, starting with a diagnosis."
+		/>
+	</head>
+	<body>
+		<Header />
+
+		<main>
+			<section class="hero">
+				<p class="eyebrow">Services</p>
+				<h1>AEO for B2B SaaS, starting with the diagnosis.</h1>
+				<p class="hero-sub">
+					I help B2B software companies get recommended — and described correctly — when buyers ask
+					AI engines what to use. Every engagement starts with an audit, so you see the findings
+					before committing to anything longer.
+				</p>
+				<div class="hero-cta">
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
+					<a href="/blog/what-is-an-ai-visibility-audit/" class="btn-ghost">What the audit covers</a>
+				</div>
+			</section>
+
+			<section class="framework">
+				<div class="stages">
+					<div class="stage">
+						<span class="stage-n">1</span>
+						<div>
+							<h3>Retrieval</h3>
+							<p>Can the engine reach and read your pages?</p>
+						</div>
+					</div>
+					<div class="stage">
+						<span class="stage-n">2</span>
+						<div>
+							<h3>Citation</h3>
+							<p>Does it use your content as a source?</p>
+						</div>
+					</div>
+					<div class="stage">
+						<span class="stage-n">3</span>
+						<div>
+							<h3>Interpretation</h3>
+							<p>Does it understand what your content says?</p>
+						</div>
+					</div>
+					<div class="stage is-key">
+						<span class="stage-n">4</span>
+						<div>
+							<h3>Expression</h3>
+							<p>How does it describe your company in the answer?</p>
+						</div>
+					</div>
+				</div>
+				<p class="framework-note">
+					Most tools measure the first two and report a mention rate. The failures that cost
+					pipeline live in the fourth — companies cited accurately, in the category they've already
+					moved away from. Everything below is built around measuring and fixing that.
+				</p>
+			</section>
+
+			<section class="prose">
+				<h2>Who this is for</h2>
+				<p>This tends to be a fit when one or more of these is true:</p>
+				<ul>
+					<li>You repositioned or renamed in the last two years, and old descriptions are still circulating</li>
+					<li>Buyers mention finding a competitor through ChatGPT or Perplexity</li>
+					<li>You're a specialist competing against incumbents on broad category questions</li>
+					<li>You appear in AI answers, but the descriptions are vague, outdated or aimed at the wrong buyer</li>
+					<li>Your category's buyer's guides are written by your competitors</li>
+					<li>You run more than one domain, or your history is split across two</li>
+				</ul>
+
+				<h2>Who this isn't for</h2>
+				<p>Worth saying plainly, because a bad fit wastes both of our time:</p>
+				<ul>
+					<li><strong>Pre-product companies.</strong> There's no point optimizing how you're described before there's something to describe.</li>
+					<li><strong>Teams needing content at volume.</strong> If you need fifty pages a month produced, an agency with a content team is the better buy.</li>
+					<li><strong>Anyone wanting guaranteed placement.</strong> Nobody controls these systems. If a vendor promises a specific result in a specific engine, that's a guess dressed as a commitment.</li>
+				</ul>
+			</section>
+
+			<section class="offer">
+				<div class="section-head">
+					<p class="eyebrow">The engagement</p>
+					<h2>Four phases, in order</h2>
+					<p>
+						Each one depends on the last. Content published on top of an unresolved entity doesn't
+						compound — it gets attributed to whichever record the model settled on. So the order
+						isn't a preference; it's what makes the later work worth paying for.
+					</p>
+				</div>
+
+				<div class="phases">
+					{phases.map((p) => (
+						<article class="phase">
+							<div class="phase-n">{p.n}</div>
+							<div>
+								<h3>{p.title}</h3>
+								<p class="phase-lead">{p.lead}</p>
+								<p class="phase-desc">{p.body}</p>
+								<p class="phase-desc"><strong>You get:</strong> {p.deliverable}</p>
+								<ul class="tags">
+									{p.tags.map((t) => <li>{t}</li>)}
+								</ul>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="prose">
+				<h2>How it starts</h2>
+				<p>
+					The audit comes first, always. It's the lower-risk way in for you and the only honest way
+					for me to scope anything — quoting a retainer before looking at your entity, your category
+					and your current answers would be a rate card, not a proposal.
+				</p>
+				<p>
+					After the audit you can do one of three things: continue with me, hand the findings to your
+					own team, or walk away knowing exactly what's wrong. The deliverable is yours either way.
+				</p>
+
+				<h2>What the first 90 days look like</h2>
+				<table>
+					<thead>
+						<tr><th>Period</th><th>What happens</th></tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><strong>Days 1–30</strong></td>
+							<td>Baseline across every engine. Entity inventory — every listing and profile describing you, checked against how you describe yourself today. A prioritized list of corrections.</td>
+						</tr>
+						<tr>
+							<td><strong>Days 31–60</strong></td>
+							<td>Corrections shipped: listings, schema, crawler access, and the fit pages your buyers' questions require. Early re-measurement on the same prompt set.</td>
+						</tr>
+						<tr>
+							<td><strong>Days 61–90</strong></td>
+							<td>Movement on engines that search the web on every question. Off-site work underway but not yet fully reflected — that part is slower. A clear account of what moved and which change caused it.</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+					What you shouldn't expect is a number for a board deck by day 30. What you should expect is
+					knowing, by day 30, exactly why you're missing from the answers that matter.
+				</p>
+
+				<h2>Pricing</h2>
+				<p>
+					Engagements are scoped after the audit, because the work varies enormously depending on how
+					much outdated information exists about you and how much off-site correction is needed.
+				</p>
+				<p>
+					For context on what this work costs across the market — audit ranges, retainer bands, and
+					the price floor below which you're usually buying relabelled SEO — I wrote up the published
+					numbers in <a href="/blog/how-to-choose-an-aeo-agency/">How to Choose an AEO Agency</a>.
+					That post also includes the questions I'd ask any vendor in this category, including me.
+				</p>
+
+				<h2>Working with one specialist</h2>
+				<p>
+					I work alone, which is a real trade-off and worth being direct about. The person running
+					your analysis is the person you talk to, and nothing gets handed to a junior. In exchange,
+					I can't produce content at agency volume or run large off-site PR programs in parallel.
+				</p>
+				<p>
+					If the problem is diagnostic — unclear category, inconsistent descriptions, a repositioning
+					that never propagated — that's where this fits best. If you need production at scale, buy
+					production.
+				</p>
+
+				<h2>Common questions</h2>
+
+				<h3>How is this different from SEO?</h3>
+				<p>
+					SEO gets your pages retrieved. It measures whether you rank. AEO measures whether the model
+					chooses you and what it says about you. Both matter, and one depends on the other — covered
+					in <a href="/blog/aeo-vs-seo-blog/">AEO vs SEO</a>.
+				</p>
+
+				<h3>Do I need this if I already use an AI visibility tool?</h3>
+				<p>
+					A tool monitors; it tells you a number changed. This diagnoses; it tells you why and which
+					page to change. Most teams eventually want both. If your positioning is already clean and
+					consistent and you have a team that can act on findings, a tool may be enough on its own.
+				</p>
+
+				<h3>Which engines do you cover?</h3>
+				<p>
+					ChatGPT, Perplexity, Gemini and Google's AI results, tracked separately. They draw from
+					different sources and frequently disagree, which is why a single "AI visibility" number
+					hides more than it shows.
+				</p>
+
+				<h3>How long until it works?</h3>
+				<p>
+					Changes to your own site register soonest in engines that search the web on every question.
+					Changes to how third parties describe you take longer, because they depend on other sites
+					being updated and re-crawled. Anyone promising a date for a specific engine is guessing.
+				</p>
+
+				<h3>What do you need from us?</h3>
+				<p>
+					A short call to get your buyers' real language — the questions that come up on discovery
+					calls, not the copy on your homepage. Access to your site and analytics. Someone who can
+					approve changes to listings and profiles.
+				</p>
+			</section>
+
+			<section class="close-cta">
+				<h2>Start with the findings</h2>
+				<p>
+					I run the audit on your domain before we talk, so the call opens with what the models
+					actually say about you — not with a pitch.
+				</p>
+				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
+			</section>
+		</main>
+
+		<Footer />
+	</body>
+</html>
