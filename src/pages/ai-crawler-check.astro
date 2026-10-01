@@ -23,8 +23,8 @@ export const prerender = true;
 				<p class="eyebrow">AI Crawler Checker</p>
 				<h1>What an AI sees when it crawls your site</h1>
 				<p class="lead">
-					Paste a URL. We check your rules, crawl the page as each bot would, and tell you
-					what they find and what's stopping them from citing you.
+					Paste a URL. We read your rules, request the page as each bot would, and show you
+					exactly what is stopping them from citing you.
 				</p>
 
 				<form id="check-form" class="tool-form" method="get">
@@ -51,65 +51,87 @@ export const prerender = true;
 
 		<Footer />
 
+		<style is:global>
+			.aeo { --aeo-crit: #dc2626; --aeo-high: #ea580c; --aeo-med: #d97706; --aeo-low: #0891b2; --aeo-ok: #059669; --aeo-line: color-mix(in srgb, currentColor 14%, transparent); --aeo-soft: color-mix(in srgb, currentColor 4%, transparent); }
+
+			.aeo-head { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; padding: 1.25rem; margin: 1.5rem 0; border: 1px solid var(--aeo-line); border-radius: 14px; background: var(--aeo-soft); }
+			.aeo-ring { position: relative; width: 92px; height: 92px; flex: none; border-radius: 50%; display: grid; place-items: center; }
+			.aeo-ring::after { content: ''; position: absolute; inset: 9px; border-radius: 50%; background: var(--aeo-bg, Canvas); }
+			.aeo-ring span { position: relative; z-index: 1; font-size: 1.6rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+			.aeo-head-main { flex: 1 1 15rem; min-width: 0; }
+			.aeo-head-main strong { display: block; font-size: 1.05rem; word-break: break-all; }
+			.aeo-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+			.aeo-chip { font-size: .78rem; font-weight: 600; padding: .22rem .6rem; border-radius: 999px; border: 1px solid currentColor; background: color-mix(in srgb, currentColor 10%, transparent); }
+
+			.aeo-card { border: 1px solid var(--aeo-line); border-radius: 12px; margin: .6rem 0; overflow: hidden; }
+			.aeo-card > summary { cursor: pointer; list-style: none; padding: .85rem 1rem; display: flex; gap: .7rem; align-items: baseline; }
+			.aeo-card > summary::-webkit-details-marker { display: none; }
+			.aeo-card > summary:hover { background: var(--aeo-soft); }
+			.aeo-card[open] > summary { border-bottom: 1px solid var(--aeo-line); }
+			.aeo-dot { flex: none; width: .6rem; height: .6rem; border-radius: 50%; background: currentColor; transform: translateY(-1px); }
+			.aeo-card summary b { flex: 1 1 auto; font-weight: 600; }
+			.aeo-tag { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; opacity: .6; flex: none; }
+			.aeo-body { padding: .9rem 1rem 1.1rem 1rem; font-size: .94rem; }
+			.aeo-body p { margin: 0 0 .7rem 0; }
+			.aeo-evidence { display: block; padding: .55rem .7rem; border-left: 3px solid currentColor; background: var(--aeo-soft); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; word-break: break-word; margin-bottom: .7rem; }
+			.aeo-fix { margin: 0; padding: .6rem .75rem; border-radius: 8px; background: color-mix(in srgb, var(--aeo-ok) 10%, transparent); }
+			.aeo-fix b { color: var(--aeo-ok); }
+
+			.aeo-good { list-style: none; padding: 0; margin: .8rem 0 0 0; }
+			.aeo-good li { padding: .4rem 0 .4rem 1.6rem; position: relative; font-size: .92rem; }
+			.aeo-good li::before { content: '✓'; position: absolute; left: 0; color: var(--aeo-ok); font-weight: 700; }
+
+			.aeo-grid { display: grid; gap: .6rem; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); margin-top: .8rem; }
+			.aeo-bot { border: 1px solid var(--aeo-line); border-radius: 10px; padding: .7rem .8rem; }
+			.aeo-bot-name { display: flex; justify-content: space-between; align-items: center; gap: .5rem; font-weight: 600; }
+			.aeo-pill { font-size: .72rem; font-weight: 700; padding: .12rem .5rem; border-radius: 999px; color: #fff; }
+			.aeo-pill.ok { background: var(--aeo-ok); }
+			.aeo-pill.no { background: var(--aeo-crit); }
+			.aeo-pill.na { background: color-mix(in srgb, currentColor 35%, transparent); }
+			.aeo-bot small { display: block; opacity: .65; font-size: .78rem; margin-top: .3rem; line-height: 1.45; }
+
+			.aeo-kv { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; font-size: .9rem; margin: .6rem 0 0 0; }
+			.aeo-kv dt { opacity: .6; }
+			.aeo-kv dd { margin: 0; word-break: break-word; }
+
+			.aeo-list { list-style: none; padding: 0; margin: .6rem 0 0 0; }
+			.aeo-list li { padding: .6rem 0; border-top: 1px solid var(--aeo-line); font-size: .92rem; }
+			.aeo h2 { margin-top: 2rem; }
+			.aeo-sub { opacity: .65; font-size: .88rem; margin: .2rem 0 0 0; }
+
+			.aeo-skeleton { height: 92px; border-radius: 14px; background: var(--aeo-soft); margin: 1.5rem 0; animation: aeo-pulse 1.2s ease-in-out infinite; }
+			@keyframes aeo-pulse { 50% { opacity: .45; } }
+		</style>
+
 		<script>
-			type Level = 'alto' | 'medio' | 'bajo' | 'info';
-			type Finding = { level: Level; area: string; title: string; detail: string; fix: string };
+			type Level = 'critical' | 'high' | 'medium' | 'low';
+			type Finding = { id: string; level: Level; area: string; title: string; detail: string; evidence: string; fix: string };
 			type Bot = {
-				name: string;
-				company: string;
-				type: string;
-				product: string;
-				note: string;
-				token: boolean;
-				robots: { allowed: boolean; rule: string | null; src: string; delay?: string | null };
-				live: { blocked: boolean; note: string } | null;
-			};
-			type Entity = { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number };
-			type Sample = {
-				url: string;
-				path: string;
-				status: number | null;
-				note?: string;
-				redirected?: boolean;
-				title?: string;
-				words: number;
-				noindex: boolean;
-				blockedFor: string[];
-				types: string[];
-			};
+				name: string; token: string; company: string; kind: 'search' | 'training' | 'user';
+				product: string; cites: boolean; live: boolean;
+				robots: { allowed: boolean; matched: string | null; src: string; delay: string | null };
+				liveResult?: never;
+			} & { live: { blocked: boolean; status: number | null; note: string } | null };
+			type Entity = { type: string; name: string; missing: string[]; sameAs: number; questions?: number };
+			type Sample = { url: string; path: string; status: number | null; redirected: boolean; title: string; words: number; noindex: boolean; allowed: boolean; types: string[] };
 			type Report = {
-				finalUrl: string;
-				viewAs: string;
-				ms: number;
-				counts: Record<Level, number>;
-				findings: Finding[];
-				good: string[];
-				bots: Bot[];
+				finalUrl: string; redirected: boolean; viewAs: string; ms: number; score: number;
+				counts: Record<Level, number>; findings: Finding[]; good: string[]; bots: Bot[];
 				page: {
+					title: string; description: string; canonical: string; h1: string; h1Count: number;
+					subheads: number; words: number; responseMs: number; status: number | null;
 					schema: { blocks: number; broken: number; microdata: boolean; types: string[]; entities: Entity[] };
-				} | null;
-				sitemap: {
-					found: boolean;
-					url?: string;
-					inRobots?: boolean;
-					children?: number;
-					count: number;
-					withLastmod: number;
-					newest?: string | null;
-					sameDate?: boolean;
 				};
+				sitemap: { found: boolean; url: string; inRobots: boolean; children?: number; count: number; withLastmod: number; newest: string | null; sameDate: boolean };
 				freshness: { date: string; days: number; source: string } | null;
 				samples: Sample[];
 			};
 
-			const ICONS: Record<Level, string> = { alto: '🔴', medio: '🟡', bajo: '🟠', info: '🔵' };
-			const LABELS: Record<Level, string> = { alto: 'Critical', medio: 'Review', bajo: 'Minor', info: 'Info' };
-			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
-			const TYPES: Record<string, string> = {
-				entrenamiento: 'Training',
-				busqueda: 'Search',
-				usuario: 'User Visit',
+			const COLOR: Record<Level, string> = {
+				critical: 'var(--aeo-crit)', high: 'var(--aeo-high)', medium: 'var(--aeo-med)', low: 'var(--aeo-low)',
 			};
+			const LABEL: Record<Level, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Minor' };
+			const KIND: Record<string, string> = { search: 'Search & citations', training: 'Model training', user: 'User-triggered fetch' };
 
 			const form = document.getElementById('check-form') as HTMLFormElement;
 			const input = document.getElementById('check-url') as HTMLInputElement;
@@ -118,160 +140,169 @@ export const prerender = true;
 			const results = document.getElementById('check-results') as HTMLElement;
 			const idleText = statusLine.textContent ?? '';
 
-			const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+			const esc = (v: unknown) => String(v ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 			const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-			const joinList = (parts: string[]) => new Intl.ListFormat('en', { type: 'conjunction' }).format(parts);
 			const fmtDate = (iso: string) =>
-				new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-			const hint = (text: string) => `<span class="tool-hint">${esc(text)}</span>`;
-
-			const queryFor = (url: string) =>
-				'?url=' + encodeURIComponent(url).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
+				new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+			const queryFor = (url: string) => '?url=' + encodeURIComponent(url).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
 			const urlFromLocation = () => (new URLSearchParams(location.search).get('url') ?? '').trim();
 
-			function renderFindings(d: Report) {
-				const sorted = [...d.findings].sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level));
-
-				const allRows = [
-					...sorted.map(f => `
-						<tr>
-							<td>${ICONS[f.level]} <strong>${esc(LABELS[f.level])}</strong></td>
-							<td>${esc(f.area)}</td>
-							<td>${esc(f.title)}</td>
-							<td>${esc(f.fix)}</td>
-						</tr>`),
-					...d.good.map(g => `
-						<tr>
-							<td>✅ <strong>Good</strong></td>
-							<td>—</td>
-							<td colspan="2">${esc(g)}</td>
-						</tr>`),
-				].join('');
+			function renderHead(d: Report) {
+				const hue = d.score >= 80 ? 'var(--aeo-ok)' : d.score >= 55 ? 'var(--aeo-med)' : 'var(--aeo-crit)';
+				const chips = (['critical', 'high', 'medium', 'low'] as Level[])
+					.filter((l) => d.counts[l] > 0)
+					.map((l) => `<span class="aeo-chip" style="color:${COLOR[l]}">${d.counts[l]} ${esc(LABEL[l])}</span>`)
+					.join('');
+				const clean = chips ? '' : `<span class="aeo-chip" style="color:var(--aeo-ok)">No issues found</span>`;
 
 				return `
-					<h2>Summary</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Status</th>
-								<th>Area</th>
-								<th>What's happening</th>
-								<th>What to do</th>
-							</tr>
-						</thead>
-						<tbody>${allRows}</tbody>
-					</table>`;
+					<div class="aeo-head">
+						<div class="aeo-ring" style="background: conic-gradient(${hue} ${d.score * 3.6}deg, var(--aeo-line) 0)">
+							<span style="color:${hue}">${d.score}</span>
+						</div>
+						<div class="aeo-head-main">
+							<strong>${esc(d.finalUrl)}</strong>
+							<p class="aeo-sub">${esc(plural(d.page.words, 'word', 'words'))} of text · responded in ${(d.page.responseMs / 1000).toFixed(1)}s · HTTP ${d.page.status ?? '—'}${d.redirected ? ' · redirected' : ''}</p>
+							<div class="aeo-chips">${chips}${clean}<span class="aeo-chip" style="color:var(--aeo-ok)">${d.good.length} passing</span></div>
+						</div>
+					</div>`;
+			}
+
+			function renderFindings(d: Report) {
+				if (!d.findings.length) {
+					return `<h2>Findings</h2><p>Nothing is blocking AI crawlers on this page.</p>`;
+				}
+				const cards = d.findings
+					.map((f) => `
+						<details class="aeo-card" style="color:${COLOR[f.level]}" ${f.level === 'critical' ? 'open' : ''}>
+							<summary>
+								<span class="aeo-dot"></span>
+								<b style="color:CanvasText">${esc(f.title)}</b>
+								<span class="aeo-tag">${esc(LABEL[f.level])} · ${esc(f.area)}</span>
+							</summary>
+							<div class="aeo-body" style="color:CanvasText">
+								<p>${esc(f.detail)}</p>
+								${f.evidence ? `<code class="aeo-evidence" style="border-color:${COLOR[f.level]}">${esc(f.evidence)}</code>` : ''}
+								<p class="aeo-fix"><b>Fix:</b> ${esc(f.fix)}</p>
+							</div>
+						</details>`)
+					.join('');
+
+				return `<h2>Findings</h2><p class="aeo-sub">Sorted by impact. Each one shows the evidence we measured.</p>${cards}`;
+			}
+
+			function renderGood(d: Report) {
+				if (!d.good.length) return '';
+				return `<h2>What already works</h2><ul class="aeo-good">${d.good.map((g) => `<li>${esc(g)}</li>`).join('')}</ul>`;
 			}
 
 			function renderBots(d: Report) {
-				const rows = d.bots
-					.map((b) => {
-						const r = b.robots;
-						const rule = (r.rule ? `${r.rule} (${r.src})` : r.src) + (r.delay ? `, Crawl-delay: ${r.delay}` : '');
-						const robots = `robots.txt: ${r.allowed ? 'Allowed' : '<strong>Blocked</strong>'} ${hint('· ' + rule)}`;
-
-						let live: string;
-						if (b.token) live = `Live visit: ${hint('n/a, this is a robots.txt-only rule')}`;
-						else if (!b.live) live = `Live visit: ${hint('not tested')}`;
-						else live = `Live visit: ${b.live.blocked ? '<strong>Blocked</strong>' : 'Passes'} ${hint('· ' + b.live.note)}`;
-
-						const about = [b.company, TYPES[b.type] ?? b.type, b.product || b.note].filter(Boolean).join(' · ');
-						return `<tr><td><strong>${esc(b.name)}</strong><br>${hint(about)}</td><td>${robots}<br>${live}</td></tr>`;
-					})
-					.join('');
+				const group = (kind: string) => {
+					const list = d.bots.filter((b) => b.kind === kind);
+					if (!list.length) return '';
+					const cards = list
+						.map((b) => {
+							const allowed = b.robots.allowed;
+							const live = b.live;
+							const state = !allowed ? 'no' : live?.blocked ? 'no' : 'ok';
+							const word = !allowed ? 'Blocked' : live?.blocked ? 'Served less' : 'Allowed';
+							const facts = [
+								`robots.txt: ${allowed ? 'allowed' : 'blocked'}${b.robots.matched ? ` — ${b.robots.matched}` : ''} (group: ${b.robots.src})`,
+								live ? `live request: ${live.note}` : 'live request: not tested',
+								b.robots.delay ? `crawl-delay: ${b.robots.delay}` : '',
+							].filter(Boolean);
+							return `
+								<div class="aeo-bot">
+									<div class="aeo-bot-name">${esc(b.name)}<span class="aeo-pill ${state}">${esc(word)}</span></div>
+									<small>${esc(b.company)} · ${esc(b.product)}<br>${esc(facts.join(' · '))}</small>
+								</div>`;
+						})
+						.join('');
+					return `<h3>${esc(KIND[kind])}</h3><div class="aeo-grid">${cards}</div>`;
+				};
 
 				return `
-					<h2>Who can access</h2>
-					<p class="tool-hint">robots.txt reflects your declared rules. Live visit is what happened when we requested the page identifying ourselves as each bot.</p>
-					<table>
-						<thead><tr><th>Bot</th><th>Status</th></tr></thead>
-						<tbody>${rows}</tbody>
-					</table>`;
+					<h2>Who can access your site</h2>
+					<p class="aeo-sub">Blocking a <em>training</em> crawler is a valid choice. Blocking a <em>search</em> or <em>user-triggered</em> one removes you from cited answers.</p>
+					${group('search')}${group('user')}${group('training')}`;
 			}
 
-			function renderSchema(d: Report) {
-				const title = '<h2>Structured Data</h2>';
-				if (!d.page) return `${title}<p>We couldn't read the page.</p>`;
+			function renderPage(d: Report) {
+				const p = d.page;
+				const s = p.schema;
+				const schemaLine = !s.blocks && !s.microdata
+					? 'None'
+					: `${s.blocks ? plural(s.blocks, 'JSON-LD block', 'JSON-LD blocks') : 'microdata'}${s.broken ? ` (${s.broken} invalid)` : ''}${s.types.length ? ` — ${s.types.join(', ')}` : ''}`;
 
-				const s = d.page.schema;
-				if (!s.blocks && !s.microdata) return `${title}<p>This page has no structured data.</p>`;
+				const rows: [string, string][] = [
+					['Title', p.title || '— missing —'],
+					['Description', p.description || '— missing —'],
+					['H1', p.h1 ? `${p.h1}${p.h1Count > 1 ? ` (+${p.h1Count - 1} more)` : ''}` : '— missing —'],
+					['Subheadings', String(p.subheads)],
+					['Canonical', p.canonical || '— missing —'],
+					['Structured data', schemaLine],
+					['Last update', d.freshness ? `${fmtDate(d.freshness.date)} · ${d.freshness.days === 0 ? 'today' : plural(d.freshness.days, 'day', 'days') + ' ago'} · ${d.freshness.source}` : 'No machine-readable date'],
+				];
 
-				const found = [
-					s.blocks ? plural(s.blocks, 'JSON-LD block', 'JSON-LD blocks') : '',
-					s.microdata ? 'microdata' : '',
-				].filter(Boolean);
-				let line = joinList(found);
-				line = line.charAt(0).toUpperCase() + line.slice(1);
-				if (s.broken) line += ` (${s.broken} with syntax errors)`;
-				if (s.types.length) line += `. Types: ${s.types.join(', ')}`;
+				const entities = s.entities.length
+					? `<ul class="aeo-list">${s.entities.slice(0, 8).map((e) => {
+							const facts = [
+								e.sameAs ? `${e.sameAs} sameAs links` : 'no sameAs',
+								e.questions != null ? plural(e.questions, 'question', 'questions') : '',
+								e.missing.length ? `missing: ${e.missing.join(', ')}` : 'complete',
+							].filter(Boolean);
+							return `<li><strong>${esc(e.type)}</strong>${e.name ? ` — ${esc(e.name)}` : ''}<br><span class="aeo-sub">${esc(facts.join(' · '))}</span></li>`;
+						}).join('')}</ul>`
+					: '';
 
-				const entities = s.entities
-					.map((e) => {
-						const facts: string[] = [];
-						if (e.sameAs) facts.push(`sameAs: ${e.sameAs.length}`);
-						if (e.questions != null) facts.push(plural(e.questions, 'question', 'questions'));
-						facts.push(e.missing.length ? `missing: ${e.missing.join(', ')}` : 'complete');
-						return `<li><strong>${esc(e.type)}</strong>${e.name ? ` "${esc(e.name)}"` : ''} · ${esc(facts.join(' · '))}</li>`;
-					})
-					.join('');
-
-				return `${title}<p>${esc(line)}.</p>${entities ? `<ul>${entities}</ul>` : ''}`;
+				return `
+					<h2>What this page declares</h2>
+					<dl class="aeo-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+					${entities}`;
 			}
 
 			function renderSitemap(d: Report) {
 				const sm = d.sitemap;
-				const title = '<h2>Sitemap</h2>';
-				if (!sm.found) {
-					return `${title}<p>No sitemap found: not in robots.txt, /sitemap-index.xml, or /sitemap.xml.</p>`;
-				}
-
-				const index = sm.children ? `, index with ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
-				const partial = sm.children && sm.children > 5 ? ' (counting the first 5 sitemaps)' : '';
-				const newest = sm.newest ? `; newest: ${fmtDate(sm.newest)}` : '';
-				const facts = [
-					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} with a date (lastmod)${newest}.`,
-					sm.inRobots ? 'Declared in robots.txt.' : 'Not declared in robots.txt.',
+				if (!sm.found) return `<h2>Sitemap</h2><p>Not found in robots.txt, /sitemap-index.xml or /sitemap.xml.</p>`;
+				const rows: [string, string][] = [
+					['File', sm.url],
+					['Type', sm.children ? `Index with ${plural(sm.children, 'child sitemap', 'child sitemaps')}` : 'Single sitemap'],
+					['URLs', `${sm.count}${sm.children ? ' (first child sitemap)' : ''}`],
+					['With lastmod', `${sm.withLastmod}${sm.sameDate ? ' — all identical' : ''}`],
+					['Newest date', sm.newest ? fmtDate(sm.newest) : '—'],
+					['Declared in robots.txt', sm.inRobots ? 'Yes' : 'No'],
 				];
-				if (sm.sameDate) facts.push('All URLs share the same date.');
-
-				return `${title}<p><code>${esc(sm.url)}</code>${esc(index)}.</p><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
-			}
-
-			function renderDates(d: Report) {
-				const f = d.freshness;
-				const text = f
-					? `The most recent machine-readable date is ${fmtDate(f.date)} (${f.days ? `${plural(f.days, 'day', 'days')} ago` : 'today'}), found in ${f.source}.`
-					: 'No machine-readable date found: not in schema, meta tags, or sitemap.';
-				return `<h2>Dates</h2><p>${esc(text)}</p>`;
+				return `<h2>Sitemap</h2><dl class="aeo-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
 			}
 
 			function renderSamples(d: Report) {
-				const title = '<h2>Internal Pages</h2>';
-				if (!d.samples.length) return `${title}<p>No other URLs from this domain found in the sitemap.</p>`;
-
+				if (!d.samples.length) return '';
 				const items = d.samples
 					.map((s) => {
-						const ok = s.status != null && s.status >= 200 && s.status < 300;
-						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'no response'];
-						if (ok) facts.push(plural(s.words, 'word', 'words'));
-						if (s.redirected) facts.push('redirects');
-						if (s.noindex) facts.push('noindex');
-						if (s.blockedFor.length) facts.push(`blocked for ${s.blockedFor.join(', ')}`);
-						if (s.types.length) facts.push(s.types.join(', '));
-						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br>${hint(facts.join(' · '))}</li>`;
+						const facts = [
+							s.status ? `HTTP ${s.status}` : 'no response',
+							plural(s.words, 'word', 'words'),
+							s.allowed ? '' : 'disallowed',
+							s.noindex ? 'noindex' : '',
+							s.redirected ? 'redirects' : '',
+							s.types.length ? s.types.join(', ') : '',
+						].filter(Boolean);
+						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br><span class="aeo-sub">${esc(facts.join(' · '))}</span></li>`;
 					})
 					.join('');
-
-				return `${title}<p>URLs from your sitemap. Click one to analyze it.</p><ul>${items}</ul>`;
+				return `<h2>Other pages on this site</h2><p class="aeo-sub">Sampled from your sitemap. Click one to analyze it.</p><ul class="aeo-list">${items}</ul>`;
 			}
 
 			const NOTE =
-				'<p class="tool-hint">We request the page from a server — once as a browser and once as each bot — and compare. Real bots come from their own IPs, so an IP-checking firewall may treat them differently. Results cached for 15 min.</p>';
+				'<p class="aeo-sub" style="margin-top:2rem">We request the page from a server — once as a browser, once as each bot — and compare the responses. Real bots crawl from their own IP ranges, so a firewall that checks IPs may treat them differently. Results are cached for 15 minutes.</p>';
 
 			const render = (d: Report) =>
-				[renderFindings, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
-					.map((section) => section(d))
-					.join('') + NOTE;
+				`<div class="aeo">` +
+				[renderHead, renderFindings, renderGood, renderBots, renderPage, renderSitemap, renderSamples]
+					.map((fn) => fn(d))
+					.join('') +
+				NOTE +
+				`</div>`;
 
 			let current: AbortController | null = null;
 
@@ -281,7 +312,7 @@ export const prerender = true;
 
 				input.value = url;
 				button.disabled = true;
-				results.innerHTML = '';
+				results.innerHTML = '<div class="aeo"><div class="aeo-skeleton"></div></div>';
 				statusLine.textContent = `Analyzing ${url}…`;
 
 				try {
@@ -290,17 +321,18 @@ export const prerender = true;
 					if (run !== current) return;
 
 					if (!res.ok || !data || data.error) {
+						results.innerHTML = '';
 						statusLine.textContent = data?.error || 'Something went wrong. Please try again.';
 						return;
 					}
 
 					const report = data as Report;
-					statusLine.textContent = `${report.finalUrl} · read as ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
+					statusLine.textContent = `Analyzed in ${(report.ms / 1000).toFixed(1)} s · read as ${report.viewAs}`;
 					results.innerHTML = render(report);
 				} catch {
 					if (run.signal.aborted) return;
-					statusLine.textContent =
-						'We couldn\'t complete the analysis. The site may be too slow to respond; try again.';
+					results.innerHTML = '';
+					statusLine.textContent = 'We could not complete the analysis. The site may be too slow to respond; try again.';
 				} finally {
 					if (run === current) button.disabled = false;
 				}
@@ -328,10 +360,7 @@ export const prerender = true;
 
 			window.addEventListener('popstate', () => {
 				const url = urlFromLocation();
-				if (url) {
-					analyze(url);
-					return;
-				}
+				if (url) { analyze(url); return; }
 				current?.abort();
 				current = null;
 				input.value = '';
