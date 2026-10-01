@@ -202,19 +202,59 @@ export const GET: APIRoute = async ({ request }) => {
 
   const blockedBots = bots.filter(b => !b.robots.allowed);
   if (blockedBots.length) {
-    findings.push({ level: 'alto', area: 'Acceso', title: `${blockedBots.map(b => b.name).join(', ')} bloqueado${blockedBots.length > 1 ? 's' : ''} en robots.txt`, detail: 'Estos bots no pueden rastrear tu web según tus reglas de robots.txt.', fix: 'Revisa tu robots.txt y elimina o ajusta las reglas que bloquean estos agentes.' });
+    findings.push({
+      level: 'alto',
+      area: 'Acceso',
+      title: `${blockedBots.map(b => b.name).join(', ')} no puede entrar a tu web`,
+      detail: `Tu archivo robots.txt le está diciendo a ${blockedBots.map(b => b.name).join(', ')} que no puede visitar tu web. Esto significa que no podrá leer tu contenido ni citarte.`,
+      fix: 'Abre tu archivo robots.txt y elimina la línea que bloquea a estos bots.',
+    });
   } else {
-    good.push('Todos los bots principales tienen acceso según robots.txt.');
+    good.push('Todos los bots de IA y buscadores pueden entrar a tu web sin restricciones.');
   }
 
-  if (noindex) findings.push({ level: 'alto', area: 'Indexación', title: 'La página tiene noindex', detail: 'La meta etiqueta robots incluye noindex, lo que impide que los buscadores la indexen.', fix: 'Elimina el noindex si quieres que esta página sea visible.' });
-  if (!sitemapData.found) findings.push({ level: 'medio', area: 'Sitemap', title: 'No hay sitemap', detail: 'No encontramos sitemap.xml ni sitemap-index.xml.', fix: 'Crea un sitemap y decláralo en robots.txt.' });
-  else good.push('Sitemap encontrado y accesible.');
-  if (!freshness) findings.push({ level: 'bajo', area: 'Fechas', title: 'Sin fecha legible por máquinas', detail: 'No hay fecha de publicación o modificación en el schema ni en las meta etiquetas.', fix: 'Añade datePublished y dateModified en tu JSON-LD.' });
-  if (schemaBlocks === 0 && !microdata) findings.push({ level: 'medio', area: 'Schema', title: 'Sin datos estructurados', detail: 'La página no tiene JSON-LD ni microdata.', fix: 'Añade al menos un bloque JSON-LD con el tipo de contenido principal.' });
-  else good.push('La página tiene datos estructurados.');
-  if (words < 300) findings.push({ level: 'bajo', area: 'Contenido', title: 'Poco contenido', detail: `La página tiene aproximadamente ${words} palabras.`, fix: 'Amplía el contenido para que los bots tengan más información que procesar.' });
-  else good.push(`Contenido suficiente (${words} palabras).`);
+  if (noindex) findings.push({
+    level: 'alto',
+    area: 'Indexación',
+    title: 'Esta página está oculta para los buscadores',
+    detail: 'Tienes una etiqueta "noindex" en el código de la página. Esto le dice a Google y a las IAs que ignoren esta página por completo.',
+    fix: 'Si quieres que esta página aparezca en búsquedas y sea citada por IAs, elimina esa etiqueta noindex.',
+  });
+
+  if (!sitemapData.found) findings.push({
+    level: 'medio',
+    area: 'Sitemap',
+    title: 'Tu web no tiene sitemap',
+    detail: 'El sitemap es un archivo que le dice a Google y a las IAs qué páginas existen en tu web. Sin él, pueden perderse contenido importante.',
+    fix: 'Crea un sitemap.xml y menciónalo en tu robots.txt para que los bots lo encuentren fácilmente.',
+  });
+  else good.push('Tu web tiene un sitemap y los bots pueden encontrarlo sin problema.');
+
+  if (!freshness) findings.push({
+    level: 'bajo',
+    area: 'Fechas',
+    title: 'Las IAs no saben cuándo actualizaste tu web',
+    detail: 'No hay ninguna fecha visible para los bots en el código de tu página. Sin esto, las IAs no saben si tu contenido es reciente o está desactualizado, lo que puede afectar si te citan.',
+    fix: 'Añade las fechas de publicación y última actualización en el código estructurado (JSON-LD) de tu página.',
+  });
+
+  if (schemaBlocks === 0 && !microdata) findings.push({
+    level: 'medio',
+    area: 'Datos estructurados',
+    title: 'Tu web no le explica a las IAs de qué trata',
+    detail: 'Los datos estructurados son como una ficha técnica que le dice a Google y a las IAs exactamente qué es tu web, de qué habla y quién está detrás. Sin esto, tienen que adivinarlo.',
+    fix: 'Añade un bloque JSON-LD en tu página con información básica: nombre, descripción, tipo de negocio y URL.',
+  });
+  else good.push('Tu web tiene datos estructurados y las IAs pueden entender de qué trata.');
+
+  if (words < 300) findings.push({
+    level: 'bajo',
+    area: 'Contenido',
+    title: 'Hay poco texto en esta página',
+    detail: `Esta página tiene unas ${words} palabras. Las IAs necesitan suficiente contenido para entender de qué habla tu web y decidir si citarla.`,
+    fix: 'Amplía el contenido de esta página con más información útil para tus visitantes.',
+  });
+  else good.push(`Esta página tiene buen volumen de contenido (${words} palabras), suficiente para que las IAs la entiendan.`);
 
   const counts: Record<Level, number> = { alto: 0, medio: 0, bajo: 0, info: 0 };
   for (const f of findings) counts[f.level]++;
