@@ -1,162 +1,358 @@
 ---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+
+// Página estática: el análisis lo hace /api/check-crawlers desde el navegador.
+export const prerender = true;
 ---
 
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Verificador de Crawlers IA</title>
-</head>
-<body>
-  <main>
-    <h1>¿Pueden los crawlers de IA leer tu sitio?</h1>
-    <p>Pega la URL de tu web y revisa si ChatGPT, Claude, Perplexity y otros pueden acceder.</p>
+	<head>
+		<BaseHead
+			title={`Qué ve una IA en tu web — ${SITE_TITLE}`}
+			description="Comprueba si ChatGPT, Claude, Perplexity y Google pueden leer tu web, y qué encuentran cuando entran."
+		/>
+	</head>
+	<body>
+		<Header />
 
-    <form id="check-form">
-      <input
-        type="url"
-        id="url-input"
-        placeholder="https://tusitio.com"
-        required
-      />
-      <button type="submit" id="submit-btn">Analizar</button>
-    </form>
+		<main>
+			<section class="prose">
+				<p class="eyebrow">Verificador de crawlers IA</p>
+				<h1>Qué ve una IA cuando entra a tu web</h1>
+				<p class="lead">
+					Pega una URL. Revisamos tus reglas, hacemos la visita como lo haría cada bot y te decimos
+					qué encuentran y qué les impide citarte.
+				</p>
 
-    <div id="loading" style="display:none;">Analizando...</div>
-    <div id="error-box" style="display:none;"></div>
-    <div id="results" style="display:none;"></div>
-  </main>
+				<form id="check-form" class="tool-form" method="get">
+					<label for="check-url" class="sr-only">URL a analizar</label>
+					<input
+						id="check-url"
+						name="url"
+						type="text"
+						inputmode="url"
+						enterkeyhint="go"
+						autocomplete="url"
+						autocapitalize="off"
+						spellcheck="false"
+						placeholder="tudominio.com o una página concreta"
+						required
+					/>
+					<button type="submit" class="btn-primary">Analizar</button>
+				</form>
+				<p id="check-status" class="tool-hint" role="status">Tarda entre 5 y 20 segundos.</p>
 
-  <script>
-    const form = document.getElementById('check-form');
-    const input = document.getElementById('url-input');
-    const btn = document.getElementById('submit-btn');
-    const loading = document.getElementById('loading');
-    const errorBox = document.getElementById('error-box');
-    const results = document.getElementById('results');
+				<div id="check-results"></div>
+			</section>
+		</main>
 
-    function badge(state) {
-      const colors = {
-        OK: '#16a34a',
-        AVISO: '#ca8a04',
-        PARCIAL: '#ca8a04',
-        BLOQUEADO: '#dc2626',
-        FALTA: '#dc2626',
-        ROTO: '#dc2626',
-        CRITICO: '#dc2626',
-      };
-      const color = colors[state] || '#6b7280';
-      return `<span style="background:${color};color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">${state}</span>`;
-    }
+		<Footer />
 
-    function render(data) {
-      let html = `<h2>Resultado para ${data.base}</h2>`;
+		<script>
+			// ── Forma de la respuesta de /api/check-crawlers (solo lo que usa esta página) ──
+			type Level = 'alto' | 'medio' | 'bajo' | 'info';
+			type Finding = { level: Level; area: string; title: string; detail: string; fix: string };
+			type Bot = {
+				name: string;
+				company: string;
+				type: string;
+				product: string;
+				note: string;
+				token: boolean;
+				robots: { allowed: boolean; rule: string | null; src: string; delay?: string | null };
+				live: { blocked: boolean; note: string } | null;
+			};
+			type Entity = { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number };
+			type Sample = {
+				url: string;
+				path: string;
+				status: number | null;
+				note?: string;
+				redirected?: boolean;
+				title?: string;
+				words: number;
+				noindex: boolean;
+				blockedFor: string[];
+				types: string[];
+			};
+			type Report = {
+				finalUrl: string;
+				viewAs: string;
+				ms: number;
+				counts: Record<Level, number>;
+				findings: Finding[];
+				good: string[];
+				bots: Bot[];
+				page: {
+					schema: { blocks: number; broken: number; microdata: boolean; types: string[]; entities: Entity[] };
+				} | null;
+				sitemap: {
+					found: boolean;
+					url?: string;
+					inRobots?: boolean;
+					children?: number;
+					count: number;
+					withLastmod: number;
+					newest?: string | null;
+					sameDate?: boolean;
+				};
+				freshness: { date: string; days: number; source: string } | null;
+				samples: Sample[];
+			};
 
-      html += `<h3>Crawlers de IA</h3><ul style="list-style:none;padding:0;">`;
-      for (const [bot, info] of Object.entries(data.robots)) {
-        html += `<li style="padding:6px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
-          <span>${bot}</span> ${badge(info.state)} <small style="color:#666;">${info.note}</small>
-        </li>`;
-      }
-      html += `</ul>`;
+			const LEVELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
+			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
+			const TYPES: Record<string, string> = {
+				entrenamiento: 'Entrenamiento',
+				busqueda: 'Búsqueda',
+				usuario: 'Visita de usuario',
+			};
 
-      html += `<h3>Acceso</h3><p>${data.access}</p>`;
+			const form = document.getElementById('check-form') as HTMLFormElement;
+			const input = document.getElementById('check-url') as HTMLInputElement;
+			const button = form.querySelector('button') as HTMLButtonElement;
+			const statusLine = document.getElementById('check-status') as HTMLElement;
+			const results = document.getElementById('check-results') as HTMLElement;
+			const idleText = statusLine.textContent ?? '';
 
-      if (data.javascript) {
-        html += `<h3>Dependencia de JavaScript</h3><p>${badge(data.javascript.state)} ${data.javascript.note}</p>`;
-      }
-      if (data.schema) {
-        html += `<h3>Schema (JSON-LD)</h3><p>${badge(data.schema.state)} ${data.schema.note}</p>`;
-      }
-      if (data.headers) {
-        html += `<h3>Cabeceras / meta</h3><p>${badge(data.headers.state)} ${data.headers.note}</p>`;
-      }
-      if (data.sitemap) {
-        html += `<h3>Sitemap</h3><p>${badge(data.sitemap.state)} ${data.sitemap.note}</p>`;
-      }
+			// ── Utilidades ──
+			// Todo lo que viene de la API se escapa: incluye textos sacados de webs de terceros.
+			const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+			const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+			const joinList = (parts: string[]) => new Intl.ListFormat('es', { type: 'conjunction' }).format(parts);
+			const fmtDate = (iso: string) =>
+				new Date(iso).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+			const hint = (text: string) => `<span class="tool-hint">${esc(text)}</span>`;
 
-      if (data.flags && data.flags.length) {
-        html += `<h3 style="color:#dc2626;">Problemas encontrados</h3><ul>`;
-        for (const f of data.flags) html += `<li>${f}</li>`;
-        html += `</ul>`;
-      } else {
-        html += `<p style="color:#16a34a;font-weight:600;">✓ Sin problemas detectados</p>`;
-      }
+			// ?url=https://dominio.com/pagina — legible para compartir
+			const queryFor = (url: string) =>
+				'?url=' + encodeURIComponent(url).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
+			const urlFromLocation = () => (new URLSearchParams(location.search).get('url') ?? '').trim();
 
-      results.innerHTML = html;
-    }
+			// ── Secciones del resultado ──
+			function renderFindings(d: Report) {
+				const c = d.counts;
+				const parts = [
+					c.alto ? plural(c.alto, 'importante', 'importantes') : '',
+					c.medio ? `${c.medio} a revisar` : '',
+					c.bajo ? plural(c.bajo, 'menor', 'menores') : '',
+					c.info ? plural(c.info, 'dato', 'datos') : '',
+				].filter(Boolean);
+				const summary = d.findings.length
+					? `${plural(d.findings.length, 'hallazgo', 'hallazgos')}: ${joinList(parts)}.`
+					: 'Sin hallazgos.';
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const url = input.value.trim();
-      if (!url) return;
+				const items = [...d.findings]
+					.sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level))
+					.map(
+						(f) => `
+							<div class="faq-item">
+								<div class="post-date"><strong>${esc(LEVELS[f.level] ?? f.level)}</strong> · ${esc(f.area)}</div>
+								<h3>${esc(f.title)}</h3>
+								<p>${esc(f.detail)}</p>
+								${f.fix ? `<div class="phase-outcome">Qué hacer: ${esc(f.fix)}</div>` : ''}
+							</div>`,
+					)
+					.join('');
 
-      loading.style.display = 'block';
-      errorBox.style.display = 'none';
-      results.style.display = 'none';
-      btn.disabled = true;
+				return `<h2>Hallazgos</h2><p class="lead">${esc(summary)}</p><div class="faq">${items}</div>`;
+			}
 
-      try {
-        const res = await fetch(`/api/check-crawlers?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
+			function renderGood(d: Report) {
+				const body = d.good.length
+					? `<ul>${d.good.map((g) => `<li>${esc(g)}</li>`).join('')}</ul>`
+					: '<p>Nada destacable todavía.</p>';
+				return `<h2>Lo que está bien</h2>${body}`;
+			}
 
-        if (!res.ok) {
-          errorBox.textContent = data.error || 'Ocurrió un error';
-          errorBox.style.display = 'block';
-        } else {
-          render(data);
-          results.style.display = 'block';
-        }
-      } catch (err) {
-        errorBox.textContent = 'No se pudo conectar con el servidor.';
-        errorBox.style.display = 'block';
-      } finally {
-        loading.style.display = 'none';
-        btn.disabled = false;
-      }
-    });
-  </script>
+			function renderBots(d: Report) {
+				const rows = d.bots
+					.map((b) => {
+						const r = b.robots;
+						const rule = (r.rule ? `${r.rule} (${r.src})` : r.src) + (r.delay ? `, Crawl-delay: ${r.delay}` : '');
+						const robots = `robots.txt: ${r.allowed ? 'Permitido' : '<strong>Bloqueado</strong>'} ${hint('· ' + rule)}`;
 
-  <style>
-    main {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      font-family: system-ui, sans-serif;
-    }
-    h1 { font-size: 1.8rem; margin-bottom: 8px; }
-    p { color: #555; }
-    form {
-      display: flex;
-      gap: 8px;
-      margin: 24px 0;
-    }
-    input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    button {
-      padding: 10px 20px;
-      background: #111;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    #results { margin-top: 24px; }
-    #results h3 { margin-top: 20px; margin-bottom: 8px; font-size: 1rem; }
-    #error-box {
-      margin-top: 16px;
-      padding: 12px;
-      background: #fee;
-      color: #c00;
-      border-radius: 6px;
-    }
-  </style>
-</body>
+						let live: string;
+						if (b.token) live = `Visita real: ${hint('no aplica, es solo una regla de robots.txt')}`;
+						else if (!b.live) live = `Visita real: ${hint('no probada')}`;
+						else live = `Visita real: ${b.live.blocked ? '<strong>Bloqueado</strong>' : 'Entra'} ${hint('· ' + b.live.note)}`;
+
+						const about = [b.company, TYPES[b.type] ?? b.type, b.product || b.note].filter(Boolean).join(' · ');
+						return `<tr><td><strong>${esc(b.name)}</strong><br>${hint(about)}</td><td>${robots}<br>${live}</td></tr>`;
+					})
+					.join('');
+
+				return `
+					<h2>Quién puede entrar</h2>
+					<p class="tool-hint">robots.txt es lo que dicen tus reglas. Visita real es lo que pasó al pedir la página identificándonos como cada bot.</p>
+					<table>
+						<thead><tr><th>Bot</th><th>Estado</th></tr></thead>
+						<tbody>${rows}</tbody>
+					</table>`;
+			}
+
+			function renderSchema(d: Report) {
+				const title = '<h2>Datos estructurados</h2>';
+				if (!d.page) return `${title}<p>No pudimos leer la página.</p>`;
+
+				const s = d.page.schema;
+				if (!s.blocks && !s.microdata) return `${title}<p>La página no tiene datos estructurados.</p>`;
+
+				const found = [
+					s.blocks ? plural(s.blocks, 'bloque JSON-LD', 'bloques JSON-LD') : '',
+					s.microdata ? 'microdatos' : '',
+				].filter(Boolean);
+				let line = joinList(found);
+				line = line.charAt(0).toUpperCase() + line.slice(1);
+				if (s.broken) line += ` (${s.broken} con errores de sintaxis)`;
+				if (s.types.length) line += `. Tipos: ${s.types.join(', ')}`;
+
+				const entities = s.entities
+					.map((e) => {
+						const facts: string[] = [];
+						if (e.sameAs) facts.push(`sameAs: ${e.sameAs.length}`);
+						if (e.questions != null) facts.push(plural(e.questions, 'pregunta', 'preguntas'));
+						facts.push(e.missing.length ? `falta: ${e.missing.join(', ')}` : 'completo');
+						return `<li><strong>${esc(e.type)}</strong>${e.name ? ` "${esc(e.name)}"` : ''} · ${esc(facts.join(' · '))}</li>`;
+					})
+					.join('');
+
+				return `${title}<p>${esc(line)}.</p>${entities ? `<ul>${entities}</ul>` : ''}`;
+			}
+
+			function renderSitemap(d: Report) {
+				const sm = d.sitemap;
+				const title = '<h2>Sitemap</h2>';
+				if (!sm.found) {
+					return `${title}<p>No encontramos sitemap: ni en robots.txt, ni en /sitemap-index.xml, ni en /sitemap.xml.</p>`;
+				}
+
+				const index = sm.children ? `, índice con ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
+				const partial = sm.children && sm.children > 5 ? ' (contando los 5 primeros sitemaps)' : '';
+				const newest = sm.newest ? `; la más reciente, del ${fmtDate(sm.newest)}` : '';
+				const facts = [
+					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} con fecha (lastmod)${newest}.`,
+					sm.inRobots ? 'Declarado en robots.txt.' : 'No está declarado en robots.txt.',
+				];
+				if (sm.sameDate) facts.push('Todas las URLs tienen la misma fecha.');
+
+				return `${title}<p><code>${esc(sm.url)}</code>${esc(index)}.</p><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+			}
+
+			function renderDates(d: Report) {
+				const f = d.freshness;
+				const text = f
+					? `La fecha más reciente legible por máquinas es del ${fmtDate(f.date)} (${f.days ? `hace ${plural(f.days, 'día', 'días')}` : 'hoy'}), en ${f.source}.`
+					: 'No hay ninguna fecha legible por máquinas: ni en el schema, ni en las meta etiquetas, ni en el sitemap.';
+				return `<h2>Fechas</h2><p>${esc(text)}</p>`;
+			}
+
+			function renderSamples(d: Report) {
+				const title = '<h2>Páginas internas</h2>';
+				if (!d.samples.length) return `${title}<p>No encontramos otras URLs de este dominio en el sitemap.</p>`;
+
+				const items = d.samples
+					.map((s) => {
+						const ok = s.status != null && s.status >= 200 && s.status < 300;
+						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'sin respuesta'];
+						if (ok) facts.push(plural(s.words, 'palabra', 'palabras'));
+						if (s.redirected) facts.push('redirige');
+						if (s.noindex) facts.push('noindex');
+						if (s.blockedFor.length) facts.push(`bloqueada para ${s.blockedFor.join(', ')}`);
+						if (s.types.length) facts.push(s.types.join(', '));
+						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br>${hint(facts.join(' · '))}</li>`;
+					})
+					.join('');
+
+				return `${title}<p>URLs de tu sitemap. Pulsa una para analizarla.</p><ul>${items}</ul>`;
+			}
+
+			const NOTE =
+				'<p class="tool-hint">Pedimos la página desde un servidor, una vez como navegador y otra como cada bot, y comparamos. Los bots reales salen de sus propias IPs, así que un firewall que verifique IPs puede tratarlos distinto. Resultados en caché 15 min.</p>';
+
+			const render = (d: Report) =>
+				[renderFindings, renderGood, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
+					.map((section) => section(d))
+					.join('') + NOTE;
+
+			// ── Análisis ──
+			let current: AbortController | null = null;
+
+			async function analyze(url: string) {
+				current?.abort(); // si había otro análisis en curso, se descarta
+				const run = (current = new AbortController());
+
+				input.value = url;
+				button.disabled = true;
+				results.innerHTML = '';
+				statusLine.textContent = `Analizando ${url}…`;
+
+				try {
+					const res = await fetch('/api/check-crawlers?url=' + encodeURIComponent(url), { signal: run.signal });
+					const data = await res.json().catch(() => null);
+					if (run !== current) return;
+
+					if (!res.ok || !data || data.error) {
+						statusLine.textContent = data?.error || 'Algo falló. Prueba otra vez.';
+						return;
+					}
+
+					const report = data as Report;
+					statusLine.textContent = `${report.finalUrl} · leído como ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
+					results.innerHTML = render(report);
+				} catch {
+					if (run.signal.aborted) return;
+					statusLine.textContent =
+						'No pudimos terminar el análisis. Puede que el sitio tarde demasiado; prueba otra vez.';
+				} finally {
+					if (run === current) button.disabled = false;
+				}
+			}
+
+			// Cambia ?url= (para compartir) y analiza
+			function go(url: string) {
+				if (urlFromLocation() !== url) history.pushState(null, '', queryFor(url));
+				analyze(url);
+			}
+
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const url = input.value.trim();
+				if (url) go(url);
+			});
+
+			// Páginas internas: se analizan sin recargar (Ctrl/Cmd + clic sigue abriendo otra pestaña)
+			results.addEventListener('click', (event) => {
+				const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-url]');
+				if (!link?.dataset.url) return;
+				if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+				event.preventDefault();
+				go(link.dataset.url);
+				window.scrollTo({ top: 0 });
+			});
+
+			// Botones atrás / adelante del navegador
+			window.addEventListener('popstate', () => {
+				const url = urlFromLocation();
+				if (url) {
+					analyze(url);
+					return;
+				}
+				current?.abort();
+				current = null;
+				input.value = '';
+				results.innerHTML = '';
+				statusLine.textContent = idleText;
+				button.disabled = false;
+			});
+
+			// Enlace compartido: /ai-crawler-check?url=...
+			const initial = urlFromLocation();
+			if (initial) analyze(initial);
+		</script>
+	</body>
 </html>
