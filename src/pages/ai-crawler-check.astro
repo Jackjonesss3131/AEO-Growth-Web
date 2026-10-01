@@ -8,11 +8,11 @@ export const prerender = true;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
 	<head>
 		<BaseHead
-			title={`Qué ve una IA en tu web — ${SITE_TITLE}`}
-			description="Comprueba si ChatGPT, Claude, Perplexity y Google pueden leer tu web, y qué encuentran cuando entran."
+			title={`What an AI sees on your site — ${SITE_TITLE}`}
+			description="Check if ChatGPT, Claude, Perplexity and Google can read your site, and what they find when they crawl it."
 		/>
 	</head>
 	<body>
@@ -20,15 +20,15 @@ export const prerender = true;
 
 		<main>
 			<section class="prose">
-				<p class="eyebrow">Verificador de crawlers IA</p>
-				<h1>Qué ve una IA cuando entra a tu web</h1>
+				<p class="eyebrow">AI Crawler Checker</p>
+				<h1>What an AI sees when it crawls your site</h1>
 				<p class="lead">
-					Pega una URL. Revisamos tus reglas, hacemos la visita como lo haría cada bot y te decimos
-					qué encuentran y qué les impide citarte.
+					Paste a URL. We check your rules, crawl the page as each bot would, and tell you
+					what they find and what's stopping them from citing you.
 				</p>
 
 				<form id="check-form" class="tool-form" method="get">
-					<label for="check-url" class="sr-only">URL a analizar</label>
+					<label for="check-url" class="sr-only">URL to analyze</label>
 					<input
 						id="check-url"
 						name="url"
@@ -38,12 +38,12 @@ export const prerender = true;
 						autocomplete="url"
 						autocapitalize="off"
 						spellcheck="false"
-						placeholder="tudominio.com o una página concreta"
+						placeholder="yourdomain.com or a specific page"
 						required
 					/>
-					<button type="submit" class="btn-primary">Analizar</button>
+					<button type="submit" class="btn-primary">Analyze</button>
 				</form>
-				<p id="check-status" class="tool-hint" role="status">Tarda entre 5 y 20 segundos.</p>
+				<p id="check-status" class="tool-hint" role="status">Takes between 5 and 20 seconds.</p>
 
 				<div id="check-results"></div>
 			</section>
@@ -103,12 +103,12 @@ export const prerender = true;
 			};
 
 			const ICONS: Record<Level, string> = { alto: '🔴', medio: '🟡', bajo: '🟠', info: '🔵' };
-			const LABELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
+			const LABELS: Record<Level, string> = { alto: 'Critical', medio: 'Review', bajo: 'Minor', info: 'Info' };
 			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
 			const TYPES: Record<string, string> = {
-				entrenamiento: 'Entrenamiento',
-				busqueda: 'Búsqueda',
-				usuario: 'Visita de usuario',
+				entrenamiento: 'Training',
+				busqueda: 'Search',
+				usuario: 'User Visit',
 			};
 
 			const form = document.getElementById('check-form') as HTMLFormElement;
@@ -120,9 +120,9 @@ export const prerender = true;
 
 			const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 			const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-			const joinList = (parts: string[]) => new Intl.ListFormat('es', { type: 'conjunction' }).format(parts);
+			const joinList = (parts: string[]) => new Intl.ListFormat('en', { type: 'conjunction' }).format(parts);
 			const fmtDate = (iso: string) =>
-				new Date(iso).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+				new Date(iso).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 			const hint = (text: string) => `<span class="tool-hint">${esc(text)}</span>`;
 
 			const queryFor = (url: string) =>
@@ -142,21 +142,21 @@ export const prerender = true;
 						</tr>`),
 					...d.good.map(g => `
 						<tr>
-							<td>✅ <strong>Bien</strong></td>
+							<td>✅ <strong>Good</strong></td>
 							<td>—</td>
 							<td colspan="2">${esc(g)}</td>
 						</tr>`),
 				].join('');
 
 				return `
-					<h2>Resumen</h2>
+					<h2>Summary</h2>
 					<table>
 						<thead>
 							<tr>
-								<th>Estado</th>
-								<th>Área</th>
-								<th>Qué pasa</th>
-								<th>Qué hacer</th>
+								<th>Status</th>
+								<th>Area</th>
+								<th>What's happening</th>
+								<th>What to do</th>
 							</tr>
 						</thead>
 						<tbody>${allRows}</tbody>
@@ -168,12 +168,12 @@ export const prerender = true;
 					.map((b) => {
 						const r = b.robots;
 						const rule = (r.rule ? `${r.rule} (${r.src})` : r.src) + (r.delay ? `, Crawl-delay: ${r.delay}` : '');
-						const robots = `robots.txt: ${r.allowed ? 'Permitido' : '<strong>Bloqueado</strong>'} ${hint('· ' + rule)}`;
+						const robots = `robots.txt: ${r.allowed ? 'Allowed' : '<strong>Blocked</strong>'} ${hint('· ' + rule)}`;
 
 						let live: string;
-						if (b.token) live = `Visita real: ${hint('no aplica, es solo una regla de robots.txt')}`;
-						else if (!b.live) live = `Visita real: ${hint('no probada')}`;
-						else live = `Visita real: ${b.live.blocked ? '<strong>Bloqueado</strong>' : 'Entra'} ${hint('· ' + b.live.note)}`;
+						if (b.token) live = `Live visit: ${hint('n/a, this is a robots.txt-only rule')}`;
+						else if (!b.live) live = `Live visit: ${hint('not tested')}`;
+						else live = `Live visit: ${b.live.blocked ? '<strong>Blocked</strong>' : 'Passes'} ${hint('· ' + b.live.note)}`;
 
 						const about = [b.company, TYPES[b.type] ?? b.type, b.product || b.note].filter(Boolean).join(' · ');
 						return `<tr><td><strong>${esc(b.name)}</strong><br>${hint(about)}</td><td>${robots}<br>${live}</td></tr>`;
@@ -181,36 +181,36 @@ export const prerender = true;
 					.join('');
 
 				return `
-					<h2>Quién puede entrar</h2>
-					<p class="tool-hint">robots.txt es lo que dicen tus reglas. Visita real es lo que pasó al pedir la página identificándonos como cada bot.</p>
+					<h2>Who can access</h2>
+					<p class="tool-hint">robots.txt reflects your declared rules. Live visit is what happened when we requested the page identifying ourselves as each bot.</p>
 					<table>
-						<thead><tr><th>Bot</th><th>Estado</th></tr></thead>
+						<thead><tr><th>Bot</th><th>Status</th></tr></thead>
 						<tbody>${rows}</tbody>
 					</table>`;
 			}
 
 			function renderSchema(d: Report) {
-				const title = '<h2>Datos estructurados</h2>';
-				if (!d.page) return `${title}<p>No pudimos leer la página.</p>`;
+				const title = '<h2>Structured Data</h2>';
+				if (!d.page) return `${title}<p>We couldn't read the page.</p>`;
 
 				const s = d.page.schema;
-				if (!s.blocks && !s.microdata) return `${title}<p>La página no tiene datos estructurados.</p>`;
+				if (!s.blocks && !s.microdata) return `${title}<p>This page has no structured data.</p>`;
 
 				const found = [
-					s.blocks ? plural(s.blocks, 'bloque JSON-LD', 'bloques JSON-LD') : '',
-					s.microdata ? 'microdatos' : '',
+					s.blocks ? plural(s.blocks, 'JSON-LD block', 'JSON-LD blocks') : '',
+					s.microdata ? 'microdata' : '',
 				].filter(Boolean);
 				let line = joinList(found);
 				line = line.charAt(0).toUpperCase() + line.slice(1);
-				if (s.broken) line += ` (${s.broken} con errores de sintaxis)`;
-				if (s.types.length) line += `. Tipos: ${s.types.join(', ')}`;
+				if (s.broken) line += ` (${s.broken} with syntax errors)`;
+				if (s.types.length) line += `. Types: ${s.types.join(', ')}`;
 
 				const entities = s.entities
 					.map((e) => {
 						const facts: string[] = [];
 						if (e.sameAs) facts.push(`sameAs: ${e.sameAs.length}`);
-						if (e.questions != null) facts.push(plural(e.questions, 'pregunta', 'preguntas'));
-						facts.push(e.missing.length ? `falta: ${e.missing.join(', ')}` : 'completo');
+						if (e.questions != null) facts.push(plural(e.questions, 'question', 'questions'));
+						facts.push(e.missing.length ? `missing: ${e.missing.join(', ')}` : 'complete');
 						return `<li><strong>${esc(e.type)}</strong>${e.name ? ` "${esc(e.name)}"` : ''} · ${esc(facts.join(' · '))}</li>`;
 					})
 					.join('');
@@ -222,17 +222,17 @@ export const prerender = true;
 				const sm = d.sitemap;
 				const title = '<h2>Sitemap</h2>';
 				if (!sm.found) {
-					return `${title}<p>No encontramos sitemap: ni en robots.txt, ni en /sitemap-index.xml, ni en /sitemap.xml.</p>`;
+					return `${title}<p>No sitemap found: not in robots.txt, /sitemap-index.xml, or /sitemap.xml.</p>`;
 				}
 
-				const index = sm.children ? `, índice con ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
-				const partial = sm.children && sm.children > 5 ? ' (contando los 5 primeros sitemaps)' : '';
-				const newest = sm.newest ? `; la más reciente, del ${fmtDate(sm.newest)}` : '';
+				const index = sm.children ? `, index with ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
+				const partial = sm.children && sm.children > 5 ? ' (counting the first 5 sitemaps)' : '';
+				const newest = sm.newest ? `; newest: ${fmtDate(sm.newest)}` : '';
 				const facts = [
-					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} con fecha (lastmod)${newest}.`,
-					sm.inRobots ? 'Declarado en robots.txt.' : 'No está declarado en robots.txt.',
+					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} with a date (lastmod)${newest}.`,
+					sm.inRobots ? 'Declared in robots.txt.' : 'Not declared in robots.txt.',
 				];
-				if (sm.sameDate) facts.push('Todas las URLs tienen la misma fecha.');
+				if (sm.sameDate) facts.push('All URLs share the same date.');
 
 				return `${title}<p><code>${esc(sm.url)}</code>${esc(index)}.</p><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
 			}
@@ -240,33 +240,33 @@ export const prerender = true;
 			function renderDates(d: Report) {
 				const f = d.freshness;
 				const text = f
-					? `La fecha más reciente legible por máquinas es del ${fmtDate(f.date)} (${f.days ? `hace ${plural(f.days, 'día', 'días')}` : 'hoy'}), en ${f.source}.`
-					: 'No hay ninguna fecha legible por máquinas: ni en el schema, ni en las meta etiquetas, ni en el sitemap.';
-				return `<h2>Fechas</h2><p>${esc(text)}</p>`;
+					? `The most recent machine-readable date is ${fmtDate(f.date)} (${f.days ? `${plural(f.days, 'day', 'days')} ago` : 'today'}), found in ${f.source}.`
+					: 'No machine-readable date found: not in schema, meta tags, or sitemap.';
+				return `<h2>Dates</h2><p>${esc(text)}</p>`;
 			}
 
 			function renderSamples(d: Report) {
-				const title = '<h2>Páginas internas</h2>';
-				if (!d.samples.length) return `${title}<p>No encontramos otras URLs de este dominio en el sitemap.</p>`;
+				const title = '<h2>Internal Pages</h2>';
+				if (!d.samples.length) return `${title}<p>No other URLs from this domain found in the sitemap.</p>`;
 
 				const items = d.samples
 					.map((s) => {
 						const ok = s.status != null && s.status >= 200 && s.status < 300;
-						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'sin respuesta'];
-						if (ok) facts.push(plural(s.words, 'palabra', 'palabras'));
-						if (s.redirected) facts.push('redirige');
+						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'no response'];
+						if (ok) facts.push(plural(s.words, 'word', 'words'));
+						if (s.redirected) facts.push('redirects');
 						if (s.noindex) facts.push('noindex');
-						if (s.blockedFor.length) facts.push(`bloqueada para ${s.blockedFor.join(', ')}`);
+						if (s.blockedFor.length) facts.push(`blocked for ${s.blockedFor.join(', ')}`);
 						if (s.types.length) facts.push(s.types.join(', '));
 						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br>${hint(facts.join(' · '))}</li>`;
 					})
 					.join('');
 
-				return `${title}<p>URLs de tu sitemap. Pulsa una para analizarla.</p><ul>${items}</ul>`;
+				return `${title}<p>URLs from your sitemap. Click one to analyze it.</p><ul>${items}</ul>`;
 			}
 
 			const NOTE =
-				'<p class="tool-hint">Pedimos la página desde un servidor, una vez como navegador y otra como cada bot, y comparamos. Los bots reales salen de sus propias IPs, así que un firewall que verifique IPs puede tratarlos distinto. Resultados en caché 15 min.</p>';
+				'<p class="tool-hint">We request the page from a server — once as a browser and once as each bot — and compare. Real bots come from their own IPs, so an IP-checking firewall may treat them differently. Results cached for 15 min.</p>';
 
 			const render = (d: Report) =>
 				[renderFindings, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
@@ -282,7 +282,7 @@ export const prerender = true;
 				input.value = url;
 				button.disabled = true;
 				results.innerHTML = '';
-				statusLine.textContent = `Analizando ${url}…`;
+				statusLine.textContent = `Analyzing ${url}…`;
 
 				try {
 					const res = await fetch('/api/check-crawlers?url=' + encodeURIComponent(url), { signal: run.signal });
@@ -290,17 +290,17 @@ export const prerender = true;
 					if (run !== current) return;
 
 					if (!res.ok || !data || data.error) {
-						statusLine.textContent = data?.error || 'Algo falló. Prueba otra vez.';
+						statusLine.textContent = data?.error || 'Something went wrong. Please try again.';
 						return;
 					}
 
 					const report = data as Report;
-					statusLine.textContent = `${report.finalUrl} · leído como ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
+					statusLine.textContent = `${report.finalUrl} · read as ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
 					results.innerHTML = render(report);
 				} catch {
 					if (run.signal.aborted) return;
 					statusLine.textContent =
-						'No pudimos terminar el análisis. Puede que el sitio tarde demasiado; prueba otra vez.';
+						'We couldn\'t complete the analysis. The site may be too slow to respond; try again.';
 				} finally {
 					if (run === current) button.disabled = false;
 				}
