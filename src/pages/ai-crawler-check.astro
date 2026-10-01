@@ -1,0 +1,162 @@
+---
+---
+
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verificador de Crawlers IA</title>
+</head>
+<body>
+  <main>
+    <h1>¿Pueden los crawlers de IA leer tu sitio?</h1>
+    <p>Pega la URL de tu web y revisa si ChatGPT, Claude, Perplexity y otros pueden acceder.</p>
+
+    <form id="check-form">
+      <input
+        type="url"
+        id="url-input"
+        placeholder="https://tusitio.com"
+        required
+      />
+      <button type="submit" id="submit-btn">Analizar</button>
+    </form>
+
+    <div id="loading" style="display:none;">Analizando...</div>
+    <div id="error-box" style="display:none;"></div>
+    <div id="results" style="display:none;"></div>
+  </main>
+
+  <script>
+    const form = document.getElementById('check-form');
+    const input = document.getElementById('url-input');
+    const btn = document.getElementById('submit-btn');
+    const loading = document.getElementById('loading');
+    const errorBox = document.getElementById('error-box');
+    const results = document.getElementById('results');
+
+    function badge(state) {
+      const colors = {
+        OK: '#16a34a',
+        AVISO: '#ca8a04',
+        PARCIAL: '#ca8a04',
+        BLOQUEADO: '#dc2626',
+        FALTA: '#dc2626',
+        ROTO: '#dc2626',
+        CRITICO: '#dc2626',
+      };
+      const color = colors[state] || '#6b7280';
+      return `<span style="background:${color};color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;">${state}</span>`;
+    }
+
+    function render(data) {
+      let html = `<h2>Resultado para ${data.base}</h2>`;
+
+      html += `<h3>Crawlers de IA</h3><ul style="list-style:none;padding:0;">`;
+      for (const [bot, info] of Object.entries(data.robots)) {
+        html += `<li style="padding:6px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+          <span>${bot}</span> ${badge(info.state)} <small style="color:#666;">${info.note}</small>
+        </li>`;
+      }
+      html += `</ul>`;
+
+      html += `<h3>Acceso</h3><p>${data.access}</p>`;
+
+      if (data.javascript) {
+        html += `<h3>Dependencia de JavaScript</h3><p>${badge(data.javascript.state)} ${data.javascript.note}</p>`;
+      }
+      if (data.schema) {
+        html += `<h3>Schema (JSON-LD)</h3><p>${badge(data.schema.state)} ${data.schema.note}</p>`;
+      }
+      if (data.headers) {
+        html += `<h3>Cabeceras / meta</h3><p>${badge(data.headers.state)} ${data.headers.note}</p>`;
+      }
+      if (data.sitemap) {
+        html += `<h3>Sitemap</h3><p>${badge(data.sitemap.state)} ${data.sitemap.note}</p>`;
+      }
+
+      if (data.flags && data.flags.length) {
+        html += `<h3 style="color:#dc2626;">Problemas encontrados</h3><ul>`;
+        for (const f of data.flags) html += `<li>${f}</li>`;
+        html += `</ul>`;
+      } else {
+        html += `<p style="color:#16a34a;font-weight:600;">✓ Sin problemas detectados</p>`;
+      }
+
+      results.innerHTML = html;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = input.value.trim();
+      if (!url) return;
+
+      loading.style.display = 'block';
+      errorBox.style.display = 'none';
+      results.style.display = 'none';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/check-crawlers?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          errorBox.textContent = data.error || 'Ocurrió un error';
+          errorBox.style.display = 'block';
+        } else {
+          render(data);
+          results.style.display = 'block';
+        }
+      } catch (err) {
+        errorBox.textContent = 'No se pudo conectar con el servidor.';
+        errorBox.style.display = 'block';
+      } finally {
+        loading.style.display = 'none';
+        btn.disabled = false;
+      }
+    });
+  </script>
+
+  <style>
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      font-family: system-ui, sans-serif;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    p { color: #555; }
+    form {
+      display: flex;
+      gap: 8px;
+      margin: 24px 0;
+    }
+    input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #results { margin-top: 24px; }
+    #results h3 { margin-top: 20px; margin-bottom: 8px; font-size: 1rem; }
+    #error-box {
+      margin-top: 16px;
+      padding: 12px;
+      background: #fee;
+      color: #c00;
+      border-radius: 6px;
+    }
+  </style>
+</body>
+</html>
