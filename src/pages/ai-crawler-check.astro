@@ -1,325 +1,347 @@
-import type { APIRoute } from 'astro';
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
 
-export const GET: APIRoute = async ({ request }) => {
-  const url = new URL(request.url).searchParams.get('url');
+export const prerender = true;
+---
 
-  if (!url) {
-    return new Response(JSON.stringify({ error: 'Falta el parámetro url' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead
+			title={`Qué ve una IA en tu web — ${SITE_TITLE}`}
+			description="Comprueba si ChatGPT, Claude, Perplexity y Google pueden leer tu web, y qué encuentran cuando entran."
+		/>
+	</head>
+	<body>
+		<Header />
 
-  // Normalizar URL
-  let target: URL;
-  try {
-    target = new URL(url.startsWith('http') ? url : `https://${url}`);
-  } catch {
-    return new Response(JSON.stringify({ error: 'URL inválida' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+		<main>
+			<section class="prose">
+				<p class="eyebrow">Verificador de crawlers IA</p>
+				<h1>Qué ve una IA cuando entra a tu web</h1>
+				<p class="lead">
+					Pega una URL. Revisamos tus reglas, hacemos la visita como lo haría cada bot y te decimos
+					qué encuentran y qué les impide citarte.
+				</p>
 
-  const origin = target.origin;
-  const start = Date.now();
+				<form id="check-form" class="tool-form" method="get">
+					<label for="check-url" class="sr-only">URL a analizar</label>
+					<input
+						id="check-url"
+						name="url"
+						type="text"
+						inputmode="url"
+						enterkeyhint="go"
+						autocomplete="url"
+						autocapitalize="off"
+						spellcheck="false"
+						placeholder="tudominio.com o una página concreta"
+						required
+					/>
+					<button type="submit" class="btn-primary">Analizar</button>
+				</form>
+				<p id="check-status" class="tool-hint" role="status">Tarda entre 5 y 20 segundos.</p>
 
-  const UA_BROWSER = 'Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)';
+				<div id="check-results"></div>
+			</section>
+		</main>
 
-  const BOTS = [
-    { name: 'GPTBot',        company: 'OpenAI',     type: 'entrenamiento', product: 'ChatGPT',    note: '', token: false, ua: 'GPTBot/1.0' },
-    { name: 'OAI-SearchBot', company: 'OpenAI',     type: 'busqueda',      product: 'ChatGPT Search', note: '', token: false, ua: 'OAI-SearchBot' },
-    { name: 'ClaudeBot',     company: 'Anthropic',  type: 'entrenamiento', product: 'Claude',     note: '', token: false, ua: 'ClaudeBot/1.0' },
-    { name: 'PerplexityBot', company: 'Perplexity', type: 'busqueda',      product: 'Perplexity', note: '', token: false, ua: 'PerplexityBot/1.0' },
-    { name: 'Googlebot',     company: 'Google',     type: 'busqueda',      product: 'Google Search', note: '', token: false, ua: 'Googlebot/2.1' },
-    { name: 'Google-Extended', company: 'Google',   type: 'entrenamiento', product: 'Bard/Gemini', note: '', token: true,  ua: 'Google-Extended' },
-  ];
+		<Footer />
 
-  // ── Fetch helpers ──
-  const fetchText = async (url: string, ua: string) => {
-    try {
-      const r = await fetch(url, {
-        headers: { 'User-Agent': ua },
-        redirect: 'follow',
-        signal: AbortSignal.timeout(8000),
-      });
-      return { ok: r.ok, status: r.status, text: await r.text(), finalUrl: r.url };
-    } catch {
-      return { ok: false, status: null, text: '', finalUrl: url };
-    }
-  };
+		<script>
+			type Level = 'alto' | 'medio' | 'bajo' | 'info';
+			type Finding = { level: Level; area: string; title: string; detail: string; fix: string };
+			type Bot = {
+				name: string;
+				company: string;
+				type: string;
+				product: string;
+				note: string;
+				token: boolean;
+				robots: { allowed: boolean; rule: string | null; src: string; delay?: string | null };
+				live: { blocked: boolean; note: string } | null;
+			};
+			type Entity = { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number };
+			type Sample = {
+				url: string;
+				path: string;
+				status: number | null;
+				note?: string;
+				redirected?: boolean;
+				title?: string;
+				words: number;
+				noindex: boolean;
+				blockedFor: string[];
+				types: string[];
+			};
+			type Report = {
+				finalUrl: string;
+				viewAs: string;
+				ms: number;
+				counts: Record<Level, number>;
+				findings: Finding[];
+				good: string[];
+				bots: Bot[];
+				page: {
+					schema: { blocks: number; broken: number; microdata: boolean; types: string[]; entities: Entity[] };
+				} | null;
+				sitemap: {
+					found: boolean;
+					url?: string;
+					inRobots?: boolean;
+					children?: number;
+					count: number;
+					withLastmod: number;
+					newest?: string | null;
+					sameDate?: boolean;
+				};
+				freshness: { date: string; days: number; source: string } | null;
+				samples: Sample[];
+			};
 
-  // ── robots.txt ──
-  const robotsUrl = `${origin}/robots.txt`;
-  const robotsRes = await fetchText(robotsUrl, UA_BROWSER);
-  const robotsText = robotsRes.text;
+			const LEVELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
+			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
+			const TYPES: Record<string, string> = {
+				entrenamiento: 'Entrenamiento',
+				busqueda: 'Búsqueda',
+				usuario: 'Visita de usuario',
+			};
 
-  function parseRobots(robotsTxt: string, userAgent: string): { allowed: boolean; rule: string | null; src: string; delay?: string | null } {
-    const lines = robotsTxt.split('\n').map(l => l.trim());
-    let currentAgents: string[] = [];
-    let inBlock = false;
-    let rules: { type: 'allow' | 'disallow'; path: string }[] = [];
-    let delay: string | null = null;
-    let globalRules: { type: 'allow' | 'disallow'; path: string }[] = [];
-    let globalDelay: string | null = null;
+			const form = document.getElementById('check-form') as HTMLFormElement;
+			const input = document.getElementById('check-url') as HTMLInputElement;
+			const button = form.querySelector('button') as HTMLButtonElement;
+			const statusLine = document.getElementById('check-status') as HTMLElement;
+			const results = document.getElementById('check-results') as HTMLElement;
+			const idleText = statusLine.textContent ?? '';
 
-    const uaLower = userAgent.toLowerCase();
+			const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+			const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+			const joinList = (parts: string[]) => new Intl.ListFormat('es', { type: 'conjunction' }).format(parts);
+			const fmtDate = (iso: string) =>
+				new Date(iso).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+			const hint = (text: string) => `<span class="tool-hint">${esc(text)}</span>`;
 
-    for (const line of lines) {
-      if (line.startsWith('#') || line === '') {
-        if (line === '' && inBlock) {
-          if (currentAgents.some(a => a === uaLower)) {
-            // keep block
-          } else {
-            currentAgents = [];
-            inBlock = false;
-            rules = [];
-            delay = null;
-          }
-        }
-        continue;
-      }
+			const queryFor = (url: string) =>
+				'?url=' + encodeURIComponent(url).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
+			const urlFromLocation = () => (new URLSearchParams(location.search).get('url') ?? '').trim();
 
-      const [key, ...rest] = line.split(':');
-      const val = rest.join(':').trim();
+			function renderFindings(d: Report) {
+				const c = d.counts;
+				const parts = [
+					c.alto ? plural(c.alto, 'importante', 'importantes') : '',
+					c.medio ? `${c.medio} a revisar` : '',
+					c.bajo ? plural(c.bajo, 'menor', 'menores') : '',
+					c.info ? plural(c.info, 'dato', 'datos') : '',
+				].filter(Boolean);
+				const summary = d.findings.length
+					? `${plural(d.findings.length, 'hallazgo', 'hallazgos')}: ${joinList(parts)}.`
+					: 'Sin hallazgos.';
 
-      if (key.toLowerCase() === 'user-agent') {
-        if (inBlock && currentAgents.some(a => a === uaLower)) {
-          // already in our block
-        } else {
-          currentAgents = [val.toLowerCase()];
-          inBlock = true;
-          rules = [];
-          delay = null;
-        }
-      } else if (key.toLowerCase() === 'disallow' && inBlock) {
-        if (currentAgents.includes('*')) globalRules.push({ type: 'disallow', path: val });
-        else rules.push({ type: 'disallow', path: val });
-      } else if (key.toLowerCase() === 'allow' && inBlock) {
-        if (currentAgents.includes('*')) globalRules.push({ type: 'allow', path: val });
-        else rules.push({ type: 'allow', path: val });
-      } else if (key.toLowerCase() === 'crawl-delay' && inBlock) {
-        if (currentAgents.includes('*')) globalDelay = val;
-        else delay = val;
-      }
-    }
+				const items = [...d.findings]
+					.sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level))
+					.map(
+						(f) => `
+							<div class="faq-item">
+								<div class="post-date"><strong>${esc(LEVELS[f.level] ?? f.level)}</strong> · ${esc(f.area)}</div>
+								<h3>${esc(f.title)}</h3>
+								<p>${esc(f.detail)}</p>
+								${f.fix ? `<div class="phase-outcome">Qué hacer: ${esc(f.fix)}</div>` : ''}
+							</div>`,
+					)
+					.join('');
 
-    const path = target.pathname || '/';
-    const checkRules = (r: { type: string; path: string }[]) => {
-      const sorted = [...r].sort((a, b) => b.path.length - a.path.length);
-      for (const rule of sorted) {
-        if (!rule.path) continue;
-        const pattern = rule.path.replace(/\*/g, '.*').replace(/\?/g, '\\?');
-        if (new RegExp('^' + pattern).test(path)) {
-          return rule.type === 'allow';
-        }
-      }
-      return null;
-    };
+				return `<h2>Hallazgos</h2><p class="lead">${esc(summary)}</p><div class="faq">${items}</div>`;
+			}
 
-    const specificMatch = rules.some(r => r.type === 'disallow' && r.path === '/');
-    if (currentAgents.some(a => a === uaLower) && rules.length > 0) {
-      const result = checkRules(rules);
-      if (result !== null) return { allowed: result, rule: rules.find(r => r.path === '/')?.path ?? null, src: userAgent, delay };
-      return { allowed: true, rule: null, src: userAgent, delay };
-    }
+			function renderGood(d: Report) {
+				const body = d.good.length
+					? `<ul>${d.good.map((g) => `<li>${esc(g)}</li>`).join('')}</ul>`
+					: '<p>Nada destacable todavía.</p>';
+				return `<h2>Lo que está bien</h2>${body}`;
+			}
 
-    // fallback a *
-    const globalResult = checkRules(globalRules);
-    if (globalResult !== null) return { allowed: globalResult, rule: '*', src: '*', delay: globalDelay };
+			function renderBots(d: Report) {
+				const rows = d.bots
+					.map((b) => {
+						const r = b.robots;
+						const rule = (r.rule ? `${r.rule} (${r.src})` : r.src) + (r.delay ? `, Crawl-delay: ${r.delay}` : '');
+						const robots = `robots.txt: ${r.allowed ? 'Permitido' : '<strong>Bloqueado</strong>'} ${hint('· ' + rule)}`;
 
-    return { allowed: true, rule: null, src: 'default', delay: null };
-  }
+						let live: string;
+						if (b.token) live = `Visita real: ${hint('no aplica, es solo una regla de robots.txt')}`;
+						else if (!b.live) live = `Visita real: ${hint('no probada')}`;
+						else live = `Visita real: ${b.live.blocked ? '<strong>Bloqueado</strong>' : 'Entra'} ${hint('· ' + b.live.note)}`;
 
-  // ── Visita real de la página ──
-  const pageRes = await fetchText(target.href, UA_BROWSER);
-  const html = pageRes.text;
-  const finalUrl = pageRes.finalUrl || target.href;
+						const about = [b.company, TYPES[b.type] ?? b.type, b.product || b.note].filter(Boolean).join(' · ');
+						return `<tr><td><strong>${esc(b.name)}</strong><br>${hint(about)}</td><td>${robots}<br>${live}</td></tr>`;
+					})
+					.join('');
 
-  // Palabras
-  const words = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+				return `
+					<h2>Quién puede entrar</h2>
+					<p class="tool-hint">robots.txt es lo que dicen tus reglas. Visita real es lo que pasó al pedir la página identificándonos como cada bot.</p>
+					<table>
+						<thead><tr><th>Bot</th><th>Estado</th></tr></thead>
+						<tbody>${rows}</tbody>
+					</table>`;
+			}
 
-  // noindex
-  const noindex = /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html);
+			function renderSchema(d: Report) {
+				const title = '<h2>Datos estructurados</h2>';
+				if (!d.page) return `${title}<p>No pudimos leer la página.</p>`;
 
-  // Schema.org JSON-LD
-  const jsonldMatches = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
-  let schemaBlocks = 0, schemaBroken = 0;
-  const schemaTypes: string[] = [];
-  const entities: { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number }[] = [];
+				const s = d.page.schema;
+				if (!s.blocks && !s.microdata) return `${title}<p>La página no tiene datos estructurados.</p>`;
 
-  for (const m of jsonldMatches) {
-    schemaBlocks++;
-    try {
-      const obj = JSON.parse(m[1]);
-      const items = Array.isArray(obj) ? obj : [obj];
-      for (const item of items) {
-        const type = item['@type'];
-        if (type && !schemaTypes.includes(type)) schemaTypes.push(type);
-        const missing: string[] = [];
-        if (!item.name) missing.push('name');
-        if (!item.description) missing.push('description');
-        if (!item.url) missing.push('url');
-        entities.push({ type: type || 'Unknown', name: item.name || '', missing, sameAs: item.sameAs, questions: item.mainEntity ? (Array.isArray(item.mainEntity) ? item.mainEntity.length : 1) : undefined });
-      }
-    } catch {
-      schemaBroken++;
-    }
-  }
+				const found = [
+					s.blocks ? plural(s.blocks, 'bloque JSON-LD', 'bloques JSON-LD') : '',
+					s.microdata ? 'microdatos' : '',
+				].filter(Boolean);
+				let line = joinList(found);
+				line = line.charAt(0).toUpperCase() + line.slice(1);
+				if (s.broken) line += ` (${s.broken} con errores de sintaxis)`;
+				if (s.types.length) line += `. Tipos: ${s.types.join(', ')}`;
 
-  const microdata = /itemscope/i.test(html);
+				const entities = s.entities
+					.map((e) => {
+						const facts: string[] = [];
+						if (e.sameAs) facts.push(`sameAs: ${e.sameAs.length}`);
+						if (e.questions != null) facts.push(plural(e.questions, 'pregunta', 'preguntas'));
+						facts.push(e.missing.length ? `falta: ${e.missing.join(', ')}` : 'completo');
+						return `<li><strong>${esc(e.type)}</strong>${e.name ? ` "${esc(e.name)}"` : ''} · ${esc(facts.join(' · '))}</li>`;
+					})
+					.join('');
 
-  // Fecha
-  let freshness: { date: string; days: number; source: string } | null = null;
-  const datePatterns = [
-    { re: /<meta[^>]+property=["']article:modified_time["'][^>]*content=["']([^"']+)/i, src: 'meta article:modified_time' },
-    { re: /<meta[^>]+property=["']article:published_time["'][^>]*content=["']([^"']+)/i, src: 'meta article:published_time' },
-    { re: /"dateModified"\s*:\s*"([^"]+)"/i, src: 'schema dateModified' },
-    { re: /"datePublished"\s*:\s*"([^"]+)"/i, src: 'schema datePublished' },
-  ];
-  for (const { re, src } of datePatterns) {
-    const m = html.match(re);
-    if (m) {
-      const d = new Date(m[1]);
-      if (!isNaN(d.getTime())) {
-        const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-        freshness = { date: m[1], days, source: src };
-        break;
-      }
-    }
-  }
+				return `${title}<p>${esc(line)}.</p>${entities ? `<ul>${entities}</ul>` : ''}`;
+			}
 
-  // ── Sitemap ──
-  const sitemapUrls = [`${origin}/sitemap-index.xml`, `${origin}/sitemap.xml`];
-  let sitemapData: { found: boolean; url?: string; inRobots?: boolean; children?: number; count: number; withLastmod: number; newest?: string | null; sameDate?: boolean } = { found: false, count: 0, withLastmod: 0 };
+			function renderSitemap(d: Report) {
+				const sm = d.sitemap;
+				const title = '<h2>Sitemap</h2>';
+				if (!sm.found) {
+					return `${title}<p>No encontramos sitemap: ni en robots.txt, ni en /sitemap-index.xml, ni en /sitemap.xml.</p>`;
+				}
 
-  const sitemapInRobots = /sitemap:/i.test(robotsText);
-  const sitemapFromRobots = robotsText.match(/sitemap:\s*(https?:\/\/[^\s]+)/i)?.[1];
-  if (sitemapFromRobots) sitemapUrls.unshift(sitemapFromRobots);
+				const index = sm.children ? `, índice con ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
+				const partial = sm.children && sm.children > 5 ? ' (contando los 5 primeros sitemaps)' : '';
+				const newest = sm.newest ? `; la más reciente, del ${fmtDate(sm.newest)}` : '';
+				const facts = [
+					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} con fecha (lastmod)${newest}.`,
+					sm.inRobots ? 'Declarado en robots.txt.' : 'No está declarado en robots.txt.',
+				];
+				if (sm.sameDate) facts.push('Todas las URLs tienen la misma fecha.');
 
-  for (const smUrl of sitemapUrls) {
-    const smRes = await fetchText(smUrl, UA_BROWSER);
-    if (!smRes.ok) continue;
-    const smText = smRes.text;
-    const urlMatches = [...smText.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)];
-    const lastmods = [...smText.matchAll(/<lastmod>([\s\S]*?)<\/lastmod>/gi)].map(m => m[1].trim());
-    const isIndex = /<sitemapindex/i.test(smText);
-    const childSitemaps = isIndex ? urlMatches.length : undefined;
+				return `${title}<p><code>${esc(sm.url)}</code>${esc(index)}.</p><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
+			}
 
-    sitemapData = {
-      found: true,
-      url: smUrl,
-      inRobots: sitemapInRobots,
-      children: childSitemaps,
-      count: urlMatches.length,
-      withLastmod: lastmods.length,
-      newest: lastmods.length ? lastmods.sort().reverse()[0] : null,
-      sameDate: lastmods.length > 1 && new Set(lastmods).size === 1,
-    };
-    break;
-  }
+			function renderDates(d: Report) {
+				const f = d.freshness;
+				const text = f
+					? `La fecha más reciente legible por máquinas es del ${fmtDate(f.date)} (${f.days ? `hace ${plural(f.days, 'día', 'días')}` : 'hoy'}), en ${f.source}.`
+					: 'No hay ninguna fecha legible por máquinas: ni en el schema, ni en las meta etiquetas, ni en el sitemap.';
+				return `<h2>Fechas</h2><p>${esc(text)}</p>`;
+			}
 
-  // ── Samples ──
-  const samples: { url: string; path: string; status: number | null; note?: string; redirected?: boolean; title?: string; words: number; noindex: boolean; blockedFor: string[]; types: string[] }[] = [];
+			function renderSamples(d: Report) {
+				const title = '<h2>Páginas internas</h2>';
+				if (!d.samples.length) return `${title}<p>No encontramos otras URLs de este dominio en el sitemap.</p>`;
 
-  if (sitemapData.found && sitemapData.url) {
-    const smRes = await fetchText(sitemapData.url, UA_BROWSER);
-    const smUrls = [...smRes.text.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)]
-      .map(m => m[1].trim())
-      .filter(u => u.startsWith(origin) && u !== target.href)
-      .slice(0, 5);
+				const items = d.samples
+					.map((s) => {
+						const ok = s.status != null && s.status >= 200 && s.status < 300;
+						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'sin respuesta'];
+						if (ok) facts.push(plural(s.words, 'palabra', 'palabras'));
+						if (s.redirected) facts.push('redirige');
+						if (s.noindex) facts.push('noindex');
+						if (s.blockedFor.length) facts.push(`bloqueada para ${s.blockedFor.join(', ')}`);
+						if (s.types.length) facts.push(s.types.join(', '));
+						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br>${hint(facts.join(' · '))}</li>`;
+					})
+					.join('');
 
-    for (const u of smUrls) {
-      const r = await fetchText(u, UA_BROWSER);
-      const w = r.text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
-      const ni = /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(r.text);
-      const title = r.text.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() ?? '';
-      const path = new URL(u).pathname;
-      const types = [...r.text.matchAll(/"@type"\s*:\s*"([^"]+)"/gi)].map(m => m[1]);
-      samples.push({ url: u, path, status: r.status, redirected: r.finalUrl !== u, title, words: w, noindex: ni, blockedFor: [], types: [...new Set(types)] });
-    }
-  }
+				return `${title}<p>URLs de tu sitemap. Pulsa una para analizarla.</p><ul>${items}</ul>`;
+			}
 
-  // ── Bots ──
-  const bots = await Promise.all(BOTS.map(async (bot) => {
-    const robotsResult = parseRobots(robotsText, bot.ua);
-    let live: { blocked: boolean; note: string } | null = null;
+			const NOTE =
+				'<p class="tool-hint">Pedimos la página desde un servidor, una vez como navegador y otra como cada bot, y comparamos. Los bots reales salen de sus propias IPs, así que un firewall que verifique IPs puede tratarlos distinto. Resultados en caché 15 min.</p>';
 
-    if (!bot.token) {
-      const r = await fetchText(target.href, bot.ua);
-      if (r.status !== null) {
-        const blocked = r.status === 403 || r.status === 401 || r.status === 429 ||
-          /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(r.text);
-        live = { blocked, note: `HTTP ${r.status}` };
-      }
-    }
+			const render = (d: Report) =>
+				[renderFindings, renderGood, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
+					.map((section) => section(d))
+					.join('') + NOTE;
 
-    return { ...bot, robots: robotsResult, live };
-  }));
+			let current: AbortController | null = null;
 
-  // ── Findings ──
-  type Level = 'alto' | 'medio' | 'bajo' | 'info';
-  const findings: { level: Level; area: string; title: string; detail: string; fix: string }[] = [];
-  const good: string[] = [];
+			async function analyze(url: string) {
+				current?.abort();
+				const run = (current = new AbortController());
 
-  const blockedBots = bots.filter(b => !b.robots.allowed);
-  if (blockedBots.length) {
-    findings.push({
-      level: 'alto',
-      area: 'Acceso',
-      title: `${blockedBots.map(b => b.name).join(', ')} bloqueado${blockedBots.length > 1 ? 's' : ''} en robots.txt`,
-      detail: 'Estos bots no pueden rastrear tu web según tus reglas de robots.txt.',
-      fix: 'Revisa tu robots.txt y elimina o ajusta las reglas que bloquean estos agentes.',
-    });
-  } else {
-    good.push('Todos los bots principales tienen acceso según robots.txt.');
-  }
+				input.value = url;
+				button.disabled = true;
+				results.innerHTML = '';
+				statusLine.textContent = `Analizando ${url}…`;
 
-  if (noindex) {
-    findings.push({ level: 'alto', area: 'Indexación', title: 'La página tiene noindex', detail: 'La meta etiqueta robots incluye noindex, lo que impide que los buscadores la indexen.', fix: 'Elimina el noindex si quieres que esta página sea visible.' });
-  }
+				try {
+					const res = await fetch('/api/check-crawlers?url=' + encodeURIComponent(url), { signal: run.signal });
+					const data = await res.json().catch(() => null);
+					if (run !== current) return;
 
-  if (!sitemapData.found) {
-    findings.push({ level: 'medio', area: 'Sitemap', title: 'No hay sitemap', detail: 'No encontramos sitemap.xml ni sitemap-index.xml.', fix: 'Crea un sitemap y decláralo en robots.txt.' });
-  } else {
-    good.push('Sitemap encontrado y accesible.');
-  }
+					if (!res.ok || !data || data.error) {
+						statusLine.textContent = data?.error || 'Algo falló. Prueba otra vez.';
+						return;
+					}
 
-  if (!freshness) {
-    findings.push({ level: 'bajo', area: 'Fechas', title: 'Sin fecha legible por máquinas', detail: 'No hay fecha de publicación o modificación en el schema ni en las meta etiquetas.', fix: 'Añade datePublished y dateModified en tu JSON-LD.' });
-  }
+					const report = data as Report;
+					statusLine.textContent = `${report.finalUrl} · leído como ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
+					results.innerHTML = render(report);
+				} catch {
+					if (run.signal.aborted) return;
+					statusLine.textContent =
+						'No pudimos terminar el análisis. Puede que el sitio tarde demasiado; prueba otra vez.';
+				} finally {
+					if (run === current) button.disabled = false;
+				}
+			}
 
-  if (schemaBlocks === 0 && !microdata) {
-    findings.push({ level: 'medio', area: 'Schema', title: 'Sin datos estructurados', detail: 'La página no tiene JSON-LD ni microdata.', fix: 'Añade al menos un bloque JSON-LD con el tipo de contenido principal.' });
-  } else {
-    good.push('La página tiene datos estructurados.');
-  }
+			function go(url: string) {
+				if (urlFromLocation() !== url) history.pushState(null, '', queryFor(url));
+				analyze(url);
+			}
 
-  if (words < 300) {
-    findings.push({ level: 'bajo', area: 'Contenido', title: 'Poco contenido', detail: `La página tiene aproximadamente ${words} palabras, lo que puede ser insuficiente para los crawlers.`, fix: 'Amplía el contenido para que los bots tengan más información que procesar.' });
-  } else {
-    good.push(`Contenido suficiente (${words} palabras).`);
-  }
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const url = input.value.trim();
+				if (url) go(url);
+			});
 
-  const counts: Record<Level, number> = { alto: 0, medio: 0, bajo: 0, info: 0 };
-  for (const f of findings) counts[f.level]++;
+			results.addEventListener('click', (event) => {
+				const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-url]');
+				if (!link?.dataset.url) return;
+				if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+				event.preventDefault();
+				go(link.dataset.url);
+				window.scrollTo({ top: 0 });
+			});
 
-  const report = {
-    finalUrl,
-    viewAs: UA_BROWSER,
-    ms: Date.now() - start,
-    counts,
-    findings,
-    good,
-    bots,
-    page: { schema: { blocks: schemaBlocks, broken: schemaBroken, microdata, types: schemaTypes, entities } },
-    sitemap: sitemapData,
-    freshness,
-    samples,
-  };
+			window.addEventListener('popstate', () => {
+				const url = urlFromLocation();
+				if (url) {
+					analyze(url);
+					return;
+				}
+				current?.abort();
+				current = null;
+				input.value = '';
+				results.innerHTML = '';
+				statusLine.textContent = idleText;
+				button.disabled = false;
+			});
 
-  return new Response(JSON.stringify(report), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
-};
+			const initial = urlFromLocation();
+			if (initial) analyze(initial);
+		</script>
+	</body>
+</html>
