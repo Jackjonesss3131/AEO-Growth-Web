@@ -102,7 +102,8 @@ export const prerender = true;
 				samples: Sample[];
 			};
 
-			const LEVELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
+			const ICONS: Record<Level, string> = { alto: '🔴', medio: '🟡', bajo: '🟠', info: '🔵' };
+			const LABELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
 			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
 			const TYPES: Record<string, string> = {
 				entrenamiento: 'Entrenamiento',
@@ -129,38 +130,37 @@ export const prerender = true;
 			const urlFromLocation = () => (new URLSearchParams(location.search).get('url') ?? '').trim();
 
 			function renderFindings(d: Report) {
-				const c = d.counts;
-				const parts = [
-					c.alto ? plural(c.alto, 'importante', 'importantes') : '',
-					c.medio ? `${c.medio} a revisar` : '',
-					c.bajo ? plural(c.bajo, 'menor', 'menores') : '',
-					c.info ? plural(c.info, 'dato', 'datos') : '',
-				].filter(Boolean);
-				const summary = d.findings.length
-					? `${plural(d.findings.length, 'hallazgo', 'hallazgos')}: ${joinList(parts)}.`
-					: 'Sin hallazgos.';
+				const sorted = [...d.findings].sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level));
 
-				const items = [...d.findings]
-					.sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level))
-					.map(
-						(f) => `
-							<div class="faq-item">
-								<div class="post-date"><strong>${esc(LEVELS[f.level] ?? f.level)}</strong> · ${esc(f.area)}</div>
-								<h3>${esc(f.title)}</h3>
-								<p>${esc(f.detail)}</p>
-								${f.fix ? `<div class="phase-outcome">Qué hacer: ${esc(f.fix)}</div>` : ''}
-							</div>`,
-					)
-					.join('');
+				const allRows = [
+					...sorted.map(f => `
+						<tr>
+							<td>${ICONS[f.level]} <strong>${esc(LABELS[f.level])}</strong></td>
+							<td>${esc(f.area)}</td>
+							<td>${esc(f.title)}</td>
+							<td>${esc(f.fix)}</td>
+						</tr>`),
+					...d.good.map(g => `
+						<tr>
+							<td>✅ <strong>Bien</strong></td>
+							<td>—</td>
+							<td colspan="2">${esc(g)}</td>
+						</tr>`),
+				].join('');
 
-				return `<h2>Hallazgos</h2><p class="lead">${esc(summary)}</p><div class="faq">${items}</div>`;
-			}
-
-			function renderGood(d: Report) {
-				const body = d.good.length
-					? `<ul>${d.good.map((g) => `<li>${esc(g)}</li>`).join('')}</ul>`
-					: '<p>Nada destacable todavía.</p>';
-				return `<h2>Lo que está bien</h2>${body}`;
+				return `
+					<h2>Resumen</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Estado</th>
+								<th>Área</th>
+								<th>Qué pasa</th>
+								<th>Qué hacer</th>
+							</tr>
+						</thead>
+						<tbody>${allRows}</tbody>
+					</table>`;
 			}
 
 			function renderBots(d: Report) {
@@ -269,7 +269,7 @@ export const prerender = true;
 				'<p class="tool-hint">Pedimos la página desde un servidor, una vez como navegador y otra como cada bot, y comparamos. Los bots reales salen de sus propias IPs, así que un firewall que verifique IPs puede tratarlos distinto. Resultados en caché 15 min.</p>';
 
 			const render = (d: Report) =>
-				[renderFindings, renderGood, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
+				[renderFindings, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
 					.map((section) => section(d))
 					.join('') + NOTE;
 
