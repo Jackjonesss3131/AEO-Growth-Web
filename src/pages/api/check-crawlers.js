@@ -1,4 +1,3 @@
-// src/pages/api/check-crawlers.js
 export const prerender = false;
 
 import { lookup } from 'node:dns/promises';
@@ -281,10 +280,8 @@ function analyzePage(r, base, host) {
   }
   const schema = summarizeSchema(parseSchema(html));
   const metaDates = ['article:modified_time', 'article:published_time', 'og:updated_time'].map(meta).filter(Boolean);
-
   return {
-    title,
-    description: meta('description'),
+    title, description: meta('description'),
     lang: attr((html.match(/<html\b[^>]*>/i) || [''])[0], 'lang'),
     canonical: canonTag ? attr(canonTag, 'href') : null,
     robotsMeta: m.filter(x => BOT_META.test(x.name)),
@@ -292,17 +289,12 @@ function analyzePage(r, base, host) {
     words: countWords(toText(html.replace(/<head[\s\S]*?<\/head>/i, ' '))),
     mainWords: countWords(mainText),
     preview: mainText.slice(0, 420),
-    headings,
-    h1: headings.filter(h => h.level === 1).map(h => h.text),
+    headings, h1: headings.filter(h => h.level === 1).map(h => h.text),
     questions: headings.filter(h => /\?\s*$/.test(h.text)).length,
-    imgs: imgs.length,
-    noAlt: imgs.filter(t => !/\salt\s*=/i.test(t)).length,
+    imgs: imgs.length, noAlt: imgs.filter(t => !/\salt\s*=/i.test(t)).length,
     internalLinks: internal.size,
     spaShell: /<div[^>]+id=["'](root|app|__next|__nuxt)["'][^>]*>\s*<\/div>/i.test(html),
-    htmlKB: Math.round(html.length / 1024),
-    ms: r.ms,
-    finalUrl: r.finalUrl,
-    schema,
+    htmlKB: Math.round(html.length / 1024), ms: r.ms, finalUrl: r.finalUrl, schema,
     dates: [...schema.dates, ...metaDates],
   };
 }
@@ -311,28 +303,20 @@ const locs = x => [...x.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]\s]+)/gi)].ma
 const lastmods = x => [...x.matchAll(/<lastmod>\s*([^<\s]+)/gi)].map(m => m[1]);
 
 async function readSitemap(base, fromRobots, safe) {
-  const tried = [...new Set([...fromRobots, `${base}/sitemap-index.xml`, `${base}/sitemap.xml`, `${base}/sitemap_index.xml`])].slice(0, 4);
+  const tried = [...new Set([...fromRobots, `${base}/sitemap-index.xml`, `${base}/sitemap.xml`])].slice(0, 4);
   for (const u of tried) {
-    let h;
-    try { h = new URL(u).hostname; } catch { continue; }
+    let h; try { h = new URL(u).hostname; } catch { continue; }
     if (!(await safe(h))) continue;
     const r = await get(u, BROWSER_UA, XML, 6000);
     if (r.err || !r.ok || !/<(urlset|sitemapindex)\b/i.test(r.body)) continue;
-
     let urls = [], mods = [], children = 0;
     if (/<sitemapindex\b/i.test(r.body)) {
-      const kids = locs(r.body);
-      children = kids.length;
+      const kids = locs(r.body); children = kids.length;
       const allowed = [];
-      for (const k of kids.slice(0, 5)) {
-        try { if (await safe(new URL(k).hostname)) allowed.push(k); } catch {}
-      }
+      for (const k of kids.slice(0, 5)) { try { if (await safe(new URL(k).hostname)) allowed.push(k); } catch {} }
       const res = await Promise.all(allowed.map(k => get(k, BROWSER_UA, XML, 6000)));
       for (const c of res) if (c.ok) { urls.push(...locs(c.body)); mods.push(...lastmods(c.body)); }
-    } else {
-      urls = locs(r.body);
-      mods = lastmods(r.body);
-    }
+    } else { urls = locs(r.body); mods = lastmods(r.body); }
     const now = Date.now() + 864e5;
     const newestT = mods.map(Date.parse).filter(t => !isNaN(t) && t < now).reduce((a, b) => Math.max(a, b), 0);
     return {
@@ -355,12 +339,7 @@ function readLlms(r) {
   if (!r || r.err || !r.ok) return { found: false };
   if (/^\s*<(!doctype|html|head|body)/i.test(r.body)) return { found: false, html: true };
   const lines = r.body.split('\n');
-  return {
-    found: true,
-    title: (lines.find(l => /^#\s/.test(l)) || '').replace(/^#\s*/, '').slice(0, 100),
-    sections: lines.filter(l => /^##\s/.test(l)).length,
-    links: (r.body.match(/\]\(https?:\/\/[^)]+\)/g) || []).length,
-  };
+  return { found: true, title: (lines.find(l => /^#\s/.test(l)) || '').replace(/^#\s*/, '').slice(0, 100), sections: lines.filter(l => /^##\s/.test(l)).length, links: (r.body.match(/\]\(https?:\/\/[^)]+\)/g) || []).length };
 }
 
 function buildFindings(c) {
@@ -369,69 +348,35 @@ function buildFindings(c) {
   const add = (level, area, title, detail, fix = '') => F.push({ level, area, title, detail, fix });
   const list = a => a.join(', ');
 
-  if (robots.state === 'servererror') add('alto', 'robots.txt', `robots.txt responde con error ${robots.status}`,
-    'Cuando robots.txt da un error de servidor (5xx), Google deja de rastrear el sitio y otros crawlers lo tratan como "no entrar" hasta que se arregle.',
-    'Haz que /robots.txt devuelva 200 con tus reglas, o 404 si no quieres reglas.');
-  else if (robots.state === 'html') add('medio', 'robots.txt', '/robots.txt devuelve una página HTML',
-    'Tu servidor responde en esa ruta con una página web. Los crawlers no encuentran reglas ni la dirección de tu sitemap.',
-    'Crea un archivo de texto en public/robots.txt.');
-  else if (robots.state === 'missing') add('bajo', 'robots.txt', 'No tienes robots.txt',
-    'Sin robots.txt todo está permitido, lo cual no es malo, pero pierdes el sitio estándar donde declarar tu sitemap.',
-    'Crea public/robots.txt con "User-agent: *", "Allow: /" y una línea "Sitemap:" con la URL de tu sitemap.');
-  else if (robots.state === 'error') add('bajo', 'robots.txt', 'No pudimos leer robots.txt',
-    `La petición falló (${robots.note}). Si nos pasa a nosotros, le puede pasar a un crawler.`);
+  if (robots.state === 'servererror') add('alto', 'robots.txt', `robots.txt responde con error ${robots.status}`, 'Cuando robots.txt da un error 5xx, Google deja de rastrear el sitio.', 'Haz que /robots.txt devuelva 200 o 404.');
+  else if (robots.state === 'html') add('medio', 'robots.txt', '/robots.txt devuelve una página HTML', 'Los crawlers no encuentran reglas ni la dirección de tu sitemap.', 'Crea un archivo de texto en public/robots.txt.');
+  else if (robots.state === 'missing') add('bajo', 'robots.txt', 'No tienes robots.txt', 'Sin robots.txt todo está permitido, pero pierdes el sitio estándar donde declarar tu sitemap.', 'Crea public/robots.txt con "User-agent: *", "Allow: /" y una línea "Sitemap:".');
+  else if (robots.state === 'error') add('bajo', 'robots.txt', 'No pudimos leer robots.txt', `La petición falló (${robots.note}).`);
 
   const searchBlocked = bots.filter(b => b.type !== 'entrenamiento' && !b.robots.allowed);
   const trainBlocked = bots.filter(b => b.type === 'entrenamiento' && !b.robots.allowed);
   if (searchBlocked.length) {
     const products = [...new Set(searchBlocked.map(b => b.product).filter(Boolean))];
-    add('alto', 'Acceso', `robots.txt bloquea a bots que te pueden citar: ${list(searchBlocked.map(b => b.name))}`,
-      `Estos bots alimentan ${list(products)}. Si no pueden leer la página, no puedes salir como fuente en sus respuestas. Regla: ${searchBlocked[0].robots.rule || '—'}.`,
-      'Quita o ajusta esas líneas Disallow.');
+    add('alto', 'Acceso', `robots.txt bloquea a bots que te pueden citar: ${list(searchBlocked.map(b => b.name))}`, `Estos bots alimentan ${list(products)}. Regla: ${searchBlocked[0].robots.rule || '—'}.`, 'Quita o ajusta esas líneas Disallow.');
   }
-  if (trainBlocked.length && !searchBlocked.length) {
-    good.push(`Bloqueas el entrenamiento (${list(trainBlocked.map(b => b.name))}) pero dejas pasar a los bots de búsqueda.`);
-  }
-  if (!trainBlocked.length && !searchBlocked.length && robots.state === 'ok') {
-    good.push('robots.txt no bloquea a ningún crawler de IA en esta página.');
-  }
-  if (trainBlocked.some(b => b.name === 'Google-Extended')) add('info', 'Acceso', 'Bloquear Google-Extended no te saca de AI Overviews',
-    'Google-Extended solo decide si Google puede usar tu contenido para Gemini. Las AI Overviews salen del índice normal de Googlebot.');
-  if (bots.some(b => b.robots.delay)) add('info', 'robots.txt', 'Usas Crawl-delay',
-    'Googlebot lo ignora. Un valor alto hace que los bots de búsqueda lean menos páginas tuyas.');
+  if (trainBlocked.length && !searchBlocked.length) good.push(`Bloqueas el entrenamiento (${list(trainBlocked.map(b => b.name))}) pero dejas pasar a los bots de búsqueda.`);
+  if (!trainBlocked.length && !searchBlocked.length && robots.state === 'ok') good.push('robots.txt no bloquea a ningún crawler de IA en esta página.');
+  if (trainBlocked.some(b => b.name === 'Google-Extended')) add('info', 'Acceso', 'Bloquear Google-Extended no te saca de AI Overviews', 'Google-Extended solo controla Gemini. Las AI Overviews salen del índice normal de Googlebot.');
+  if (bots.some(b => b.robots.delay)) add('info', 'robots.txt', 'Usas Crawl-delay', 'Googlebot lo ignora. Un valor alto hace que otros bots lean menos páginas tuyas.');
 
   const fw = bots.filter(b => b.live?.blocked && b.robots.allowed);
-  if (fw.length && browser.ok) {
-    add('alto', 'Acceso', `Tu servidor o firewall bloquea a ${list(fw.map(b => b.name))}`,
-      `robots.txt los deja pasar, pero al pedir la página como ellos recibimos: ${list([...new Set(fw.map(b => b.live.note))])}. Un navegador normal sí recibe la página.`,
-      'Revisa las reglas de bots de tu CDN o firewall.');
-  } else if (browser.ok && liveCount && !bots.some(b => b.live?.blocked)) {
-    good.push(`El servidor les entrega la misma página a ${liveCount} crawlers que a un navegador.`);
-  }
+  if (fw.length && browser.ok) add('alto', 'Acceso', `Tu servidor o firewall bloquea a ${list(fw.map(b => b.name))}`, `robots.txt los deja pasar, pero al pedir la página recibimos: ${list([...new Set(fw.map(b => b.live.note))])}. Un navegador normal sí recibe la página.`, 'Revisa las reglas de bots de tu CDN o firewall.');
+  else if (browser.ok && liveCount && !bots.some(b => b.live?.blocked)) good.push(`El servidor les entrega la misma página a ${liveCount} crawlers que a un navegador.`);
 
-  if (!page) {
-    add('alto', 'Página', `La página no carga (${browser.err || 'HTTP ' + browser.status})`,
-      'No conseguimos el contenido ni como navegador ni como crawler.');
-    return { F, good };
-  }
+  if (!page) { add('alto', 'Página', `La página no carga (${browser.err || 'HTTP ' + browser.status})`, 'No conseguimos el contenido.'); return { F, good }; }
 
-  const directives = [
-    ...page.robotsMeta.map(m => ({ who: m.name, v: m.content })),
-    ...(page.xRobots ? [{ who: 'X-Robots-Tag', v: page.xRobots }] : []),
-  ];
+  const directives = [...page.robotsMeta.map(m => ({ who: m.name, v: m.content })), ...(page.xRobots ? [{ who: 'X-Robots-Tag', v: page.xRobots }] : [])];
   const noindex = directives.filter(d => /\b(noindex|none)\b/i.test(d.v));
-  if (noindex.length) add('alto', 'Indexación', 'La página pide no ser indexada',
-    `Encontramos: ${list(noindex.map(d => `${d.who}: ${d.v}`))}.`,
-    'Quita el noindex si quieres que esta página aparezca.');
-  if (directives.some(d => /\b(noai|noimageai)\b/i.test(d.v))) add('info', 'Indexación', 'Usas la etiqueta noai',
-    'No es un estándar y los principales crawlers de IA no la respetan.');
+  if (noindex.length) add('alto', 'Indexación', 'La página pide no ser indexada', `Encontramos: ${list(noindex.map(d => `${d.who}: ${d.v}`))}.`, 'Quita el noindex si quieres que esta página aparezca.');
+  if (directives.some(d => /\b(noai|noimageai)\b/i.test(d.v))) add('info', 'Indexación', 'Usas la etiqueta noai', 'No es un estándar y los principales crawlers de IA no la respetan.');
 
-  if (page.mainWords < 50) add('alto', 'Contenido', `Sin JavaScript la página está casi vacía (${page.mainWords} palabras)`,
-    `Eso es lo que recibe ${viewAs}. Los crawlers de OpenAI, Anthropic y Perplexity no ejecutan JavaScript.${page.spaShell ? ' Hay un contenedor vacío típico de una app React/Vue.' : ''}`,
-    'Renderiza el contenido en el servidor.');
-  else if (page.mainWords < 150) add('medio', 'Contenido', `Muy poco texto en el HTML (${page.mainWords} palabras)`,
-    'Con tan poco texto hay poco que citar.',
-    'Añade texto real: qué haces, para quién, cómo trabajas, precios, preguntas frecuentes.');
+  if (page.mainWords < 50) add('alto', 'Contenido', `Sin JavaScript la página está casi vacía (${page.mainWords} palabras)`, `Eso es lo que recibe ${viewAs}. Los crawlers de OpenAI, Anthropic y Perplexity no ejecutan JavaScript.${page.spaShell ? ' Hay un contenedor vacío típico de React/Vue.' : ''}`, 'Renderiza el contenido en el servidor.');
+  else if (page.mainWords < 150) add('medio', 'Contenido', `Muy poco texto en el HTML (${page.mainWords} palabras)`, 'Con tan poco texto hay poco que citar.', 'Añade texto real: qué haces, para quién, cómo trabajas, precios, preguntas frecuentes.');
   else if (page.mainWords >= 300) good.push(`El contenido está en el HTML: ${page.mainWords} palabras legibles sin JavaScript.`);
 
   if (!page.title) add('alto', 'Metadatos', 'La página no tiene <title>', 'Es lo primero que un sistema usa para saber de qué va la página.', 'Añade un título con el tema y tu marca.');
@@ -441,114 +386,63 @@ function buildFindings(c) {
   if (!page.lang) add('bajo', 'Metadatos', 'Falta el atributo lang', 'Indica el idioma del contenido.', 'Ejemplo: <html lang="es">.');
 
   if (page.canonical) {
-    let cu = null;
-    try { cu = new URL(page.canonical, base); } catch {}
-    if (cu && cu.hostname.replace(/^www\./, '') !== host) add('alto', 'Indexación', 'El canonical apunta a otro dominio',
-      `Dice que la versión principal está en ${cu.hostname}. Los buscadores le darán el crédito a esa URL.`,
-      'Haz que el canonical apunte a esta misma página.');
-    else if (cu && trimSlash(cu.pathname) !== trimSlash(new URL(page.finalUrl).pathname)) add('medio', 'Indexación', 'El canonical apunta a otra URL',
-      `Esta página dice que su versión principal es ${cu.pathname}.`,
-      'Revisa la etiqueta <link rel="canonical">.');
-  } else add('bajo', 'Indexación', 'Sin etiqueta canonical',
-    'Evita que los buscadores dupliquen la página por variantes de URL.',
-    'Añade <link rel="canonical"> en el <head>.');
+    let cu = null; try { cu = new URL(page.canonical, base); } catch {}
+    if (cu && cu.hostname.replace(/^www\./, '') !== host) add('alto', 'Indexación', 'El canonical apunta a otro dominio', `Los buscadores le darán el crédito a ${cu.hostname}.`, 'Haz que el canonical apunte a esta misma página.');
+    else if (cu && trimSlash(cu.pathname) !== trimSlash(new URL(page.finalUrl).pathname)) add('medio', 'Indexación', 'El canonical apunta a otra URL', `La versión principal declarada es ${cu.pathname}.`, 'Revisa <link rel="canonical">.');
+  } else add('bajo', 'Indexación', 'Sin etiqueta canonical', 'Evita duplicados por variantes de URL.', 'Añade <link rel="canonical"> en el <head>.');
 
-  if (!page.h1.length) add('medio', 'Estructura', 'La página no tiene H1', 'El H1 es la señal más clara de cuál es el tema principal.', 'Pon un único H1 que diga qué es la página.');
-  else if (page.h1.length > 1) add('bajo', 'Estructura', `Hay ${page.h1.length} H1`,
-    `Encontramos: ${list(page.h1.slice(0, 3).map(h => `"${h}"`))}. Con varios H1 la jerarquía queda menos clara.`, 'Deja uno y pasa el resto a H2.');
-  const hasFaq = page.schema.types.includes('FAQPage');
-  if (page.questions === 0 && !hasFaq && page.mainWords >= 150) add('bajo', 'Contenido', 'Ningún encabezado está escrito como pregunta',
-    'La gente le hace preguntas a la IA, y las respuestas suelen citar el pasaje que responde directamente.',
-    'Convierte algunos H2 o H3 en las preguntas reales de tus clientes.');
+  if (!page.h1.length) add('medio', 'Estructura', 'La página no tiene H1', 'El H1 es la señal más clara de cuál es el tema principal.', 'Pon un único H1.');
+  else if (page.h1.length > 1) add('bajo', 'Estructura', `Hay ${page.h1.length} H1`, `Encontramos: ${list(page.h1.slice(0, 3).map(h => `"${h}"`))}. Con varios la jerarquía queda menos clara.`, 'Deja uno y pasa el resto a H2.');
+  if (page.questions === 0 && !page.schema.types.includes('FAQPage') && page.mainWords >= 150) add('bajo', 'Contenido', 'Ningún encabezado está escrito como pregunta', 'Las respuestas de IA suelen citar el pasaje que responde directamente a una pregunta.', 'Convierte algunos H2 en las preguntas reales de tus clientes.');
   else if (page.questions >= 2) good.push(`${page.questions} encabezados escritos como pregunta: fáciles de citar.`);
-  if (page.internalLinks < 5) add('medio', 'Estructura', `Solo ${page.internalLinks} enlaces internos`,
-    'Los crawlers descubren el resto del sitio siguiendo enlaces.',
-    'Enlaza tus páginas importantes desde el menú, el pie o el propio texto.');
-  if (page.imgs >= 4 && page.noAlt / page.imgs > 0.3) add('bajo', 'Contenido', `${page.noAlt} de ${page.imgs} imágenes sin atributo alt`,
-    'Los crawlers no ven las imágenes: el alt es lo único que saben de ellas.', 'Describe brevemente cada imagen relevante.');
-
-  if (page.ms > 3000) add('medio', 'Rendimiento', `La página tardó ${(page.ms / 1000).toFixed(1)} s en responder`,
-    'Los bots que leen páginas en el momento tienen poco margen.', 'Revisa caché, CDN y tiempo de servidor.');
-  if (page.htmlKB > 1500) add('medio', 'Rendimiento', `HTML muy pesado (${page.htmlKB} KB)`,
-    'Cuanto más pesado, más fácil que un crawler con límite de tiempo o tamaño se quede a medias.',
-    'Saca CSS, JS y datos embebidos que no hagan falta.');
-  try {
-    const fh = new URL(page.finalUrl).hostname.replace(/^www\./, '');
-    if (fh !== host) add('info', 'Acceso', `La URL redirige a ${fh}`, 'Analizamos la página final.');
-  } catch {}
+  if (page.internalLinks < 5) add('medio', 'Estructura', `Solo ${page.internalLinks} enlaces internos`, 'Los crawlers descubren el resto del sitio siguiendo enlaces.', 'Enlaza tus páginas importantes desde el menú, el pie o el texto.');
+  if (page.imgs >= 4 && page.noAlt / page.imgs > 0.3) add('bajo', 'Contenido', `${page.noAlt} de ${page.imgs} imágenes sin atributo alt`, 'El alt es lo único que los crawlers saben de una imagen.', 'Describe brevemente cada imagen relevante.');
+  if (page.ms > 3000) add('medio', 'Rendimiento', `La página tardó ${(page.ms / 1000).toFixed(1)} s`, 'Los bots con poco margen de tiempo pueden saltarte.', 'Revisa caché, CDN y tiempo de servidor.');
+  if (page.htmlKB > 1500) add('medio', 'Rendimiento', `HTML muy pesado (${page.htmlKB} KB)`, 'Un crawler con límite de tamaño puede quedarse a medias.', 'Saca CSS, JS y datos embebidos innecesarios.');
+  try { const fh = new URL(page.finalUrl).hostname.replace(/^www\./, ''); if (fh !== host) add('info', 'Acceso', `La URL redirige a ${fh}`, 'Analizamos la página final.'); } catch {}
 
   const sc = page.schema;
-  if (sc.broken) add('alto', 'Datos estructurados', `${sc.broken} bloque(s) JSON-LD con errores de sintaxis`,
-    'Un JSON mal formado se descarta entero.', 'Valídalo en validator.schema.org.');
-  if (!sc.blocks && !sc.microdata) add('medio', 'Datos estructurados', 'No hay datos estructurados',
-    'Sin schema, las máquinas tienen que adivinar qué es tu negocio.',
-    'Empieza por Organization y WebSite en el layout.');
+  if (sc.broken) add('alto', 'Datos estructurados', `${sc.broken} bloque(s) JSON-LD con errores de sintaxis`, 'Un JSON mal formado se descarta entero.', 'Valídalo en validator.schema.org.');
+  if (!sc.blocks && !sc.microdata) add('medio', 'Datos estructurados', 'No hay datos estructurados', 'Sin schema, las máquinas tienen que adivinar qué es tu negocio.', 'Empieza por Organization y WebSite en el layout.');
   else {
-    if (!sc.hasOrg) add('medio', 'Datos estructurados', 'Ningún bloque dice qué empresa está detrás',
-      `Tienes ${list(sc.types.slice(0, 6))}, pero no Organization ni un tipo de negocio.`,
-      'Añade un bloque Organization con name, url, logo y sameAs.');
+    if (!sc.hasOrg) add('medio', 'Datos estructurados', 'Ningún bloque dice qué empresa está detrás', `Tienes ${list(sc.types.slice(0, 6))}, pero no Organization ni un tipo de negocio.`, 'Añade Organization con name, url, logo y sameAs.');
     for (const e of sc.entities) {
-      if (e.sameAs && !e.sameAs.length) add('medio', 'Datos estructurados', `${e.type}${e.name ? ` "${e.name}"` : ''} no tiene sameAs`,
-        'sameAs enlaza la entidad con LinkedIn, Instagram, Crunchbase… Es la forma más directa de que una IA sepa que esa marca eres tú.',
-        'Añade "sameAs": ["https://www.linkedin.com/company/…"].');
+      if (e.sameAs && !e.sameAs.length) add('medio', 'Datos estructurados', `${e.type}${e.name ? ` "${e.name}"` : ''} no tiene sameAs`, 'sameAs enlaza tu marca con LinkedIn, Instagram, Crunchbase…', 'Añade "sameAs": ["https://www.linkedin.com/company/…"].');
       else if (e.sameAs && e.sameAs.length >= 2) good.push(`${e.type} enlazado a ${e.sameAs.length} perfiles con sameAs.`);
       const rest = e.missing.filter(p => p !== 'sameAs');
       if (rest.length) add('bajo', 'Datos estructurados', `A ${e.type}${e.name ? ` "${e.name}"` : ''} le falta: ${list(rest)}`, 'Son las propiedades que se usan para entender este tipo de entidad.');
-      if (e.type === 'FAQPage') add('info', 'Datos estructurados', `FAQPage con ${e.questions} preguntas`,
-        'Desde 2023 Google solo muestra resultados enriquecidos de FAQ para webs de gobierno y salud. Aun así es contenido bien marcado.');
+      if (e.type === 'FAQPage') add('info', 'Datos estructurados', `FAQPage con ${e.questions} preguntas`, 'Google ya no muestra resultados enriquecidos de FAQ salvo en webs de gobierno y salud. Aun así es contenido bien marcado.');
     }
   }
 
-  if (!sitemap.found) add('medio', 'Sitemap', 'No encontramos sitemap',
-    'Sin sitemap, los crawlers solo encuentran las páginas que estén enlazadas.',
-    'Usa @astrojs/sitemap y declara la URL en robots.txt.');
+  if (!sitemap.found) add('medio', 'Sitemap', 'No encontramos sitemap', 'Sin sitemap, los crawlers solo encuentran páginas enlazadas.', 'Usa @astrojs/sitemap y declara la URL en robots.txt.');
   else {
-    if (!sitemap.inRobots && robots.state === 'ok') add('bajo', 'Sitemap', 'El sitemap no está declarado en robots.txt',
-      'Lo encontramos probando rutas típicas, pero un crawler no tiene por qué hacerlo.', `Añade a robots.txt: Sitemap: ${sitemap.url}`);
+    if (!sitemap.inRobots && robots.state === 'ok') add('bajo', 'Sitemap', 'El sitemap no está declarado en robots.txt', 'Lo encontramos probando rutas típicas, pero un crawler no tiene por qué hacerlo.', `Añade a robots.txt: Sitemap: ${sitemap.url}`);
     if (!sitemap.count) add('medio', 'Sitemap', 'El sitemap no tiene URLs', 'Existe pero está vacío.');
-    else if (!sitemap.withLastmod) add('bajo', 'Fechas', 'El sitemap no tiene fechas (lastmod)',
-      'Es la forma más barata de decirles a los crawlers qué cambió y cuándo.',
-      'En @astrojs/sitemap usa serialize para añadir lastmod.');
-    else if (sitemap.sameDate) add('bajo', 'Fechas', 'Todas las URLs del sitemap tienen la misma fecha',
-      'Suele pasar cuando la fecha es la del último build. Los buscadores aprenden que esa fecha no significa nada.',
-      'Usa la fecha real de modificación de cada página.');
+    else if (!sitemap.withLastmod) add('bajo', 'Fechas', 'El sitemap no tiene fechas (lastmod)', 'Es la forma más barata de decirles a los crawlers qué cambió.', 'Usa serialize en @astrojs/sitemap para añadir lastmod.');
+    else if (sitemap.sameDate) add('bajo', 'Fechas', 'Todas las URLs del sitemap tienen la misma fecha', 'Suele ser la fecha del build. Los buscadores aprenden a ignorarla.', 'Usa la fecha real de modificación de cada página.');
   }
+
   if (freshness) {
     const months = Math.round(freshness.days / 30);
-    if (freshness.days > 365) add('medio', 'Fechas', `Lo más reciente que encontramos es de hace ${months} meses`,
-      `Según ${freshness.source}. En preguntas donde la actualidad importa, una fuente antigua compite en desventaja.`,
-      'Actualiza el contenido clave y su dateModified.');
-    else if (freshness.days > 180) add('bajo', 'Fechas', `Lo más reciente que encontramos es de hace ${months} meses`, `Según ${freshness.source}.`);
+    if (freshness.days > 365) add('medio', 'Fechas', `Lo más reciente es de hace ${months} meses`, `Según ${freshness.source}. En preguntas donde importa la actualidad, una fuente antigua compite en desventaja.`, 'Actualiza el contenido clave y su dateModified.');
+    else if (freshness.days > 180) add('bajo', 'Fechas', `Lo más reciente es de hace ${months} meses`, `Según ${freshness.source}.`);
     else if (freshness.days <= 90) good.push(`Hay una fecha reciente: hace ${freshness.days} días (${freshness.source}).`);
-  } else add('bajo', 'Fechas', 'No hay ninguna fecha legible por máquinas',
-    'Ni el schema, ni las meta etiquetas, ni el sitemap dicen cuándo se actualizó el contenido.',
-    'Añade dateModified en el schema y lastmod en el sitemap.');
+  } else add('bajo', 'Fechas', 'No hay ninguna fecha legible por máquinas', 'Ni el schema, ni las meta etiquetas, ni el sitemap dicen cuándo se actualizó el contenido.', 'Añade dateModified en el schema y lastmod en el sitemap.');
 
   const bad = samples.filter(s => s.status !== 200 || s.redirected);
-  if (bad.length) add('medio', 'Sitemap', `${bad.length} de ${samples.length} URLs del sitemap no cargan directamente`,
-    list(bad.map(s => `${s.path} → ${s.redirected ? 'redirige' : s.status || s.note}`)),
-    'El sitemap solo debería tener URLs finales que respondan 200.');
+  if (bad.length) add('medio', 'Sitemap', `${bad.length} de ${samples.length} URLs del sitemap no cargan directamente`, list(bad.map(s => `${s.path} → ${s.redirected ? 'redirige' : s.status || s.note}`)), 'El sitemap solo debería tener URLs finales que respondan 200.');
   const sNo = samples.filter(s => s.noindex);
-  if (sNo.length) add('medio', 'Sitemap', 'Hay páginas del sitemap marcadas noindex',
-    `${list(sNo.map(s => s.path))}. El sitemap dice "lee esto" y la página dice "no me indexes".`,
-    'Saca esas URLs del sitemap o quita el noindex.');
+  if (sNo.length) add('medio', 'Sitemap', 'Hay páginas del sitemap marcadas noindex', `${list(sNo.map(s => s.path))}. El sitemap dice "lee esto" y la página dice "no me indexes".`, 'Saca esas URLs del sitemap o quita el noindex.');
   const sThin = samples.filter(s => s.status === 200 && s.words < 100);
-  if (sThin.length) add('medio', 'Contenido', 'Páginas internas con poco texto en el HTML',
-    `${list(sThin.map(s => `${s.path} (${s.words} palabras)`))}.`,
-    'Comprueba que esas páginas no cargan su contenido con JavaScript.');
+  if (sThin.length) add('medio', 'Contenido', 'Páginas internas con poco texto en el HTML', `${list(sThin.map(s => `${s.path} (${s.words} palabras)`))}.`, 'Comprueba que esas páginas no cargan su contenido con JavaScript.');
   const sBlk = samples.filter(s => s.blockedFor.length);
-  if (sBlk.length) add('alto', 'Acceso', 'robots.txt bloquea páginas internas a bots de búsqueda',
-    list(sBlk.map(s => `${s.path}: ${list(s.blockedFor)}`)), 'Revisa las reglas Disallow con rutas.');
-  if (samples.length && !bad.length && !sNo.length && !sThin.length && !sBlk.length) {
-    good.push(`Las ${samples.length} páginas internas que probamos cargan bien y tienen contenido.`);
-  }
+  if (sBlk.length) add('alto', 'Acceso', 'robots.txt bloquea páginas internas a bots de búsqueda', list(sBlk.map(s => `${s.path}: ${list(s.blockedFor)}`)), 'Revisa las reglas Disallow con rutas.');
+  if (samples.length && !bad.length && !sNo.length && !sThin.length && !sBlk.length) good.push(`Las ${samples.length} páginas internas que probamos cargan bien y tienen contenido.`);
 
   if (llms.found) good.push(`Tienes llms.txt con ${llms.links} enlaces${llms.full ? ', y también llms-full.txt' : ''}.`);
-  else if (llms.html) add('bajo', 'llms.txt', '/llms.txt devuelve una página HTML',
-    'Quien lo busque recibe tu web en lugar de un archivo de texto.', 'Si no lo vas a usar, haz que devuelva 404.');
-  else add('info', 'llms.txt', 'No tienes llms.txt',
-    'Es una propuesta para dar a los modelos un índice en Markdown de tu sitio. No está claro que los grandes buscadores lo usen, pero cuesta poco ponerlo.',
-    'Crea public/llms.txt con un "# Título", un resumen y enlaces a tus páginas clave.');
+  else if (llms.html) add('bajo', 'llms.txt', '/llms.txt devuelve una página HTML', 'Quien lo busque recibe tu web en lugar de un archivo de texto.', 'Si no lo vas a usar, haz que devuelva 404.');
+  else add('info', 'llms.txt', 'No tienes llms.txt', 'Es una propuesta para dar a los modelos un índice en Markdown de tu sitio. No está claro que los grandes buscadores lo usen, pero cuesta poco ponerlo.', 'Crea public/llms.txt con un "# Título", un resumen y enlaces a tus páginas clave.');
 
   return { F, good };
 }
@@ -557,14 +451,9 @@ async function analyze(input) {
   const started = Date.now();
   const target = normalize(input);
   await assertPublic(target.hostname);
-
   const checked = new Map();
-  const safe = h => {
-    if (!checked.has(h)) checked.set(h, assertPublic(h).then(() => true, () => false));
-    return checked.get(h);
-  };
+  const safe = h => { if (!checked.has(h)) checked.set(h, assertPublic(h).then(() => true, () => false)); return checked.get(h); };
   checked.set(target.hostname, Promise.resolve(true));
-
   const base = target.origin;
   const path = target.pathname + target.search;
   const host = target.hostname.replace(/^www\./, '');
@@ -582,7 +471,6 @@ async function analyze(input) {
 
   const robots = readRobots(robotsRes);
   const browserWords = browser.ok ? countWords(toText(mainHtml(browser.body))) : 0;
-
   const viewIdx = botRes.findIndex(r => r.ok && !looksLikeChallenge(r));
   const view = viewIdx >= 0 ? botRes[viewIdx] : browser;
   const viewAs = viewIdx >= 0 ? live[viewIdx].name : 'un navegador';
@@ -591,84 +479,42 @@ async function analyze(input) {
 
   const bots = BOTS.map(b => {
     const i = live.indexOf(b);
-    return {
-      name: b.name, company: b.company, type: b.type,
-      product: b.product || '', note: b.note || '', token: !!b.token,
-      robots: robotsVerdict(robots, b.name, path),
-      live: i >= 0 ? liveVerdict(botRes[i], browser, browserWords) : null,
-    };
+    return { name: b.name, company: b.company, type: b.type, product: b.product || '', note: b.note || '', token: !!b.token, robots: robotsVerdict(robots, b.name, path), live: i >= 0 ? liveVerdict(botRes[i], browser, browserWords) : null };
   });
 
   const sitemap = await readSitemap(base, robots.sitemaps || [], safe);
-
-  const pool = [...new Set(sitemap.urls)].filter(u => {
-    try {
-      const x = new URL(u);
-      return x.hostname.replace(/^www\./, '') === host && trimSlash(x.pathname) !== trimSlash(target.pathname);
-    } catch { return false; }
-  });
+  const pool = [...new Set(sitemap.urls)].filter(u => { try { const x = new URL(u); return x.hostname.replace(/^www\./, '') === host && trimSlash(x.pathname) !== trimSlash(target.pathname); } catch { return false; } });
   const picks = pickSpread(pool, 3);
-  const sampleRes = await Promise.all(picks.map(async u =>
-    (await safe(new URL(u).hostname)) ? get(u, viewUA, undefined, 7000) : { err: 'host no permitido' }));
+  const sampleRes = await Promise.all(picks.map(async u => (await safe(new URL(u).hostname)) ? get(u, viewUA, undefined, 7000) : { err: 'host no permitido' }));
   const searchBots = BOTS.filter(b => b.type !== 'entrenamiento');
   const samples = picks.map((u, i) => {
-    const r = sampleRes[i];
-    const x = new URL(u);
-    const p = x.pathname + x.search;
-    const blockedFor = robots.state === 'servererror' ? [] :
-      searchBots.filter(b => !robotsVerdict(robots, b.name, p).allowed).map(b => b.name);
+    const r = sampleRes[i]; const x = new URL(u); const p = x.pathname + x.search;
+    const blockedFor = robots.state === 'servererror' ? [] : searchBots.filter(b => !robotsVerdict(robots, b.name, p).allowed).map(b => b.name);
     if (r.err) return { url: u, path: p, status: null, note: r.err, words: 0, noindex: false, blockedFor, types: [] };
-    const noindex = metas(r.body).some(m => BOT_META.test(m.name) && /\b(noindex|none)\b/i.test(m.content)) ||
-      /noindex/i.test(r.headers.get('x-robots-tag') || '');
-    let redirected = false;
-    try { redirected = r.redirected && trimSlash(new URL(r.finalUrl).pathname) !== trimSlash(x.pathname); } catch {}
-    return {
-      url: u, path: p, status: r.status, redirected,
-      title: toText((r.body.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [, ''])[1]).slice(0, 90),
-      words: r.ok ? countWords(toText(mainHtml(r.body))) : 0,
-      noindex, blockedFor,
-      types: r.ok ? summarizeSchema(parseSchema(r.body)).types.slice(0, 4) : [],
-    };
+    const noindex = metas(r.body).some(m => BOT_META.test(m.name) && /\b(noindex|none)\b/i.test(m.content)) || /noindex/i.test(r.headers.get('x-robots-tag') || '');
+    let redirected = false; try { redirected = r.redirected && trimSlash(new URL(r.finalUrl).pathname) !== trimSlash(x.pathname); } catch {}
+    return { url: u, path: p, status: r.status, redirected, title: toText((r.body.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [, ''])[1]).slice(0, 90), words: r.ok ? countWords(toText(mainHtml(r.body))) : 0, noindex, blockedFor, types: r.ok ? summarizeSchema(parseSchema(r.body)).types.slice(0, 4) : [] };
   });
 
   const llms = { ...readLlms(llmsRes), full: readLlms(llmsFullRes).found };
-
   let newest = null;
-  const cands = [
-    ...(page?.dates || []).map(d => ({ d, src: 'los datos de la página' })),
-    ...sitemap.mods.map(d => ({ d, src: 'el sitemap' })),
-  ];
-  for (const c of cands) {
-    const t = Date.parse(c.d);
-    if (!isNaN(t) && t < Date.now() + 864e5 && t > Date.parse('1996-01-01') && (!newest || t > newest.t)) newest = { t, src: c.src };
-  }
-  const freshness = newest
-    ? { date: new Date(newest.t).toISOString(), days: Math.max(0, Math.floor((Date.now() - newest.t) / 864e5)), source: newest.src }
-    : null;
+  const cands = [...(page?.dates || []).map(d => ({ d, src: 'los datos de la página' })), ...sitemap.mods.map(d => ({ d, src: 'el sitemap' }))];
+  for (const c of cands) { const t = Date.parse(c.d); if (!isNaN(t) && t < Date.now() + 864e5 && t > Date.parse('1996-01-01') && (!newest || t > newest.t)) newest = { t, src: c.src }; }
+  const freshness = newest ? { date: new Date(newest.t).toISOString(), days: Math.max(0, Math.floor((Date.now() - newest.t) / 864e5)), source: newest.src } : null;
 
-  const { F, good } = buildFindings({
-    robots, bots, page, viewAs, browser, sitemap, samples, llms, freshness, base, host, liveCount: live.length,
-  });
+  const { F, good } = buildFindings({ robots, bots, page, viewAs, browser, sitemap, samples, llms, freshness, base, host, liveCount: live.length });
   const order = { alto: 0, medio: 1, bajo: 2, info: 3 };
   F.sort((a, b) => order[a.level] - order[b.level]);
   const counts = { alto: 0, medio: 0, bajo: 0, info: 0 };
   for (const f of F) counts[f.level]++;
-
   const { urls, mods, ...sitemapOut } = sitemap;
   let pageOut = null;
   if (page) { const { dates, robotsMeta, ...rest } = page; pageOut = rest; }
-
-  return {
-    url: target.href, finalUrl: page?.finalUrl || browser.finalUrl || target.href,
-    viewAs, ms: Date.now() - started, counts, findings: F, good,
-    bots, robots: { state: robots.state, status: robots.status ?? null, groups: robots.groups ?? 0, sitemaps: robots.sitemaps || [] },
-    page: pageOut, sitemap: sitemapOut, samples, llms, freshness,
-  };
+  return { url: target.href, finalUrl: page?.finalUrl || browser.finalUrl || target.href, viewAs, ms: Date.now() - started, counts, findings: F, good, bots, robots: { state: robots.state, status: robots.status ?? null, groups: robots.groups ?? 0, sitemaps: robots.sitemaps || [] }, page: pageOut, sitemap: sitemapOut, samples, llms, freshness };
 }
 
 export async function GET({ url }) {
-  const json = (data, status = 200, extra = {}) =>
-    new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...extra } });
+  const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...extra } });
   const target = url.searchParams.get('url');
   if (!target) return json({ error: 'Falta el parámetro ?url=' }, 400);
   try {
