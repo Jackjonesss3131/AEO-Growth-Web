@@ -1,347 +1,267 @@
----
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_TITLE } from '../consts';
+import type { APIRoute } from 'astro';
 
-export const prerender = true;
----
+export const GET: APIRoute = async ({ request }) => {
+  const url = new URL(request.url).searchParams.get('url');
 
-<!doctype html>
-<html lang="es">
-	<head>
-		<BaseHead
-			title={`Qué ve una IA en tu web — ${SITE_TITLE}`}
-			description="Comprueba si ChatGPT, Claude, Perplexity y Google pueden leer tu web, y qué encuentran cuando entran."
-		/>
-	</head>
-	<body>
-		<Header />
+  if (!url) {
+    return new Response(JSON.stringify({ error: 'Falta el parámetro url' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
-		<main>
-			<section class="prose">
-				<p class="eyebrow">Verificador de crawlers IA</p>
-				<h1>Qué ve una IA cuando entra a tu web</h1>
-				<p class="lead">
-					Pega una URL. Revisamos tus reglas, hacemos la visita como lo haría cada bot y te decimos
-					qué encuentran y qué les impide citarte.
-				</p>
+  let target: URL;
+  try {
+    target = new URL(url.startsWith('http') ? url : `https://${url}`);
+  } catch {
+    return new Response(JSON.stringify({ error: 'URL inválida' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
-				<form id="check-form" class="tool-form" method="get">
-					<label for="check-url" class="sr-only">URL a analizar</label>
-					<input
-						id="check-url"
-						name="url"
-						type="text"
-						inputmode="url"
-						enterkeyhint="go"
-						autocomplete="url"
-						autocapitalize="off"
-						spellcheck="false"
-						placeholder="tudominio.com o una página concreta"
-						required
-					/>
-					<button type="submit" class="btn-primary">Analizar</button>
-				</form>
-				<p id="check-status" class="tool-hint" role="status">Tarda entre 5 y 20 segundos.</p>
+  const origin = target.origin;
+  const start = Date.now();
+  const UA_BROWSER = 'Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)';
 
-				<div id="check-results"></div>
-			</section>
-		</main>
+  const BOTS = [
+    { name: 'GPTBot',         company: 'OpenAI',     type: 'entrenamiento', product: 'ChatGPT',        note: '', token: false, ua: 'GPTBot/1.0' },
+    { name: 'OAI-SearchBot',  company: 'OpenAI',     type: 'busqueda',      product: 'ChatGPT Search', note: '', token: false, ua: 'OAI-SearchBot' },
+    { name: 'ClaudeBot',      company: 'Anthropic',  type: 'entrenamiento', product: 'Claude',         note: '', token: false, ua: 'ClaudeBot/1.0' },
+    { name: 'PerplexityBot',  company: 'Perplexity', type: 'busqueda',      product: 'Perplexity',     note: '', token: false, ua: 'PerplexityBot/1.0' },
+    { name: 'Googlebot',      company: 'Google',     type: 'busqueda',      product: 'Google Search',  note: '', token: false, ua: 'Googlebot/2.1' },
+    { name: 'Google-Extended', company: 'Google',    type: 'entrenamiento', product: 'Bard/Gemini',    note: '', token: true,  ua: 'Google-Extended' },
+  ];
 
-		<Footer />
+  const fetchText = async (url: string, ua: string) => {
+    try {
+      const r = await fetch(url, {
+        headers: { 'User-Agent': ua },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(8000),
+      });
+      return { ok: r.ok, status: r.status, text: await r.text(), finalUrl: r.url };
+    } catch {
+      return { ok: false, status: null, text: '', finalUrl: url };
+    }
+  };
 
-		<script>
-			type Level = 'alto' | 'medio' | 'bajo' | 'info';
-			type Finding = { level: Level; area: string; title: string; detail: string; fix: string };
-			type Bot = {
-				name: string;
-				company: string;
-				type: string;
-				product: string;
-				note: string;
-				token: boolean;
-				robots: { allowed: boolean; rule: string | null; src: string; delay?: string | null };
-				live: { blocked: boolean; note: string } | null;
-			};
-			type Entity = { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number };
-			type Sample = {
-				url: string;
-				path: string;
-				status: number | null;
-				note?: string;
-				redirected?: boolean;
-				title?: string;
-				words: number;
-				noindex: boolean;
-				blockedFor: string[];
-				types: string[];
-			};
-			type Report = {
-				finalUrl: string;
-				viewAs: string;
-				ms: number;
-				counts: Record<Level, number>;
-				findings: Finding[];
-				good: string[];
-				bots: Bot[];
-				page: {
-					schema: { blocks: number; broken: number; microdata: boolean; types: string[]; entities: Entity[] };
-				} | null;
-				sitemap: {
-					found: boolean;
-					url?: string;
-					inRobots?: boolean;
-					children?: number;
-					count: number;
-					withLastmod: number;
-					newest?: string | null;
-					sameDate?: boolean;
-				};
-				freshness: { date: string; days: number; source: string } | null;
-				samples: Sample[];
-			};
+  const robotsRes = await fetchText(`${origin}/robots.txt`, UA_BROWSER);
+  const robotsText = robotsRes.text;
 
-			const ICONS: Record<Level, string> = { alto: '🔴', medio: '🟡', bajo: '🟠', info: '🔵' };
-			const LABELS: Record<Level, string> = { alto: 'Importante', medio: 'Revisar', bajo: 'Menor', info: 'Dato' };
-			const ORDER: Level[] = ['alto', 'medio', 'bajo', 'info'];
-			const TYPES: Record<string, string> = {
-				entrenamiento: 'Entrenamiento',
-				busqueda: 'Búsqueda',
-				usuario: 'Visita de usuario',
-			};
+  function parseRobots(robotsTxt: string, userAgent: string) {
+    const lines = robotsTxt.split('\n').map(l => l.trim());
+    const uaLower = userAgent.toLowerCase();
+    let currentAgents: string[] = [];
+    let inBlock = false;
+    let rules: { type: string; path: string }[] = [];
+    let delay: string | null = null;
+    let globalRules: { type: string; path: string }[] = [];
+    let globalDelay: string | null = null;
 
-			const form = document.getElementById('check-form') as HTMLFormElement;
-			const input = document.getElementById('check-url') as HTMLInputElement;
-			const button = form.querySelector('button') as HTMLButtonElement;
-			const statusLine = document.getElementById('check-status') as HTMLElement;
-			const results = document.getElementById('check-results') as HTMLElement;
-			const idleText = statusLine.textContent ?? '';
+    for (const line of lines) {
+      if (line.startsWith('#')) continue;
+      if (line === '') { inBlock = false; continue; }
 
-			const esc = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-			const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-			const joinList = (parts: string[]) => new Intl.ListFormat('es', { type: 'conjunction' }).format(parts);
-			const fmtDate = (iso: string) =>
-				new Date(iso).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-			const hint = (text: string) => `<span class="tool-hint">${esc(text)}</span>`;
+      const colonIdx = line.indexOf(':');
+      if (colonIdx === -1) continue;
+      const key = line.slice(0, colonIdx).trim().toLowerCase();
+      const val = line.slice(colonIdx + 1).trim();
 
-			const queryFor = (url: string) =>
-				'?url=' + encodeURIComponent(url).replace(/%3A/gi, ':').replace(/%2F/gi, '/');
-			const urlFromLocation = () => (new URLSearchParams(location.search).get('url') ?? '').trim();
+      if (key === 'user-agent') {
+        if (!inBlock) { currentAgents = []; rules = []; delay = null; }
+        currentAgents.push(val.toLowerCase());
+        inBlock = true;
+      } else if (key === 'disallow') {
+        if (currentAgents.includes('*')) globalRules.push({ type: 'disallow', path: val });
+        else rules.push({ type: 'disallow', path: val });
+      } else if (key === 'allow') {
+        if (currentAgents.includes('*')) globalRules.push({ type: 'allow', path: val });
+        else rules.push({ type: 'allow', path: val });
+      } else if (key === 'crawl-delay') {
+        if (currentAgents.includes('*')) globalDelay = val;
+        else delay = val;
+      }
+    }
 
-			function renderFindings(d: Report) {
-				const sorted = [...d.findings].sort((a, b) => ORDER.indexOf(a.level) - ORDER.indexOf(b.level));
+    const path = target.pathname || '/';
+    const checkRules = (r: { type: string; path: string }[]) => {
+      for (const rule of [...r].sort((a, b) => b.path.length - a.path.length)) {
+        if (!rule.path) continue;
+        const pattern = '^' + rule.path.replace(/\*/g, '.*').replace(/\?/g, '\\?');
+        if (new RegExp(pattern).test(path)) return rule.type === 'allow';
+      }
+      return null;
+    };
 
-				const allRows = [
-					...sorted.map(f => `
-						<tr>
-							<td>${ICONS[f.level]} <strong>${esc(LABELS[f.level])}</strong></td>
-							<td>${esc(f.area)}</td>
-							<td>${esc(f.title)}</td>
-							<td>${esc(f.fix)}</td>
-						</tr>`),
-					...d.good.map(g => `
-						<tr>
-							<td>✅ <strong>Bien</strong></td>
-							<td>—</td>
-							<td colspan="2">${esc(g)}</td>
-						</tr>`),
-				].join('');
+    if (currentAgents.some(a => a === uaLower) && rules.length > 0) {
+      const result = checkRules(rules);
+      if (result !== null) return { allowed: result, rule: null, src: userAgent, delay };
+      return { allowed: true, rule: null, src: userAgent, delay };
+    }
 
-				return `
-					<h2>Resumen</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Estado</th>
-								<th>Área</th>
-								<th>Qué pasa</th>
-								<th>Qué hacer</th>
-							</tr>
-						</thead>
-						<tbody>${allRows}</tbody>
-					</table>`;
-			}
+    const globalResult = checkRules(globalRules);
+    if (globalResult !== null) return { allowed: globalResult, rule: '*', src: '*', delay: globalDelay };
 
-			function renderBots(d: Report) {
-				const rows = d.bots
-					.map((b) => {
-						const r = b.robots;
-						const rule = (r.rule ? `${r.rule} (${r.src})` : r.src) + (r.delay ? `, Crawl-delay: ${r.delay}` : '');
-						const robots = `robots.txt: ${r.allowed ? 'Permitido' : '<strong>Bloqueado</strong>'} ${hint('· ' + rule)}`;
+    return { allowed: true, rule: null, src: 'default', delay: null };
+  }
 
-						let live: string;
-						if (b.token) live = `Visita real: ${hint('no aplica, es solo una regla de robots.txt')}`;
-						else if (!b.live) live = `Visita real: ${hint('no probada')}`;
-						else live = `Visita real: ${b.live.blocked ? '<strong>Bloqueado</strong>' : 'Entra'} ${hint('· ' + b.live.note)}`;
+  const pageRes = await fetchText(target.href, UA_BROWSER);
+  const html = pageRes.text;
+  const finalUrl = pageRes.finalUrl || target.href;
+  const words = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+  const noindex = /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html);
 
-						const about = [b.company, TYPES[b.type] ?? b.type, b.product || b.note].filter(Boolean).join(' · ');
-						return `<tr><td><strong>${esc(b.name)}</strong><br>${hint(about)}</td><td>${robots}<br>${live}</td></tr>`;
-					})
-					.join('');
+  const jsonldMatches = [...html.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  let schemaBlocks = 0, schemaBroken = 0;
+  const schemaTypes: string[] = [];
+  const entities: { type: string; name: string; missing: string[]; sameAs?: string[]; questions?: number }[] = [];
 
-				return `
-					<h2>Quién puede entrar</h2>
-					<p class="tool-hint">robots.txt es lo que dicen tus reglas. Visita real es lo que pasó al pedir la página identificándonos como cada bot.</p>
-					<table>
-						<thead><tr><th>Bot</th><th>Estado</th></tr></thead>
-						<tbody>${rows}</tbody>
-					</table>`;
-			}
+  for (const m of jsonldMatches) {
+    schemaBlocks++;
+    try {
+      const obj = JSON.parse(m[1]);
+      const items = Array.isArray(obj) ? obj : [obj];
+      for (const item of items) {
+        const type = item['@type'];
+        if (type && !schemaTypes.includes(type)) schemaTypes.push(type);
+        const missing: string[] = [];
+        if (!item.name) missing.push('name');
+        if (!item.description) missing.push('description');
+        if (!item.url) missing.push('url');
+        entities.push({ type: type || 'Unknown', name: item.name || '', missing, sameAs: item.sameAs, questions: item.mainEntity ? (Array.isArray(item.mainEntity) ? item.mainEntity.length : 1) : undefined });
+      }
+    } catch { schemaBroken++; }
+  }
 
-			function renderSchema(d: Report) {
-				const title = '<h2>Datos estructurados</h2>';
-				if (!d.page) return `${title}<p>No pudimos leer la página.</p>`;
+  const microdata = /itemscope/i.test(html);
 
-				const s = d.page.schema;
-				if (!s.blocks && !s.microdata) return `${title}<p>La página no tiene datos estructurados.</p>`;
+  let freshness: { date: string; days: number; source: string } | null = null;
+  for (const { re, src } of [
+    { re: /<meta[^>]+property=["']article:modified_time["'][^>]*content=["']([^"']+)/i, src: 'meta article:modified_time' },
+    { re: /<meta[^>]+property=["']article:published_time["'][^>]*content=["']([^"']+)/i, src: 'meta article:published_time' },
+    { re: /"dateModified"\s*:\s*"([^"]+)"/i, src: 'schema dateModified' },
+    { re: /"datePublished"\s*:\s*"([^"]+)"/i, src: 'schema datePublished' },
+  ]) {
+    const m = html.match(re);
+    if (m) {
+      const d = new Date(m[1]);
+      if (!isNaN(d.getTime())) {
+        freshness = { date: m[1], days: Math.floor((Date.now() - d.getTime()) / 86400000), source: src };
+        break;
+      }
+    }
+  }
 
-				const found = [
-					s.blocks ? plural(s.blocks, 'bloque JSON-LD', 'bloques JSON-LD') : '',
-					s.microdata ? 'microdatos' : '',
-				].filter(Boolean);
-				let line = joinList(found);
-				line = line.charAt(0).toUpperCase() + line.slice(1);
-				if (s.broken) line += ` (${s.broken} con errores de sintaxis)`;
-				if (s.types.length) line += `. Tipos: ${s.types.join(', ')}`;
+  let sitemapData = { found: false, url: '', inRobots: false, children: undefined as number | undefined, count: 0, withLastmod: 0, newest: null as string | null, sameDate: false };
+  const sitemapInRobots = /sitemap:/i.test(robotsText);
+  const sitemapFromRobots = robotsText.match(/sitemap:\s*(https?:\/\/[^\s]+)/i)?.[1];
+  const sitemapUrls = [sitemapFromRobots, `${origin}/sitemap-index.xml`, `${origin}/sitemap.xml`].filter(Boolean) as string[];
 
-				const entities = s.entities
-					.map((e) => {
-						const facts: string[] = [];
-						if (e.sameAs) facts.push(`sameAs: ${e.sameAs.length}`);
-						if (e.questions != null) facts.push(plural(e.questions, 'pregunta', 'preguntas'));
-						facts.push(e.missing.length ? `falta: ${e.missing.join(', ')}` : 'completo');
-						return `<li><strong>${esc(e.type)}</strong>${e.name ? ` "${esc(e.name)}"` : ''} · ${esc(facts.join(' · '))}</li>`;
-					})
-					.join('');
+  for (const smUrl of sitemapUrls) {
+    const smRes = await fetchText(smUrl, UA_BROWSER);
+    if (!smRes.ok) continue;
+    const smText = smRes.text;
+    const urlMatches = [...smText.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)];
+    const lastmods = [...smText.matchAll(/<lastmod>([\s\S]*?)<\/lastmod>/gi)].map(m => m[1].trim());
+    const isIndex = /<sitemapindex/i.test(smText);
+    sitemapData = { found: true, url: smUrl, inRobots: sitemapInRobots, children: isIndex ? urlMatches.length : undefined, count: urlMatches.length, withLastmod: lastmods.length, newest: lastmods.length ? [...lastmods].sort().reverse()[0] : null, sameDate: lastmods.length > 1 && new Set(lastmods).size === 1 };
+    break;
+  }
 
-				return `${title}<p>${esc(line)}.</p>${entities ? `<ul>${entities}</ul>` : ''}`;
-			}
+  const samples: { url: string; path: string; status: number | null; redirected?: boolean; title?: string; words: number; noindex: boolean; blockedFor: string[]; types: string[] }[] = [];
+  if (sitemapData.found) {
+    const smRes = await fetchText(sitemapData.url, UA_BROWSER);
+    const smUrls = [...smRes.text.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)].map(m => m[1].trim()).filter(u => u.startsWith(origin) && u !== target.href).slice(0, 5);
+    for (const u of smUrls) {
+      const r = await fetchText(u, UA_BROWSER);
+      const w = r.text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+      const ni = /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(r.text);
+      const title = r.text.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() ?? '';
+      const types = [...r.text.matchAll(/"@type"\s*:\s*"([^"]+)"/gi)].map(m => m[1]);
+      samples.push({ url: u, path: new URL(u).pathname, status: r.status, redirected: r.finalUrl !== u, title, words: w, noindex: ni, blockedFor: [], types: [...new Set(types)] });
+    }
+  }
 
-			function renderSitemap(d: Report) {
-				const sm = d.sitemap;
-				const title = '<h2>Sitemap</h2>';
-				if (!sm.found) {
-					return `${title}<p>No encontramos sitemap: ni en robots.txt, ni en /sitemap-index.xml, ni en /sitemap.xml.</p>`;
-				}
+  const bots = await Promise.all(BOTS.map(async (bot) => {
+    const robots = parseRobots(robotsText, bot.ua);
+    let live: { blocked: boolean; note: string } | null = null;
+    if (!bot.token) {
+      const r = await fetchText(target.href, bot.ua);
+      if (r.status !== null) {
+        const blocked = r.status === 403 || r.status === 401 || r.status === 429 || /<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(r.text);
+        live = { blocked, note: `HTTP ${r.status}` };
+      }
+    }
+    return { ...bot, robots, live };
+  }));
 
-				const index = sm.children ? `, índice con ${plural(sm.children, 'sitemap', 'sitemaps')}` : '';
-				const partial = sm.children && sm.children > 5 ? ' (contando los 5 primeros sitemaps)' : '';
-				const newest = sm.newest ? `; la más reciente, del ${fmtDate(sm.newest)}` : '';
-				const facts = [
-					`${plural(sm.count, 'URL', 'URLs')}${partial}, ${sm.withLastmod} con fecha (lastmod)${newest}.`,
-					sm.inRobots ? 'Declarado en robots.txt.' : 'No está declarado en robots.txt.',
-				];
-				if (sm.sameDate) facts.push('Todas las URLs tienen la misma fecha.');
+  type Level = 'alto' | 'medio' | 'bajo' | 'info';
+  const findings: { level: Level; area: string; title: string; detail: string; fix: string }[] = [];
+  const good: string[] = [];
 
-				return `${title}<p><code>${esc(sm.url)}</code>${esc(index)}.</p><ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`;
-			}
+  const blockedBots = bots.filter(b => !b.robots.allowed);
+  if (blockedBots.length) {
+    findings.push({
+      level: 'alto',
+      area: 'Acceso',
+      title: `${blockedBots.map(b => b.name).join(', ')} no puede entrar a tu web`,
+      detail: `Tu archivo robots.txt le está diciendo a ${blockedBots.map(b => b.name).join(', ')} que no puede visitar tu web. Esto significa que no podrá leer tu contenido ni citarte.`,
+      fix: 'Abre tu archivo robots.txt y elimina la línea que bloquea a estos bots.',
+    });
+  } else {
+    good.push('Todos los bots de IA y buscadores pueden entrar a tu web sin restricciones.');
+  }
 
-			function renderDates(d: Report) {
-				const f = d.freshness;
-				const text = f
-					? `La fecha más reciente legible por máquinas es del ${fmtDate(f.date)} (${f.days ? `hace ${plural(f.days, 'día', 'días')}` : 'hoy'}), en ${f.source}.`
-					: 'No hay ninguna fecha legible por máquinas: ni en el schema, ni en las meta etiquetas, ni en el sitemap.';
-				return `<h2>Fechas</h2><p>${esc(text)}</p>`;
-			}
+  if (noindex) findings.push({
+    level: 'alto',
+    area: 'Indexación',
+    title: 'Esta página está oculta para los buscadores',
+    detail: 'Tienes una etiqueta "noindex" en el código de la página. Esto le dice a Google y a las IAs que ignoren esta página por completo.',
+    fix: 'Si quieres que esta página aparezca en búsquedas y sea citada por IAs, elimina esa etiqueta noindex.',
+  });
 
-			function renderSamples(d: Report) {
-				const title = '<h2>Páginas internas</h2>';
-				if (!d.samples.length) return `${title}<p>No encontramos otras URLs de este dominio en el sitemap.</p>`;
+  if (!sitemapData.found) findings.push({
+    level: 'medio',
+    area: 'Sitemap',
+    title: 'Tu web no tiene sitemap',
+    detail: 'El sitemap es un archivo que le dice a Google y a las IAs qué páginas existen en tu web. Sin él, pueden perderse contenido importante.',
+    fix: 'Crea un sitemap.xml y menciónalo en tu robots.txt para que los bots lo encuentren fácilmente.',
+  });
+  else good.push('Tu web tiene un sitemap y los bots pueden encontrarlo sin problema.');
 
-				const items = d.samples
-					.map((s) => {
-						const ok = s.status != null && s.status >= 200 && s.status < 300;
-						const facts = [s.status ? `HTTP ${s.status}` : s.note || 'sin respuesta'];
-						if (ok) facts.push(plural(s.words, 'palabra', 'palabras'));
-						if (s.redirected) facts.push('redirige');
-						if (s.noindex) facts.push('noindex');
-						if (s.blockedFor.length) facts.push(`bloqueada para ${s.blockedFor.join(', ')}`);
-						if (s.types.length) facts.push(s.types.join(', '));
-						return `<li><a href="${esc(queryFor(s.url))}" data-url="${esc(s.url)}">${esc(s.path)}</a>${s.title ? ` — ${esc(s.title)}` : ''}<br>${hint(facts.join(' · '))}</li>`;
-					})
-					.join('');
+  if (!freshness) findings.push({
+    level: 'bajo',
+    area: 'Fechas',
+    title: 'Las IAs no saben cuándo actualizaste tu web',
+    detail: 'No hay ninguna fecha visible para los bots en el código de tu página. Sin esto, las IAs no saben si tu contenido es reciente o está desactualizado, lo que puede afectar si te citan.',
+    fix: 'Añade las fechas de publicación y última actualización en el código estructurado (JSON-LD) de tu página.',
+  });
 
-				return `${title}<p>URLs de tu sitemap. Pulsa una para analizarla.</p><ul>${items}</ul>`;
-			}
+  if (schemaBlocks === 0 && !microdata) findings.push({
+    level: 'medio',
+    area: 'Datos estructurados',
+    title: 'Tu web no le explica a las IAs de qué trata',
+    detail: 'Los datos estructurados son como una ficha técnica que le dice a Google y a las IAs exactamente qué es tu web, de qué habla y quién está detrás. Sin esto, tienen que adivinarlo.',
+    fix: 'Añade un bloque JSON-LD en tu página con información básica: nombre, descripción, tipo de negocio y URL.',
+  });
+  else good.push('Tu web tiene datos estructurados y las IAs pueden entender de qué trata.');
 
-			const NOTE =
-				'<p class="tool-hint">Pedimos la página desde un servidor, una vez como navegador y otra como cada bot, y comparamos. Los bots reales salen de sus propias IPs, así que un firewall que verifique IPs puede tratarlos distinto. Resultados en caché 15 min.</p>';
+  if (words < 300) findings.push({
+    level: 'bajo',
+    area: 'Contenido',
+    title: 'Hay poco texto en esta página',
+    detail: `Esta página tiene unas ${words} palabras. Las IAs necesitan suficiente contenido para entender de qué habla tu web y decidir si citarla.`,
+    fix: 'Amplía el contenido de esta página con más información útil para tus visitantes.',
+  });
+  else good.push(`Esta página tiene buen volumen de contenido (${words} palabras), suficiente para que las IAs la entiendan.`);
 
-			const render = (d: Report) =>
-				[renderFindings, renderBots, renderSchema, renderSitemap, renderDates, renderSamples]
-					.map((section) => section(d))
-					.join('') + NOTE;
+  const counts: Record<Level, number> = { alto: 0, medio: 0, bajo: 0, info: 0 };
+  for (const f of findings) counts[f.level]++;
 
-			let current: AbortController | null = null;
-
-			async function analyze(url: string) {
-				current?.abort();
-				const run = (current = new AbortController());
-
-				input.value = url;
-				button.disabled = true;
-				results.innerHTML = '';
-				statusLine.textContent = `Analizando ${url}…`;
-
-				try {
-					const res = await fetch('/api/check-crawlers?url=' + encodeURIComponent(url), { signal: run.signal });
-					const data = await res.json().catch(() => null);
-					if (run !== current) return;
-
-					if (!res.ok || !data || data.error) {
-						statusLine.textContent = data?.error || 'Algo falló. Prueba otra vez.';
-						return;
-					}
-
-					const report = data as Report;
-					statusLine.textContent = `${report.finalUrl} · leído como ${report.viewAs} · ${(report.ms / 1000).toFixed(1)} s`;
-					results.innerHTML = render(report);
-				} catch {
-					if (run.signal.aborted) return;
-					statusLine.textContent =
-						'No pudimos terminar el análisis. Puede que el sitio tarde demasiado; prueba otra vez.';
-				} finally {
-					if (run === current) button.disabled = false;
-				}
-			}
-
-			function go(url: string) {
-				if (urlFromLocation() !== url) history.pushState(null, '', queryFor(url));
-				analyze(url);
-			}
-
-			form.addEventListener('submit', (event) => {
-				event.preventDefault();
-				const url = input.value.trim();
-				if (url) go(url);
-			});
-
-			results.addEventListener('click', (event) => {
-				const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-url]');
-				if (!link?.dataset.url) return;
-				if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-				event.preventDefault();
-				go(link.dataset.url);
-				window.scrollTo({ top: 0 });
-			});
-
-			window.addEventListener('popstate', () => {
-				const url = urlFromLocation();
-				if (url) {
-					analyze(url);
-					return;
-				}
-				current?.abort();
-				current = null;
-				input.value = '';
-				results.innerHTML = '';
-				statusLine.textContent = idleText;
-				button.disabled = false;
-			});
-
-			const initial = urlFromLocation();
-			if (initial) analyze(initial);
-		</script>
-	</body>
-</html>
+  return new Response(JSON.stringify({
+    finalUrl, viewAs: UA_BROWSER, ms: Date.now() - start, counts, findings, good, bots,
+    page: { schema: { blocks: schemaBlocks, broken: schemaBroken, microdata, types: schemaTypes, entities } },
+    sitemap: sitemapData, freshness, samples,
+  }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+};
