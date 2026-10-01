@@ -4,7 +4,7 @@ export const GET: APIRoute = async ({ request }) => {
   const url = new URL(request.url).searchParams.get('url');
 
   if (!url) {
-    return new Response(JSON.stringify({ error: 'Falta el parámetro url' }), {
+    return new Response(JSON.stringify({ error: 'Missing url parameter' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -14,7 +14,7 @@ export const GET: APIRoute = async ({ request }) => {
   try {
     target = new URL(url.startsWith('http') ? url : `https://${url}`);
   } catch {
-    return new Response(JSON.stringify({ error: 'URL inválida' }), {
+    return new Response(JSON.stringify({ error: 'Invalid URL' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -25,12 +25,12 @@ export const GET: APIRoute = async ({ request }) => {
   const UA_BROWSER = 'Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)';
 
   const BOTS = [
-    { name: 'GPTBot',         company: 'OpenAI',     type: 'entrenamiento', product: 'ChatGPT',        note: '', token: false, ua: 'GPTBot/1.0' },
-    { name: 'OAI-SearchBot',  company: 'OpenAI',     type: 'busqueda',      product: 'ChatGPT Search', note: '', token: false, ua: 'OAI-SearchBot' },
-    { name: 'ClaudeBot',      company: 'Anthropic',  type: 'entrenamiento', product: 'Claude',         note: '', token: false, ua: 'ClaudeBot/1.0' },
-    { name: 'PerplexityBot',  company: 'Perplexity', type: 'busqueda',      product: 'Perplexity',     note: '', token: false, ua: 'PerplexityBot/1.0' },
-    { name: 'Googlebot',      company: 'Google',     type: 'busqueda',      product: 'Google Search',  note: '', token: false, ua: 'Googlebot/2.1' },
-    { name: 'Google-Extended', company: 'Google',    type: 'entrenamiento', product: 'Bard/Gemini',    note: '', token: true,  ua: 'Google-Extended' },
+    { name: 'GPTBot',         company: 'OpenAI',     type: 'training', product: 'ChatGPT',        note: '', token: false, ua: 'GPTBot/1.0' },
+    { name: 'OAI-SearchBot',  company: 'OpenAI',     type: 'search',   product: 'ChatGPT Search', note: '', token: false, ua: 'OAI-SearchBot' },
+    { name: 'ClaudeBot',      company: 'Anthropic',  type: 'training', product: 'Claude',         note: '', token: false, ua: 'ClaudeBot/1.0' },
+    { name: 'PerplexityBot',  company: 'Perplexity', type: 'search',   product: 'Perplexity',     note: '', token: false, ua: 'PerplexityBot/1.0' },
+    { name: 'Googlebot',      company: 'Google',     type: 'search',   product: 'Google Search',  note: '', token: false, ua: 'Googlebot/2.1' },
+    { name: 'Google-Extended', company: 'Google',    type: 'training', product: 'Bard/Gemini',    note: '', token: true,  ua: 'Google-Extended' },
   ];
 
   const fetchText = async (url: string, ua: string) => {
@@ -204,57 +204,57 @@ export const GET: APIRoute = async ({ request }) => {
   if (blockedBots.length) {
     findings.push({
       level: 'alto',
-      area: 'Acceso',
-      title: `${blockedBots.map(b => b.name).join(', ')} no puede entrar a tu web`,
-      detail: `Tu archivo robots.txt le está diciendo a ${blockedBots.map(b => b.name).join(', ')} que no puede visitar tu web. Esto significa que no podrá leer tu contenido ni citarte.`,
-      fix: 'Abre tu archivo robots.txt y elimina la línea que bloquea a estos bots.',
+      area: 'Access',
+      title: `${blockedBots.map(b => b.name).join(', ')} can't access your site`,
+      detail: `Your robots.txt is telling ${blockedBots.map(b => b.name).join(', ')} it can't visit your site. This means it won't be able to read your content or cite you.`,
+      fix: 'Open your robots.txt file and remove the line blocking these bots.',
     });
   } else {
-    good.push('Todos los bots de IA y buscadores pueden entrar a tu web sin restricciones.');
+    good.push('All AI bots and search engines can access your site without restrictions.');
   }
 
   if (noindex) findings.push({
     level: 'alto',
-    area: 'Indexación',
-    title: 'Esta página está oculta para los buscadores',
-    detail: 'Tienes una etiqueta "noindex" en el código de la página. Esto le dice a Google y a las IAs que ignoren esta página por completo.',
-    fix: 'Si quieres que esta página aparezca en búsquedas y sea citada por IAs, elimina esa etiqueta noindex.',
+    area: 'Indexing',
+    title: 'This page is hidden from search engines',
+    detail: 'You have a "noindex" tag in your page code. This tells Google and AI crawlers to ignore this page entirely.',
+    fix: 'If you want this page to appear in search results and be cited by AIs, remove the noindex tag.',
   });
 
   if (!sitemapData.found) findings.push({
     level: 'medio',
     area: 'Sitemap',
-    title: 'Tu web no tiene sitemap',
-    detail: 'El sitemap es un archivo que le dice a Google y a las IAs qué páginas existen en tu web. Sin él, pueden perderse contenido importante.',
-    fix: 'Crea un sitemap.xml y menciónalo en tu robots.txt para que los bots lo encuentren fácilmente.',
+    title: 'Your site has no sitemap',
+    detail: 'A sitemap is a file that tells Google and AIs which pages exist on your site. Without it, they may miss important content.',
+    fix: 'Create a sitemap.xml and reference it in your robots.txt so bots can find it easily.',
   });
-  else good.push('Tu web tiene un sitemap y los bots pueden encontrarlo sin problema.');
+  else good.push('Your site has a sitemap and bots can find it without issues.');
 
   if (!freshness) findings.push({
     level: 'bajo',
-    area: 'Fechas',
-    title: 'Las IAs no saben cuándo actualizaste tu web',
-    detail: 'No hay ninguna fecha visible para los bots en el código de tu página. Sin esto, las IAs no saben si tu contenido es reciente o está desactualizado, lo que puede afectar si te citan.',
-    fix: 'Añade las fechas de publicación y última actualización en el código estructurado (JSON-LD) de tu página.',
+    area: 'Dates',
+    title: "AIs don't know when you last updated your site",
+    detail: "There's no machine-readable date in your page code. Without this, AIs can't tell if your content is recent or outdated, which may affect whether they cite you.",
+    fix: "Add publication and last-updated dates to your page's structured data (JSON-LD).",
   });
 
   if (schemaBlocks === 0 && !microdata) findings.push({
     level: 'medio',
-    area: 'Datos estructurados',
-    title: 'Tu web no le explica a las IAs de qué trata',
-    detail: 'Los datos estructurados son como una ficha técnica que le dice a Google y a las IAs exactamente qué es tu web, de qué habla y quién está detrás. Sin esto, tienen que adivinarlo.',
-    fix: 'Añade un bloque JSON-LD en tu página con información básica: nombre, descripción, tipo de negocio y URL.',
+    area: 'Structured Data',
+    title: "Your site doesn't tell AIs what it's about",
+    detail: "Structured data is like a fact sheet that tells Google and AIs exactly what your site is, what it covers, and who's behind it. Without it, they have to guess.",
+    fix: 'Add a JSON-LD block to your page with basic info: name, description, business type, and URL.',
   });
-  else good.push('Tu web tiene datos estructurados y las IAs pueden entender de qué trata.');
+  else good.push("Your site has structured data and AIs can understand what it's about.");
 
   if (words < 300) findings.push({
     level: 'bajo',
-    area: 'Contenido',
-    title: 'Hay poco texto en esta página',
-    detail: `Esta página tiene unas ${words} palabras. Las IAs necesitan suficiente contenido para entender de qué habla tu web y decidir si citarla.`,
-    fix: 'Amplía el contenido de esta página con más información útil para tus visitantes.',
+    area: 'Content',
+    title: 'This page has very little text',
+    detail: `This page has around ${words} words. AIs need enough content to understand what your site is about and decide whether to cite it.`,
+    fix: "Expand this page's content with more useful information for your visitors.",
   });
-  else good.push(`Esta página tiene buen volumen de contenido (${words} palabras), suficiente para que las IAs la entiendan.`);
+  else good.push(`This page has a solid amount of content (${words} words), enough for AIs to understand it.`);
 
   const counts: Record<Level, number> = { alto: 0, medio: 0, bajo: 0, info: 0 };
   for (const f of findings) counts[f.level]++;
