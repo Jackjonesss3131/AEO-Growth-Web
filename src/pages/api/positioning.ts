@@ -16,6 +16,8 @@ const json = (data: unknown, status = 200, cache = false) =>
     },
   });
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function req(url: string, ua = UA_BROWSER, ms = 9000) {
   try {
     const res = await fetch(url, {
@@ -23,9 +25,9 @@ async function req(url: string, ua = UA_BROWSER, ms = 9000) {
       redirect: 'follow',
       signal: AbortSignal.timeout(ms),
     });
-    return { status: res.status, text: await res.text() };
+    return { status: res.status, text: await res.text(), finalUrl: res.url };
   } catch {
-    return { status: 0, text: '' };
+    return { status: 0, text: '', finalUrl: '' };
   }
 }
 
@@ -139,52 +141,83 @@ function coverage(field: string, main: string) {
   return [...F].filter((w) => M.has(w)).length / F.size;
 }
 
-async function waybackSnapshot(host: string, monthsAgo: number) {
+// Busca una captura archivada. Prueba el host actual y el que el usuario escribió.
+async function waybackSnapshot(hosts: string[], monthsAgo: number) {
   const d = new Date();
   d.setMonth(d.getMonth() - monthsAgo);
-  const data = await reqJson(
-    `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${ymd(d)}`
-  );
-  const snap = data?.archived_snapshots?.closest;
-  if (!snap?.available || !snap.timestamp) return null;
+  const stamp = ymd(d);
 
-  const raw = `https://web.archive.org/web/${snap.timestamp}id_/https://${host}/`;
-  const page = await req(raw, UA_TOOL, 12000);
-  if (page.status !== 200 || !page.text) return null;
+  for (const host of hosts) {
+    const data = await reqJson(
+      `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`
+    );
+    const snap = data?.archived_snapshots?.closest;
+    if (!snap?.available || !snap.timestamp) continue;
 
-  const fields = extract(page.text);
-  return {
-    date: tsToDate(snap.timestamp),
-    archiveUrl: `https://web.archive.org/web/${snap.timestamp}/https://${host}/`,
-    fields,
-    description: mainDescription(fields),
-  };
+    // Si el archivo devolvió una captura muy lejos de la fecha pedida, no sirve
+    if (daysBetween(tsToDate(snap.timestamp), d.toISOString().slice(0, 10)) > 240) continue;
+
+    const raw = `https://web.archive.org/web/${snap.timestamp}id_/https://${host}/`;
+    const page = await req(raw, UA_TOOL, 14000);
+    if (page.status !== 200 || !page.text) continue;
+
+    const fields = extract(page.text);
+    const description = mainDescription(fields);
+    if (!description) continue;
+
+    return {
+      date: tsToDate(snap.timestamp),
+      archiveUrl: `https://web.archive.org/web/${snap.timestamp}/https://${host}/`,
+      fields,
+      description,
+    };
+  }
+  return null;
 }
 
-async function commonCrawl(host: string) {
+// Common Crawl limita fuerte su índice: consultas en serie, pocas, con pausa.
+async function commonCrawl(hosts: string[]) {
   const colls = await reqJson('https://index.commoncrawl.org/collinfo.json', 8000);
-  if (!Array.isArray(colls)) return null;
+  if (!Array.isArray(colls) || !colls.length) return null;
 
-  const recent = colls.slice(0, 12);
+  // Un índice de cada trimestre aproximado, en vez de los 12 seguidos
+  const picked = [colls[0], colls[3], colls[6], colls[9]].filter(Boolean);
+
+  const captures: { crawl: string; date: string }[] = [];
   let errors = 0;
+  let blocked = false;
 
-  const rows = await Promise.all(
-    recent.map(async (c: any) => {
-      const r = await req(`${c['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`, UA_TOOL, 12000);
-      if (r.status === 404) return null;
-      if (r.status !== 200) { errors++; return null; }
+  for (const c of picked) {
+    if (blocked) break;
+    let hit = false;
+
+    for (const host of hosts) {
+      const r = await req(
+        `${c['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`,
+        UA_TOOL,
+        14000
+      );
+
+      if (r.status === 503 || r.status === 429) { blocked = true; break; }
+      if (r.status === 404) continue;          // no está en este índice
+      if (r.status !== 200) { errors++; continue; }
+
       try {
         const row = JSON.parse(r.text.split('\n')[0]);
-        return row?.timestamp ? { crawl: c.id as string, date: tsToDate(row.timestamp) } : null;
-      } catch { errors++; return null; }
-    })
-  );
+        if (row?.timestamp) {
+          captures.push({ crawl: c.id as string, date: tsToDate(row.timestamp) });
+          hit = true;
+        }
+      } catch { errors++; }
 
-  return {
-    crawlsChecked: recent.length,
-    errors,
-    captures: rows.filter(Boolean) as { crawl: string; date: string }[],
-  };
+      if (hit) break;
+      await sleep(400);
+    }
+
+    await sleep(900); // pausa entre índices
+  }
+
+  return { crawlsChecked: picked.length, errors, blocked, captures };
 }
 
 async function wikidata(host: string) {
@@ -212,31 +245,37 @@ async function wikidata(host: string) {
 }
 
 export const GET: APIRoute = async ({ url }) => {
-  let host: string;
+  let typedHost: string;
   try {
     let input = (url.searchParams.get('domain') || '').trim();
     if (!/^https?:\/\//i.test(input)) input = 'https://' + input;
-    host = new URL(input).hostname.toLowerCase();
+    typedHost = new URL(input).hostname.toLowerCase();
   } catch {
     return json({ error: 'Enter a domain like yourcompany.com' }, 400);
   }
-  if (!isSafeHost(host)) return json({ error: 'Enter a public domain like yourcompany.com' }, 400);
+  if (!isSafeHost(typedHost)) return json({ error: 'Enter a public domain like yourcompany.com' }, 400);
 
+  // 1. Abrir la home primero, para saber a qué dominio redirige
+  const home = await req(`https://${typedHost}/`);
+  if (home.status === 0 || home.status >= 400) {
+    return json({ error: `We couldn't open ${typedHost}. Check the domain and try again.` }, 422);
+  }
+
+  let liveHost = typedHost;
+  try { liveHost = new URL(home.finalUrl).hostname.toLowerCase(); } catch { /* keep typed */ }
+
+  // Buscamos en el dominio actual y en el que el usuario escribió
+  const hosts = [...new Set([liveHost, typedHost])];
   const today = new Date().toISOString().slice(0, 10);
 
-  const [home, llms, s36, s24, s12, cc, wd] = await Promise.all([
-    req(`https://${host}/`),
-    req(`https://${host}/llms.txt`),
-    waybackSnapshot(host, 36),
-    waybackSnapshot(host, 24),
-    waybackSnapshot(host, 12),
-    commonCrawl(host),
-    wikidata(host),
+  const [llms, s36, s24, s12, cc, wd] = await Promise.all([
+    req(`https://${liveHost}/llms.txt`),
+    waybackSnapshot(hosts, 36),
+    waybackSnapshot(hosts, 24),
+    waybackSnapshot(hosts, 12),
+    commonCrawl(hosts),
+    wikidata(liveHost),
   ]);
-
-  if (home.status === 0 || home.status >= 400) {
-    return json({ error: `We couldn't open ${host}. Check the domain and try again.` }, 422);
-  }
 
   const fields = extract(home.text);
   const description = mainDescription(fields);
@@ -278,7 +317,8 @@ export const GET: APIRoute = async ({ url }) => {
 
   return json(
     {
-      domain: host,
+      domain: liveHost,
+      redirectedFrom: liveHost !== typedHost ? typedHost : null,
       analyzedAt: new Date().toISOString(),
       today: {
         date: today,
@@ -288,7 +328,9 @@ export const GET: APIRoute = async ({ url }) => {
         addedSinceOldest: oldest ? compare(oldest.description, description)?.added || [] : [],
       },
       history,
-      commonCrawl: cc ? { crawlsChecked: cc.crawlsChecked, errors: cc.errors, captures, byVersion } : null,
+      commonCrawl: cc
+        ? { crawlsChecked: cc.crawlsChecked, errors: cc.errors, blocked: cc.blocked, captures, byVersion }
+        : null,
       wikidata: wd,
       consistency,
       summary: oldest
