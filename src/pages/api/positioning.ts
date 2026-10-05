@@ -288,12 +288,12 @@ export const GET: APIRoute = async ({ url }) => {
     if (daysBetween(snap.date, today) <= 60) continue;
     if (timeline.some((t) => t.date === snap.date)) continue;
 
+    // Si dice lo mismo que la anterior es la misma versión. Nos quedamos con la
+    // fecha más vieja: es cuando esa versión empezó, y es lo que importa para
+    // saber qué estaba vivo cuando pasó un crawler.
     const last = timeline[timeline.length - 1];
-    if (last && last.positioning === snap.positioning) {
-      timeline[timeline.length - 1] = snap;
-    } else {
-      timeline.push(snap);
-    }
+    if (last && last.positioning === snap.positioning) continue;
+    timeline.push(snap);
   }
   timeline.sort((a, b) => a.date.localeCompare(b.date));
 
