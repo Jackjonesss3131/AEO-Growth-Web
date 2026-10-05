@@ -102,6 +102,8 @@ export const prerender = false;
     background: color-mix(in srgb, currentColor 8%, transparent); }
   .pc-bar-fill { height: 100%; background: currentColor; }
   .pc-bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .pc-note { margin: 0 0 18px; padding: 14px 16px; border-radius: 8px; line-height: 1.55; max-width: 62ch;
+    background: color-mix(in srgb, #b45309 10%, transparent); }
 
   .pc-fields { border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
   .pc-field { display: grid; grid-template-columns: 185px 1fr 165px; gap: 16px; padding: 14px 0;
@@ -119,7 +121,7 @@ export const prerender = false;
 
   @media (max-width: 640px) {
     .pc-field { grid-template-columns: 1fr; gap: 4px; }
-    .pc-bar { grid-template-columns: 110px 1fr 26px; }
+    .pc-bar { grid-template-columns: 120px 1fr 26px; }
   }
 </style>
 
@@ -147,7 +149,7 @@ export const prerender = false;
   function chipList(items, className) {
     if (!items || !items.length) return null;
     const list = el('ul', { class: 'pc-chips ' + (className || '') });
-    items.slice(0, 8).forEach(function (word) { list.append(el('li', null, word)); });
+    items.slice(0, 8).forEach(function (w) { list.append(el('li', null, w)); });
     return list;
   }
 
@@ -157,45 +159,48 @@ export const prerender = false;
     return wrap;
   }
 
+  function crawlSentence(data) {
+    const cc = data.commonCrawl;
+    const s = data.summary;
+    if (cc.ccbotBlocked && (!cc.ok || !cc.captures.length)) {
+      return 'Your robots.txt blocks CCBot, so Common Crawl does not collect your site. Models that train on Common Crawl only learn about you from what other sites say.';
+    }
+    if (!cc.ok) return 'We could not reach the Common Crawl index this time, so we cannot say which version the recent crawls captured.';
+    if (!cc.captures.length) {
+      return 'We did not find your homepage in the ' + cc.checked + ' Common Crawl indexes we sampled. That can mean you are not being crawled, or that our sample missed you.';
+    }
+    if (!s || !s.capturesOnOldVersion) {
+      return 'All ' + cc.captures.length + ' crawls we found captured your current version. Your record is up to date.';
+    }
+    return s.capturesOnOldVersion + ' of the ' + s.capturesTotal + ' crawls we found captured an older version of your homepage.';
+  }
+
   // 1. Qué pasó
   function verdict(data) {
-    const s = data.summary;
     const wrap = el('div');
+    const s = data.summary;
+
+    if (!data.archive.ok) {
+      wrap.append(el('h2', null, 'The Internet Archive did not respond.'));
+      wrap.append(el('p', { class: 'pc-detail' },
+        'We could not load your history this time. That is on their side. Try again in a minute.'));
+      return wrap;
+    }
 
     if (!s) {
       wrap.append(el('h2', null, 'We found no archived versions of your homepage.'));
       wrap.append(el('p', { class: 'pc-detail' },
-        'Either the domain is new, or the Internet Archive has nothing usable for it. What models know about you comes from your pages today and from what other sites say.'));
+        'Either the domain is new or the Internet Archive has nothing usable for it. What models know about you comes from your pages today and from what other sites say.'));
       return wrap;
     }
 
-    // El título nombra la categoría. Si cambió, eso manda sobre el conteo de
-    // palabras: una descripción larga e idéntica puede ocultar un cambio de
-    // categoría entero.
-    const LEVEL = {
-      stable: 'has stayed consistent',
-      shifted: 'has shifted',
-      rewritten: 'has changed almost completely'
-    };
-
+    const LEVEL = { stable: 'has stayed consistent', shifted: 'has shifted', rewritten: 'has changed almost completely' };
     const headline = s.titleChanged
       ? 'You renamed your category since ' + monthYear(s.since) + '.'
       : 'Your positioning ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.';
-    wrap.append(el('h2', null, headline));
 
-    let detail;
-    if (!data.commonCrawl.ok) {
-      detail = 'We could not reach the Common Crawl index to see which version the recent crawls captured.';
-    } else if (!s.capturesTotal) {
-      detail = 'We did not find your homepage in the ' + data.commonCrawl.checked +
-        ' Common Crawl indexes we sampled. That can mean you are not being crawled, or just that our sample missed you.';
-    } else if (!s.capturesOnOldVersion) {
-      detail = 'All ' + s.capturesTotal + ' crawls we found captured your current version. Your record is up to date.';
-    } else {
-      detail = s.capturesOnOldVersion + ' of the ' + s.capturesTotal +
-        ' crawls we found captured an older version of your homepage.';
-    }
-    wrap.append(el('p', { class: 'pc-detail' }, detail));
+    wrap.append(el('h2', null, headline));
+    wrap.append(el('p', { class: 'pc-detail' }, crawlSentence(data)));
 
     if (s.titleChanged && s.oldTitle && s.newTitle) {
       const sw = el('div', { class: 'pc-switch' });
@@ -205,7 +210,6 @@ export const prerender = false;
       sw.append(el('p', { class: 'pc-switch-new' }, s.newTitle));
       wrap.append(sw);
     }
-
     return wrap;
   }
 
@@ -213,24 +217,22 @@ export const prerender = false;
   function timeline(data) {
     const grid = el('div', { class: 'pc-timeline' });
 
-    data.history.forEach(function (version) {
+    data.history.forEach(function (v) {
       const col = el('article', { class: 'pc-col' });
-      col.append(el('p', { class: 'pc-date' }, monthYear(version.date)));
-      col.append(el('p', { class: 'pc-ctitle' }, version.fields.title || 'No title'));
-      col.append(el('p', { class: 'pc-desc' }, version.description || 'No description'));
-
-      const gone = version.vsToday && version.vsToday.dropped;
-      if (gone && gone.length) {
+      col.append(el('p', { class: 'pc-date' }, monthYear(v.date)));
+      col.append(el('p', { class: 'pc-ctitle' }, v.fields.title || 'No title'));
+      col.append(el('p', { class: 'pc-desc' }, v.description || 'No description'));
+      if (v.vsToday.dropped.length) {
         col.append(el('p', { class: 'pc-small' }, 'Gone from your homepage today'));
-        col.append(chipList(gone, 'is-gone'));
+        col.append(chipList(v.vsToday.dropped, 'is-gone'));
       }
-
-      col.append(el('a', { href: version.archiveUrl, target: '_blank', rel: 'noopener' }, 'View archived page'));
+      col.append(el('a', { href: v.archiveUrl, target: '_blank', rel: 'noopener' }, 'View archived page'));
       grid.append(col);
     });
 
     const now = el('article', { class: 'pc-col is-today' });
     now.append(el('p', { class: 'pc-date' }, 'Today'));
+    if (data.today.liveSince) now.append(el('p', { class: 'pc-small' }, 'Live since ' + monthYear(data.today.liveSince)));
     now.append(el('p', { class: 'pc-ctitle' }, data.today.fields.title || 'No title'));
     now.append(el('p', { class: 'pc-desc' }, data.today.description || 'No description'));
     if (data.today.added.length) {
@@ -239,88 +241,79 @@ export const prerender = false;
     }
     grid.append(now);
 
-    return block(
-      'How your homepage described you',
-      'Your title and description at each point, from the Internet Archive.',
-      grid
-    );
+    return block('How your homepage described you', 'Your title and description at each point, from the Internet Archive.', grid);
   }
 
   // 3. Common Crawl
   function crawls(data) {
     const cc = data.commonCrawl;
-    const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We checked whether your homepage is in a sample of them.';
+    const title = 'Which version the crawls captured';
+    const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We checked a sample of them.';
+    const body = el('div');
+
+    if (cc.ccbotBlocked) {
+      body.append(el('p', { class: 'pc-note' },
+        'Your robots.txt blocks CCBot, the Common Crawl crawler. That is a valid choice, but it means models trained on Common Crawl do not read your site directly.'));
+    }
 
     if (!cc.ok) {
-      const msg = cc.reason === 'rate-limited'
-        ? 'The Common Crawl index is rate limiting us right now. Try again in a few minutes.'
-        : 'The Common Crawl index did not respond. Try again in a few minutes.';
-      return block('Which version the crawls captured', sub, el('p', null, msg));
+      body.append(el('p', null, cc.reason === 'rate-limited'
+        ? 'The Common Crawl index is rate limiting requests right now. Try again in a few minutes.'
+        : 'The Common Crawl index did not respond. Try again in a few minutes.'));
+      return block(title, sub, body);
     }
 
     if (!cc.captures.length) {
-      return block('Which version the crawls captured', sub,
-        el('p', null, 'We did not find your homepage in the ' + cc.checked +
-          ' indexes we sampled. We query the exact homepage URL, so a site that is crawled under a different canonical form can come back empty here.'));
+      if (!cc.ccbotBlocked) body.append(el('p', null, 'We did not find your homepage in the ' + cc.checked + ' indexes we sampled.'));
+      return block(title, sub, body);
     }
 
-    const versions = data.history.map(function (v) { return v.date; }).concat([data.today.date]);
+    const keys = data.history.map(function (v) { return v.date; }).concat(['current']);
     let max = 1;
-    versions.forEach(function (v) { if ((cc.byVersion[v] || 0) > max) max = cc.byVersion[v]; });
+    keys.forEach(function (k) { if ((cc.byVersion[k] || 0) > max) max = cc.byVersion[k]; });
 
     const bars = el('div', { class: 'pc-bars' });
-    versions.forEach(function (version) {
-      const count = cc.byVersion[version] || 0;
+    keys.forEach(function (k) {
+      const n = cc.byVersion[k] || 0;
       const fill = el('div', { class: 'pc-bar-fill' });
-      fill.style.width = ((count / max) * 100) + '%';
-
-      const row = el('div', { class: 'pc-bar' });
-      row.append(el('span', null, version === data.today.date ? 'Your current version' : monthYear(version) + ' version'));
-      row.append(el('div', { class: 'pc-bar-track' }, fill));
-      row.append(el('span', null, String(count)));
-      bars.append(row);
+      fill.style.width = ((n / max) * 100) + '%';
+      bars.append(el('div', { class: 'pc-bar' },
+        el('span', null, k === 'current' ? 'Current version' : monthYear(k) + ' version'),
+        el('div', { class: 'pc-bar-track' }, fill),
+        el('span', null, String(n))
+      ));
     });
+    body.append(bars);
+    body.append(el('p', { class: 'pc-small', style: 'margin-top:14px' },
+      'Crawled in: ' + cc.captures.map(function (c) { return monthYear(c.date); }).join(', ')));
 
-    const body = el('div', null, bars);
-    const dates = cc.captures.map(function (c) { return monthYear(c.date); }).join(', ');
-    body.append(el('p', { class: 'pc-small', style: 'margin-top:14px' }, 'Crawled in: ' + dates));
-
-    return block('Which version the crawls captured', sub, body);
+    return block(title, sub, body);
   }
 
   // 4. Coherencia
   function consistency(data) {
     const table = el('div', { class: 'pc-fields' });
-
     data.consistency.forEach(function (row) {
-      let flag = 'pc-flag';
-      let label;
-      if (row.matches === null) { flag += ' is-unset'; label = 'Not set'; }
+      let cls = 'pc-flag', label;
+      if (row.matches === null) { cls += ' is-unset'; label = 'Not set'; }
       else if (row.matches) { label = 'Agrees'; }
-      else { flag += ' is-off'; label = 'Says something else'; }
-
+      else { cls += ' is-off'; label = 'Says something else'; }
       table.append(el('div', { class: 'pc-field' },
         el('span', null, row.field),
         el('span', null, row.value || 'Missing'),
-        el('span', { class: flag }, label)
+        el('span', { class: cls }, label)
       ));
     });
-
-    return block(
-      'Does your site agree with itself?',
-      'A model reads all of these. When they disagree, it picks one — usually not the one you would choose.',
-      table
-    );
+    return block('Does your site agree with itself?',
+      'A model reads all of these. When they disagree, it picks one, usually not the one you would choose.', table);
   }
 
   // 5. Wikidata
   function wikidata(data) {
     const wd = data.wikidata;
     const sub = 'Models use Wikidata to confirm what a company is.';
-
     if (!wd.checked) return block('Wikidata', sub, el('p', null, 'Wikidata did not respond.'));
     if (!wd.found) return block('Wikidata', sub, el('p', null, 'No Wikidata entry points to your domain.'));
-
     const line = el('p');
     line.append(el('a', { href: wd.url, target: '_blank', rel: 'noopener' }, wd.label || 'Entry'));
     line.append(': ' + (wd.description || 'no description set'));
@@ -334,11 +327,13 @@ export const prerender = false;
     cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a free audit'));
 
     const method = el('p', { class: 'pc-method' },
-      'Method: archived homepages from the Internet Archive at roughly 36, 24, 12 and 6 months back; identical versions are merged. Crawl dates from a sample of Common Crawl indexes, matched to whichever version was live on that date. Change is measured by shared keywords in your title and description. Results are cached for 24 hours.');
+      'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes and are matched to the version live on that date, so the split is an estimate. Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
 
     output.innerHTML = '';
-    [verdict(data), timeline(data), crawls(data), consistency(data), wikidata(data), cta, method]
-      .forEach(function (section) { output.append(section); });
+    const sections = data.archive.ok
+      ? [verdict(data), timeline(data), crawls(data), consistency(data), wikidata(data), cta, method]
+      : [verdict(data), crawls(data), consistency(data), wikidata(data), cta, method];
+    sections.forEach(function (s) { output.append(s); });
   }
 
   form.addEventListener('submit', function (event) {
