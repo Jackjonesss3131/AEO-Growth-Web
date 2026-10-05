@@ -169,24 +169,31 @@ export const prerender = false;
       return wrap;
     }
 
+    // El título nombra la categoría. Si cambió, eso manda sobre el conteo de
+    // palabras: una descripción larga e idéntica puede ocultar un cambio de
+    // categoría entero.
     const LEVEL = {
       stable: 'has stayed consistent',
       shifted: 'has shifted',
       rewritten: 'has changed almost completely'
     };
 
-    wrap.append(el('h2', null, 'Your positioning ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.'));
+    const headline = s.titleChanged
+      ? 'You renamed your category since ' + monthYear(s.since) + '.'
+      : 'Your positioning ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.';
+    wrap.append(el('h2', null, headline));
 
     let detail;
     if (!data.commonCrawl.ok) {
       detail = 'We could not reach the Common Crawl index to see which version the recent crawls captured.';
     } else if (!s.capturesTotal) {
-      detail = 'None of the Common Crawl indexes we checked include your homepage, so you are missing from one of the main sources models train on.';
+      detail = 'We did not find your homepage in the ' + data.commonCrawl.checked +
+        ' Common Crawl indexes we sampled. That can mean you are not being crawled, or just that our sample missed you.';
     } else if (!s.capturesOnOldVersion) {
-      detail = 'All ' + s.capturesTotal + ' recent crawls we found captured your current version. Your record is up to date.';
+      detail = 'All ' + s.capturesTotal + ' crawls we found captured your current version. Your record is up to date.';
     } else {
       detail = s.capturesOnOldVersion + ' of the ' + s.capturesTotal +
-        ' recent crawls we found captured an older version of your homepage.';
+        ' crawls we found captured an older version of your homepage.';
     }
     wrap.append(el('p', { class: 'pc-detail' }, detail));
 
@@ -253,7 +260,8 @@ export const prerender = false;
 
     if (!cc.captures.length) {
       return block('Which version the crawls captured', sub,
-        el('p', null, 'Your homepage is not in any of the ' + cc.checked + ' indexes we checked.'));
+        el('p', null, 'We did not find your homepage in the ' + cc.checked +
+          ' indexes we sampled. We query the exact homepage URL, so a site that is crawled under a different canonical form can come back empty here.'));
     }
 
     const versions = data.history.map(function (v) { return v.date; }).concat([data.today.date]);
