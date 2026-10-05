@@ -1,343 +1,327 @@
-// GET /api/positioning?domain=empresa.com
-import type { APIRoute } from 'astro';
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
 
 export const prerender = false;
+---
 
-const UA_BROWSER =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title={`Positioning Check — ${SITE_TITLE}`}
+      description="See how your homepage described your company over time, and which version AI training data most likely captured."
+    />
+  </head>
+  <body>
+    <Header />
 
-const json = (data: unknown, status = 200, cache = false) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(cache ? { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' } : {}),
-    },
-  });
+    <main class="pc">
+      <header class="pc-head">
+        <p class="pc-kicker">Positioning Check</p>
+        <h1>Which version of your company did AI learn?</h1>
+        <p class="pc-lede">
+          Models learn from snapshots of the web, many of them years old. Paste your domain to see how
+          your homepage described you over time, and which version most of those snapshots captured.
+        </p>
+      </header>
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      <form id="pc-form" class="pc-form">
+        <label for="pc-domain">Your domain</label>
+        <div class="pc-row">
+          <input id="pc-domain" type="text" inputmode="url" placeholder="yourcompany.com" required autocomplete="off" />
+          <button type="submit" id="pc-btn">Check positioning</button>
+        </div>
+        <p class="pc-hint" id="pc-status">Takes between 10 and 30 seconds.</p>
+      </form>
 
-async function req(url: string, ua = UA_BROWSER, ms = 9000) {
-  try {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': ua, Accept: '*/*' },
-      redirect: 'follow',
-      signal: AbortSignal.timeout(ms),
-    });
-    return { status: res.status, text: await res.text(), finalUrl: res.url };
-  } catch {
-    return { status: 0, text: '', finalUrl: '' };
+      <section id="pc-result" class="pc-result" hidden aria-live="polite"></section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  .pc { max-width: 960px; margin: 0 auto; padding: 64px 20px 96px; }
+  .pc-head, .pc-form { max-width: 640px; }
+  .pc-kicker { font-size: .875rem; opacity: .65; margin: 0 0 12px; }
+  .pc h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 16px; }
+  .pc-lede { font-size: 1.0625rem; line-height: 1.6; opacity: .8; margin: 0; }
+  .pc-form { margin-top: 40px; }
+  .pc-form label { display: block; font-weight: 600; margin-bottom: 8px; }
+  .pc-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pc-row input {
+    flex: 1 1 260px; padding: 12px 14px; font: inherit; color: inherit; background: transparent;
+    border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 8px;
   }
-}
-
-async function reqJson(url: string, ms = 9000): Promise<any | null> {
-  const r = await req(url, UA_TOOL, ms);
-  if (r.status !== 200) return null;
-  try { return JSON.parse(r.text); } catch { return null; }
-}
-
-function isSafeHost(h: string) {
-  return !(
-    !h.includes('.') || h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') ||
-    /^(127\.|10\.|192\.168\.|169\.254\.|0\.)/.test(h) ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(h) || h.includes(':')
-  );
-}
-
-const tsToDate = (ts: string) => `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
-const ymd = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '');
-const daysBetween = (a: string, b: string) => Math.abs(+new Date(a) - +new Date(b)) / 86400000;
-
-const decode = (s: string) =>
-  s.replace(/<[^>]+>/g, ' ')
-    .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&#x27;|&apos;/g, "'")
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ').trim();
-
-function meta(html: string, attr: 'name' | 'property', key: string) {
-  const c = `content=(?:"([^"]*)"|'([^']*)')`;
-  const k = `${attr}=["']${key}["']`;
-  const m =
-    html.match(new RegExp(`<meta[^>]+${k}[^>]*${c}`, 'i')) ||
-    html.match(new RegExp(`<meta[^>]+${c}[^>]*${k}`, 'i'));
-  const v = m ? decode(m[1] ?? m[2] ?? '') : '';
-  return v || null;
-}
-
-function schemaDescription(html: string) {
-  const found: { type: string; desc: string }[] = [];
-  for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
-    try {
-      const walk = (n: any) => {
-        if (!n || typeof n !== 'object') return;
-        if (Array.isArray(n)) return n.forEach(walk);
-        const types = ([] as string[]).concat(n['@type'] || []);
-        if (typeof n.description === 'string' && types.length) found.push({ type: types[0], desc: n.description });
-        Object.values(n).forEach(walk);
-      };
-      walk(JSON.parse(m[1]));
-    } catch { /* ignore */ }
+  .pc-row button, .pc-cta a {
+    padding: 12px 20px; font: inherit; font-weight: 600; border: 0; border-radius: 8px; cursor: pointer;
+    background: CanvasText; color: Canvas; text-decoration: none;
   }
-  for (const p of ['Organization', 'Corporation', 'SoftwareApplication', 'Product', 'WebSite', 'WebPage']) {
-    const f = found.find((x) => x.type === p);
-    if (f) return decode(f.desc);
+  .pc-row button:disabled { opacity: .5; cursor: progress; }
+  .pc input:focus-visible, .pc button:focus-visible, .pc a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  .pc-hint { font-size: .875rem; opacity: .65; margin: 8px 0 0; }
+  .pc-result { margin-top: 64px; display: grid; gap: 56px; }
+  .pc-result[hidden] { display: none; }
+  .pc-result h2 { font-size: clamp(1.5rem, 3.5vw, 2.125rem); line-height: 1.2; margin: 0 0 12px; max-width: 28ch; }
+  .pc-result h3 { font-size: 1.125rem; margin: 0 0 6px; }
+  .pc-sub { opacity: .7; margin: 0 0 20px; line-height: 1.55; max-width: 64ch; }
+  .pc-detail { font-size: 1.0625rem; line-height: 1.6; margin: 0; max-width: 60ch; }
+  .pc-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 28px; }
+  .pc-col { border-top: 2px solid color-mix(in srgb, currentColor 18%, transparent); padding-top: 16px; }
+  .pc-col.is-today { border-top-color: currentColor; }
+  .pc-date { font-weight: 700; margin: 0 0 8px; }
+  .pc-title { font-size: .875rem; opacity: .65; margin: 0 0 8px; }
+  .pc-desc { line-height: 1.55; margin: 0 0 14px; }
+  .pc-small { font-size: .8125rem; opacity: .65; margin: 0 0 6px; }
+  .pc-chips { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pc-chips li { font-size: .8125rem; padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, currentColor 8%, transparent); }
+  .pc-chips.is-dropped li { text-decoration: line-through; }
+  .pc-col a { font-size: .875rem; color: inherit; }
+  .pc-bars { display: grid; gap: 10px; max-width: 640px; }
+  .pc-bar { display: grid; grid-template-columns: 160px 1fr 32px; gap: 12px; align-items: center; font-size: .9375rem; }
+  .pc-bar-track { height: 10px; border-radius: 999px; background: color-mix(in srgb, currentColor 8%, transparent); overflow: hidden; }
+  .pc-bar-fill { height: 100%; background: currentColor; }
+  .pc-bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .pc-fields { border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+  .pc-field {
+    display: grid; grid-template-columns: 190px 1fr 170px; gap: 16px; padding: 14px 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); line-height: 1.5;
   }
-  return found[0] ? decode(found[0].desc) : null;
-}
+  .pc-field > :first-child { font-weight: 600; }
+  .pc-flag { font-size: .875rem; }
+  .pc-flag.is-off { color: #b45309; }
+  .pc-flag.is-missing { opacity: .55; }
+  .pc-cta { padding: 32px; border-radius: 12px; background: color-mix(in srgb, currentColor 6%, transparent); }
+  .pc-cta p { margin: 0 0 20px; line-height: 1.6; max-width: 56ch; }
+  .pc-cta a { display: inline-block; }
+  .pc-switch { margin-top: 24px; padding: 20px 22px; border-radius: 10px; background: color-mix(in srgb, currentColor 5%, transparent); max-width: 60ch; }
+  .pc-switch .pc-small { margin: 0 0 4px; }
+  .pc-switch-old { margin: 0 0 16px; font-size: 1.0625rem; opacity: .6; text-decoration: line-through; }
+  .pc-switch-new { margin: 0; font-size: 1.0625rem; font-weight: 600; }
+  .pc-method { font-size: .8125rem; opacity: .65; line-height: 1.6; max-width: 70ch; margin: 0; }
+  @media (max-width: 640px) {
+    .pc-field { grid-template-columns: 1fr; gap: 4px; }
+    .pc-bar { grid-template-columns: 110px 1fr 28px; }
+  }
+</style>
 
-function extract(html: string) {
-  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  return {
-    title: title ? decode(title[1]) || null : null,
-    metaDescription: meta(html, 'name', 'description'),
-    ogDescription: meta(html, 'property', 'og:description'),
-    h1: h1 ? decode(h1[1]) || null : null,
-    schemaDescription: schemaDescription(html),
+<script>
+  const CALENDLY = 'https://calendly.com/geraldgerez/growth-plg';
+  const form = document.getElementById('pc-form');
+  const input = document.getElementById('pc-domain');
+  const btn = document.getElementById('pc-btn');
+  const statusEl = document.getElementById('pc-status');
+  const out = document.getElementById('pc-result');
+
+  function el(tag, attrs, ...children) {
+    attrs = attrs || {};
+    const n = document.createElement(tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    for (const c of children) if (c) n.append(c);
+    return n;
+  }
+
+  function monthYear(d) {
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  const LEVEL = {
+    stable: 'stayed consistent',
+    shifted: 'shifted',
+    rewritten: 'changed almost completely'
   };
-}
 
-type Fields = ReturnType<typeof extract>;
-
-const mainDescription = (f: Fields) =>
-  f.metaDescription || f.ogDescription || f.schemaDescription ||
-  [f.title, f.h1].filter(Boolean).join(' — ') || null;
-
-function llmsSummary(txt: string) {
-  if (!txt || txt.trimStart().startsWith('<')) return null;
-  const lines = txt.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  const quote = lines.find((l) => l.startsWith('>'));
-  if (quote) return quote.replace(/^>\s*/, '');
-  return lines.find((l) => !l.startsWith('#')) || null;
-}
-
-const STOP = new Set(
-  ('the and for with your you our are that this from into more than have has can will all its not but out who ' +
-    'what how why when where which about over just also any each per via their them they then there these those ' +
-    'been being was were www com get one way make help helps teams team best new now use using built').split(' ')
-);
-
-const keywords = (t: string) =>
-  new Set((t.toLowerCase().match(/[a-z0-9áéíóúñü]+/g) || []).filter((w) => w.length > 2 && !STOP.has(w)));
-
-function compare(before: string | null, after: string | null) {
-  if (!before || !after) return null;
-  const A = keywords(before), B = keywords(after);
-  const shared = [...A].filter((w) => B.has(w)).length;
-  const union = new Set([...A, ...B]).size;
-  const similarity = union ? shared / union : 1;
-  return {
-    similarity: Math.round(similarity * 100) / 100,
-    level: similarity >= 0.5 ? 'stable' : similarity >= 0.2 ? 'shifted' : 'rewritten',
-    dropped: [...A].filter((w) => !B.has(w)),
-    added: [...B].filter((w) => !A.has(w)),
-  };
-}
-
-function coverage(field: string, main: string) {
-  const F = keywords(field), M = keywords(main);
-  if (!F.size) return 1;
-  return [...F].filter((w) => M.has(w)).length / F.size;
-}
-
-// Busca una captura archivada. Prueba el host actual y el que el usuario escribió.
-async function waybackSnapshot(hosts: string[], monthsAgo: number) {
-  const d = new Date();
-  d.setMonth(d.getMonth() - monthsAgo);
-  const stamp = ymd(d);
-
-  for (const host of hosts) {
-    const data = await reqJson(
-      `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`
-    );
-    const snap = data?.archived_snapshots?.closest;
-    if (!snap?.available || !snap.timestamp) continue;
-
-    // Si el archivo devolvió una captura muy lejos de la fecha pedida, no sirve
-    if (daysBetween(tsToDate(snap.timestamp), d.toISOString().slice(0, 10)) > 240) continue;
-
-    const raw = `https://web.archive.org/web/${snap.timestamp}id_/https://${host}/`;
-    const page = await req(raw, UA_TOOL, 14000);
-    if (page.status !== 200 || !page.text) continue;
-
-    const fields = extract(page.text);
-    const description = mainDescription(fields);
-    if (!description) continue;
-
-    return {
-      date: tsToDate(snap.timestamp),
-      archiveUrl: `https://web.archive.org/web/${snap.timestamp}/https://${host}/`,
-      fields,
-      description,
-    };
+  function chips(words, cls) {
+    if (!words || !words.length) return null;
+    const ul = el('ul', { class: 'pc-chips ' + (cls || '') });
+    words.slice(0, 8).forEach(function (w) { ul.append(el('li', {}, w)); });
+    return ul;
   }
-  return null;
-}
 
-// Common Crawl limita fuerte su índice: consultas en serie, pocas, con pausa.
-async function commonCrawl(hosts: string[]) {
-  const colls = await reqJson('https://index.commoncrawl.org/collinfo.json', 8000);
-  if (!Array.isArray(colls) || !colls.length) return null;
+  function section(title, sub, body) {
+    const d = el('div', {});
+    d.append(el('h3', {}, title));
+    d.append(el('p', { class: 'pc-sub' }, sub));
+    if (body) d.append(body);
+    return d;
+  }
 
-  // Un índice de cada trimestre aproximado, en vez de los 12 seguidos
-  const picked = [colls[0], colls[3], colls[6], colls[9]].filter(Boolean);
+  function render(d) {
+    const s = d.summary;
+    const cc = d.commonCrawl;
+    const parts = [];
 
-  const captures: { crawl: string; date: string }[] = [];
-  let errors = 0;
-  let blocked = false;
-
-  for (const c of picked) {
-    if (blocked) break;
-    let hit = false;
-
-    for (const host of hosts) {
-      const r = await req(
-        `${c['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`,
-        UA_TOOL,
-        14000
-      );
-
-      if (r.status === 503 || r.status === 429) { blocked = true; break; }
-      if (r.status === 404) continue;          // no está en este índice
-      if (r.status !== 200) { errors++; continue; }
-
-      try {
-        const row = JSON.parse(r.text.split('\n')[0]);
-        if (row?.timestamp) {
-          captures.push({ crawl: c.id as string, date: tsToDate(row.timestamp) });
-          hit = true;
-        }
-      } catch { errors++; }
-
-      if (hit) break;
-      await sleep(400);
+    let headline, detail;
+    if (!s) {
+      headline = 'We found no archived versions of your homepage.';
+      detail = 'Models likely know little about you beyond what is live today.';
+    } else if (!s.level) {
+      headline = 'We found versions of your homepage going back to ' + monthYear(s.since) + '.';
+      detail = 'Some of them have no description we could compare. Check them in the timeline below.';
+    } else if (s.titleChanged && s.level === 'stable') {
+      // El título cambió pero la descripción no: cambio de categoría, no de palabras
+      headline = 'You changed how you name your category since ' + monthYear(s.since) + '.';
+      detail = 'Your description stayed close to the same, but your title tag did not. The title is the strongest signal a model has for what category you belong to.';
+    } else {
+      headline = 'Your positioning has ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.';
+      detail = s.ccTotal
+        ? s.ccOlder + ' of the ' + s.ccTotal + ' recent Common Crawl snapshots we found likely captured an older version of your homepage.'
+        : 'We found no recent Common Crawl snapshots of your homepage.';
     }
+    const intro = el('div', {});
+    intro.append(el('h2', {}, headline));
+    intro.append(el('p', { class: 'pc-detail' }, detail));
 
-    await sleep(900); // pausa entre índices
+    if (s && s.titleChanged && s.oldTitle && s.newTitle) {
+      const sw = el('div', { class: 'pc-switch' });
+      sw.append(el('p', { class: 'pc-small' }, 'Your title tag then'));
+      sw.append(el('p', { class: 'pc-switch-old' }, s.oldTitle));
+      sw.append(el('p', { class: 'pc-small' }, 'Your title tag now'));
+      sw.append(el('p', { class: 'pc-switch-new' }, s.newTitle));
+      intro.append(sw);
+    }
+    parts.push(intro);
+
+    const timeline = el('div', { class: 'pc-timeline' });
+    d.history.forEach(function (v) {
+      const col = el('article', { class: 'pc-col' });
+      col.append(el('p', { class: 'pc-date' }, monthYear(v.date)));
+      col.append(el('p', { class: 'pc-title' }, v.fields.title || 'No title'));
+      col.append(el('p', { class: 'pc-desc' }, v.description || 'No description found'));
+      if (v.vsToday && v.vsToday.dropped.length) {
+        col.append(el('p', { class: 'pc-small' }, 'Gone from your homepage today'));
+        const c = chips(v.vsToday.dropped, 'is-dropped');
+        if (c) col.append(c);
+      }
+      col.append(el('a', { href: v.archiveUrl, target: '_blank', rel: 'noopener' }, 'View archived page'));
+      timeline.append(col);
+    });
+    const todayCol = el('article', { class: 'pc-col is-today' });
+    todayCol.append(el('p', { class: 'pc-date' }, 'Today'));
+    todayCol.append(el('p', { class: 'pc-title' }, d.today.fields.title || 'No title'));
+    todayCol.append(el('p', { class: 'pc-desc' }, d.today.description || 'No description found'));
+    if (d.today.addedSinceOldest.length) {
+      todayCol.append(el('p', { class: 'pc-small' }, 'New since your oldest version'));
+      const c = chips(d.today.addedSinceOldest);
+      if (c) todayCol.append(c);
+    }
+    timeline.append(todayCol);
+    parts.push(section(
+      'How your homepage described you',
+      'The main description on your homepage at each point, taken from the Internet Archive.',
+      timeline
+    ));
+
+    let ccBody;
+    if (!cc) {
+      ccBody = el('p', {}, "Common Crawl's index didn't respond. Try again in a few minutes.");
+    } else if (!cc.captures.length) {
+      ccBody = el('p', {}, cc.errors > cc.crawlsChecked / 2
+        ? "Common Crawl's index is busy right now. Try again in a few minutes."
+        : 'None of the last ' + cc.crawlsChecked + ' Common Crawl indexes include your homepage.');
+    } else {
+      const versions = d.history.map(function (h) { return h.date; });
+      versions.push(d.today.date);
+      let max = 1;
+      versions.forEach(function (v) { if ((cc.byVersion[v] || 0) > max) max = cc.byVersion[v]; });
+
+      ccBody = el('div', {});
+      const bars = el('div', { class: 'pc-bars' });
+      versions.forEach(function (v) {
+        const n = cc.byVersion[v] || 0;
+        const fill = el('div', { class: 'pc-bar-fill' });
+        fill.style.width = ((n / max) * 100) + '%';
+        const track = el('div', { class: 'pc-bar-track' });
+        track.append(fill);
+        const row = el('div', { class: 'pc-bar' });
+        row.append(el('span', {}, v === d.today.date ? "Today's version" : 'Version from ' + monthYear(v)));
+        row.append(track);
+        row.append(el('span', {}, String(n)));
+        bars.append(row);
+      });
+      ccBody.append(bars);
+      const dates = cc.captures.map(function (c) { return monthYear(c.date); }).join(', ');
+      ccBody.append(el('p', { class: 'pc-small', style: 'margin-top:14px' }, 'Captured in: ' + dates));
+    }
+    parts.push(section(
+      'Which version the training data captured',
+      'We checked your homepage in the last ' + (cc ? cc.crawlsChecked : 12) + ' Common Crawl indexes.',
+      ccBody
+    ));
+
+    const fieldsWrap = el('div', { class: 'pc-fields' });
+    d.consistency.forEach(function (c) {
+      const row = el('div', { class: 'pc-field' });
+      row.append(el('span', {}, c.field));
+      row.append(el('span', {}, c.value || 'Missing'));
+      let cls = 'pc-flag';
+      if (c.matches === false) cls += ' is-off';
+      if (c.matches === null) cls += ' is-missing';
+      const txt = c.matches === null ? 'Not set' : c.matches ? 'Matches your description' : 'Says something different';
+      row.append(el('span', { class: cls }, txt));
+      fieldsWrap.append(row);
+    });
+    parts.push(section(
+      'Does your homepage agree with itself?',
+      'Models read every one of these fields. When they say different things, the model picks one.',
+      fieldsWrap
+    ));
+
+    const wd = d.wikidata;
+    let wdBody;
+    if (!wd.checked) {
+      wdBody = el('p', {}, "Wikidata didn't respond. Try again in a few minutes.");
+    } else if (!wd.found) {
+      wdBody = el('p', {}, 'No Wikidata entry links to your domain.');
+    } else {
+      wdBody = el('p', {});
+      wdBody.append(el('a', { href: wd.url, target: '_blank', rel: 'noopener' }, wd.label || 'Your entry'));
+      wdBody.append(': ' + (wd.description || 'no description set'));
+    }
+    parts.push(section('Wikidata', 'Many models use Wikidata to confirm what a company is.', wdBody));
+
+    const cta = el('div', { class: 'pc-cta' });
+    cta.append(el('h3', {}, 'This is the record. It is not the answer.'));
+    cta.append(el('p', {}, 'This check shows what models had to learn from. It does not show what ChatGPT, Perplexity or Gemini say about you today. The free audit does.'));
+    cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a free audit'));
+    parts.push(cta);
+
+    parts.push(el('p', { class: 'pc-method' },
+      'Method: archived homepages from the Internet Archive at roughly 12, 24 and 36 months ago. Training data captures from the 12 most recent Common Crawl indexes. Results are cached for 24 hours.'
+    ));
+
+    out.innerHTML = '';
+    parts.forEach(function (p) { out.append(p); });
   }
 
-  return { crawlsChecked: picked.length, errors, blocked, captures };
-}
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const domain = input.value.trim();
+    if (!domain) return;
 
-async function wikidata(host: string) {
-  const bare = host.replace(/^www\./, '');
-  const sites = [`https://${bare}`, `https://www.${bare}`, `http://${bare}`, `http://www.${bare}`]
-    .flatMap((u) => [`<${u}>`, `<${u}/>`])
-    .join(' ');
-  const q = `SELECT ?item ?itemLabel ?itemDescription WHERE {
-    VALUES ?site { ${sites} }
-    ?item wdt:P856 ?site .
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-  } LIMIT 1`;
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    statusEl.textContent = 'Reading your homepage, the Internet Archive and Common Crawl. Takes between 10 and 30 seconds.';
+    out.hidden = true;
 
-  const data = await reqJson(`https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(q)}`);
-  if (!data) return { checked: false };
-  const b = data.results?.bindings?.[0];
-  if (!b) return { checked: true, found: false };
-  return {
-    checked: true,
-    found: true,
-    url: b.item.value,
-    label: b.itemLabel?.value || null,
-    description: b.itemDescription?.value || null,
-  };
-}
-
-export const GET: APIRoute = async ({ url }) => {
-  let typedHost: string;
-  try {
-    let input = (url.searchParams.get('domain') || '').trim();
-    if (!/^https?:\/\//i.test(input)) input = 'https://' + input;
-    typedHost = new URL(input).hostname.toLowerCase();
-  } catch {
-    return json({ error: 'Enter a domain like yourcompany.com' }, 400);
-  }
-  if (!isSafeHost(typedHost)) return json({ error: 'Enter a public domain like yourcompany.com' }, 400);
-
-  // 1. Abrir la home primero, para saber a qué dominio redirige
-  const home = await req(`https://${typedHost}/`);
-  if (home.status === 0 || home.status >= 400) {
-    return json({ error: `We couldn't open ${typedHost}. Check the domain and try again.` }, 422);
-  }
-
-  let liveHost = typedHost;
-  try { liveHost = new URL(home.finalUrl).hostname.toLowerCase(); } catch { /* keep typed */ }
-
-  // Buscamos en el dominio actual y en el que el usuario escribió
-  const hosts = [...new Set([liveHost, typedHost])];
-  const today = new Date().toISOString().slice(0, 10);
-
-  const [llms, s36, s24, s12, cc, wd] = await Promise.all([
-    req(`https://${liveHost}/llms.txt`),
-    waybackSnapshot(hosts, 36),
-    waybackSnapshot(hosts, 24),
-    waybackSnapshot(hosts, 12),
-    commonCrawl(hosts),
-    wikidata(liveHost),
-  ]);
-
-  const fields = extract(home.text);
-  const description = mainDescription(fields);
-  const llmsText = llms.status === 200 ? llmsSummary(llms.text) : null;
-
-  const seen = new Set<string>();
-  const snapshots = [s36, s24, s12]
-    .filter((s): s is NonNullable<typeof s> => !!s)
-    .filter((s) => daysBetween(s.date, today) > 90 && !seen.has(s.date) && seen.add(s.date))
-    .sort((a, b) => a.date.localeCompare(b.date));
-
-  const history = snapshots.map((s) => ({ ...s, vsToday: compare(s.description, description) }));
-  const oldest = history[0];
-
-  const versions = [...history.map((h) => h.date), today];
-  const versionFor = (d: string) => versions.reduce((v, x) => (x <= d ? x : v), versions[0]);
-
-  const captures = (cc?.captures || [])
-    .map((c) => ({ ...c, version: versionFor(c.date) }))
-    .sort((a, b) => b.date.localeCompare(a.date));
-
-  const byVersion: Record<string, number> = {};
-  for (const c of captures) byVersion[c.version] = (byVersion[c.version] || 0) + 1;
-
-  const consistency = ([
-    ['Title tag', fields.title],
-    ['Meta description', fields.metaDescription],
-    ['Open Graph description', fields.ogDescription],
-    ['H1', fields.h1],
-    ['Schema description', fields.schemaDescription],
-    ['llms.txt summary', llmsText],
-  ] as const).map(([field, value]) => ({
-    field,
-    value: value || null,
-    matches: !value || !description ? null : value === description ? true : coverage(value, description) >= 0.3,
-  }));
-
-  const ccOlder = captures.filter((c) => c.version !== today).length;
-
-  return json(
-    {
-      domain: liveHost,
-      redirectedFrom: liveHost !== typedHost ? typedHost : null,
-      analyzedAt: new Date().toISOString(),
-      today: {
-        date: today,
-        fields,
-        description,
-        llms: llmsText,
-        addedSinceOldest: oldest ? compare(oldest.description, description)?.added || [] : [],
-      },
-      history,
-      commonCrawl: cc
-        ? { crawlsChecked: cc.crawlsChecked, errors: cc.errors, blocked: cc.blocked, captures, byVersion }
-        : null,
-      wikidata: wd,
-      consistency,
-      summary: oldest
-        ? { since: oldest.date, level: oldest.vsToday?.level || null, ccTotal: captures.length, ccOlder }
-        : null,
-    },
-    200,
-    true
-  );
-};
+    fetch('/api/positioning?domain=' + encodeURIComponent(domain))
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.error) throw new Error(data.error);
+        render(data);
+        out.hidden = false;
+        statusEl.textContent = 'Checked ' + data.domain + '.';
+      })
+      .catch(function (err) {
+        statusEl.textContent = err.message || "We couldn't run the check. Try again in a minute.";
+      })
+      .then(function () {
+        btn.disabled = false;
+        btn.textContent = 'Check positioning';
+      });
+  });
+</script>
