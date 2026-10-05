@@ -7,6 +7,7 @@ const UA_BROWSER =
 const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
 
 const TARGET_MONTHS = [36, 24, 12, 6];
+const TIME_BUDGET_MS = 48000; // Vercel corta a los 60s; terminamos antes con lo que haya
 
 // ---------- helpers ----------
 function respond(data: unknown, status = 200, cacheable = false) {
@@ -14,7 +15,6 @@ function respond(data: unknown, status = 200, cacheable = false) {
     status,
     headers: {
       'Content-Type': 'application/json',
-      // Solo se guarda en caché un resultado completo. Un fallo de las fuentes no se queda pegado 24h.
       'Cache-Control': cacheable ? 'public, s-maxage=86400, stale-while-revalidate=604800' : 'no-store',
     },
   });
@@ -23,28 +23,34 @@ function respond(data: unknown, status = 200, cacheable = false) {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const tsToDate = (ts: string) => `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
 const isoDay = (d: Date) => d.toISOString().slice(0, 10);
+const ymd = (d: Date) => isoDay(d).replace(/-/g, '');
 const daysBetween = (a: string, b: string) => Math.abs(+new Date(a) - +new Date(b)) / 86400000;
 const monthsAgo = (m: number) => { const d = new Date(); d.setMonth(d.getMonth() - m); return d; };
 
-async function req(url: string, ua = UA_BROWSER, ms = 10000, retries = 0) {
+type Budget = { until: number };
+const timeLeft = (b: Budget) => b.until - Date.now();
+
+async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries = 0) {
   for (let attempt = 0; attempt <= retries; attempt++) {
+    const timeout = Math.min(ms, timeLeft(b) - 500);
+    if (timeout < 1000) break;
     try {
       const res = await fetch(url, {
         headers: { 'User-Agent': ua, Accept: '*/*' },
         redirect: 'follow',
-        signal: AbortSignal.timeout(ms),
+        signal: AbortSignal.timeout(timeout),
       });
-      if (res.status >= 500 && attempt < retries) { await sleep(1000); continue; }
+      if (res.status >= 500 && attempt < retries) { await sleep(800); continue; }
       return { status: res.status, text: await res.text(), finalUrl: res.url };
     } catch {
-      if (attempt < retries) { await sleep(1000); continue; }
+      if (attempt < retries) { await sleep(800); continue; }
     }
   }
   return { status: 0, text: '', finalUrl: '' };
 }
 
-async function reqJson(url: string, ms = 10000, retries = 0) {
-  const r = await req(url, UA_TOOL, ms, retries);
+async function reqJson(b: Budget, url: string, ms = 10000, retries = 0) {
+  const r = await req(b, url, UA_TOOL, ms, retries);
   if (r.status !== 200) return null;
   try { return JSON.parse(r.text); } catch { return null; }
 }
@@ -192,88 +198,76 @@ function overlap(field: string, main: string) {
 }
 
 // ---------- Internet Archive ----------
-// Una consulta al índice CDX trae una captura por mes; elegimos las más cercanas a cada fecha.
-async function archiveHistory(hosts: string[]) {
-  const from = isoDay(monthsAgo(40)).replace(/-/g, '').slice(0, 6);
+// Una búsqueda por fecha objetivo, todas en paralelo. Reintenta si el archivo devuelve vacío.
+async function archivedAt(b: Budget, hosts: string[], months: number) {
+  const stamp = ymd(monthsAgo(months));
   let responded = false;
 
   for (const host of hosts) {
-    const rows = await reqJson(
-      `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host + '/')}` +
-        `&output=json&fl=timestamp&filter=statuscode:200&collapse=timestamp:6&from=${from}`,
-      15000,
-      1
-    );
-    if (!Array.isArray(rows)) continue;
-    responded = true;
-
-    const stamps: string[] = rows.slice(1).map((r: string[]) => r[0]).filter(Boolean);
-    if (!stamps.length) continue;
-
-    const chosen = new Set<string>();
-    for (const m of TARGET_MONTHS) {
-      const target = isoDay(monthsAgo(m));
-      let best = '', bestDist = Infinity;
-      for (const s of stamps) {
-        const dist = daysBetween(tsToDate(s), target);
-        if (dist < bestDist) { best = s; bestDist = dist; }
-      }
-      if (best && bestDist <= 120) chosen.add(best);
+    let snap: any = null;
+    for (let attempt = 0; attempt < 2 && !snap; attempt++) {
+      const info = await reqJson(
+        b,
+        `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`,
+        8000
+      );
+      if (info) responded = true;
+      snap = info?.archived_snapshots?.closest;
+      if (!snap?.available || !snap.timestamp) { snap = null; if (attempt === 0) await sleep(600); }
     }
+    if (!snap) continue;
 
-    const pages = await Promise.all(
-      [...chosen].map(async (ts) => {
-        const r = await req(`https://web.archive.org/web/${ts}id_/https://${host}/`, UA_TOOL, 15000, 1);
-        if (r.status !== 200 || !r.text) return null;
-        const page = readPage(r.text);
-        if (!page.fields.title && !page.description) return null;
-        return {
-          date: tsToDate(ts),
-          archiveUrl: `https://web.archive.org/web/${ts}/https://${host}/`,
-          ...page,
-        };
-      })
-    );
+    const page = await req(b, `https://web.archive.org/web/${snap.timestamp}id_/https://${host}/`, UA_TOOL, 12000, 1);
+    if (page.status !== 200 || !page.text) continue;
 
-    return { ok: true, snapshots: pages.filter(Boolean) as (Page & { date: string; archiveUrl: string })[] };
+    const read = readPage(page.text);
+    if (!read.fields.title && !read.description) continue;
+
+    return {
+      responded: true,
+      snap: {
+        date: tsToDate(snap.timestamp),
+        archiveUrl: `https://web.archive.org/web/${snap.timestamp}/https://${host}/`,
+        ...read,
+      },
+    };
   }
-
-  return { ok: responded, snapshots: [] };
+  return { responded, snap: null };
 }
 
 // ---------- Common Crawl ----------
-// Su índice está muy limitado: pocas consultas, en serie, con pausa.
-async function commonCrawl(hosts: string[]) {
-  const collections = await reqJson('https://index.commoncrawl.org/collinfo.json', 9000, 1);
+// Índice muy limitado: pocas consultas, en serie, con pausa, y cortamos si se acaba el tiempo.
+async function commonCrawl(b: Budget, hosts: string[]) {
+  const collections = await reqJson(b, 'https://index.commoncrawl.org/collinfo.json', 8000, 1);
   if (!Array.isArray(collections) || !collections.length) return { ok: false as const, reason: 'down' };
 
   const picked = [collections[0], collections[3], collections[6], collections[9]].filter(Boolean);
   const dates: string[] = [];
+  let checked = 0;
 
   for (const col of picked) {
+    if (timeLeft(b) < 6000) break;
+    checked++;
     for (const host of hosts) {
-      const r = await req(
-        `${col['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`,
-        UA_TOOL,
-        15000
-      );
+      const r = await req(b, `${col['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`, UA_TOOL, 10000);
       if (r.status === 429 || r.status === 503) return { ok: false as const, reason: 'rate-limited' };
-      if (r.status !== 200) { await sleep(400); continue; } // 404 = no está en este índice
-
-      try {
-        const row = JSON.parse(r.text.split('\n')[0]);
-        if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); break; }
-      } catch { /* respuesta rara */ }
-      await sleep(400);
+      if (r.status === 200) {
+        try {
+          const row = JSON.parse(r.text.split('\n')[0]);
+          if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); break; }
+        } catch { /* respuesta rara */ }
+      }
+      await sleep(300);
     }
-    await sleep(900);
+    await sleep(700);
   }
 
-  return { ok: true as const, checked: picked.length, dates };
+  if (!checked) return { ok: false as const, reason: 'down' };
+  return { ok: true as const, checked, dates };
 }
 
 // ---------- Wikidata ----------
-async function wikidataEntry(host: string) {
+async function wikidataEntry(b: Budget, host: string) {
   const bare = host.replace(/^www\./, '');
   const urls = [`https://${bare}`, `https://www.${bare}`, `http://${bare}`, `http://www.${bare}`]
     .flatMap((u) => [`<${u}>`, `<${u}/>`]).join(' ');
@@ -283,7 +277,7 @@ async function wikidataEntry(host: string) {
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
   } LIMIT 1`;
 
-  const data = await reqJson(`https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(query)}`);
+  const data = await reqJson(b, `https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(query)}`, 8000);
   if (!data) return { checked: false };
   const row = data.results?.bindings?.[0];
   if (!row) return { checked: true, found: false };
@@ -298,6 +292,8 @@ async function wikidataEntry(host: string) {
 
 // ---------- endpoint ----------
 export const GET: APIRoute = async ({ url }) => {
+  const budget: Budget = { until: Date.now() + TIME_BUDGET_MS };
+
   let typedHost: string;
   try {
     let input = (url.searchParams.get('domain') || '').trim();
@@ -308,33 +304,35 @@ export const GET: APIRoute = async ({ url }) => {
   }
   if (!isPublicHost(typedHost)) return respond({ error: 'Enter a public domain like yourcompany.com' }, 400);
 
-  const home = await req(`https://${typedHost}/`, UA_BROWSER, 12000, 1);
+  const home = await req(budget, `https://${typedHost}/`, UA_BROWSER, 10000, 1);
   if (home.status === 0 || home.status >= 400) {
     return respond({ error: `We couldn't open ${typedHost}. Check the domain and try again.` }, 422);
   }
 
   let liveHost = typedHost;
   try { liveHost = new URL(home.finalUrl).hostname.toLowerCase(); } catch { /* keep typed */ }
-  const bare = liveHost.replace(/^www\./, '');
-  const hosts = [...new Set([liveHost, typedHost, bare, `www.${bare}`])];
+  const hosts = [...new Set([liveHost, typedHost])];
   const today = isoDay(new Date());
 
-  const [llms, robots, archive, cc, wikidata] = await Promise.all([
-    req(`https://${liveHost}/llms.txt`),
-    req(`https://${liveHost}/robots.txt`),
-    archiveHistory(hosts),
-    commonCrawl(hosts.slice(0, 2)),
-    wikidataEntry(liveHost),
+  const [llms, robots, cc, wikidata, ...archived] = await Promise.all([
+    req(budget, `https://${liveHost}/llms.txt`, UA_BROWSER, 8000),
+    req(budget, `https://${liveHost}/robots.txt`, UA_BROWSER, 8000),
+    commonCrawl(budget, hosts),
+    wikidataEntry(budget, liveHost),
+    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m)),
   ]);
 
   const live = readPage(home.text);
   const llmsText = llms.status === 200 ? llmsSummary(llms.text) : null;
   const ccbotBlocked = robots.status === 200 && robotsBlocksCCBot(robots.text);
+  const archiveOk = archived.some((a) => a.responded);
 
-  // Versiones: en orden, fusionando capturas iguales (nos quedamos con la fecha más vieja,
-  // que es cuando esa versión empezó).
-  const snaps = archive.snapshots
-    .filter((s) => daysBetween(s.date, today) > 60)
+  // Versiones en orden. Capturas iguales se fusionan y nos quedamos con la fecha más vieja.
+  const seen = new Set<string>();
+  const snaps = archived
+    .map((a) => a.snap)
+    .filter((s): s is NonNullable<typeof s> => !!s)
+    .filter((s) => daysBetween(s.date, today) > 60 && !seen.has(s.date) && !!seen.add(s.date))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const versions: typeof snaps = [];
@@ -344,7 +342,7 @@ export const GET: APIRoute = async ({ url }) => {
     versions.push(s);
   }
 
-  // Si la última versión archivada es igual a la de hoy, es la versión actual: sabemos desde cuándo está viva.
+  // Si la última versión archivada es igual a la de hoy, es la actual: sabemos desde cuándo está viva.
   let liveSince: string | null = null;
   while (versions.length && sameVersion(versions[versions.length - 1], live)) {
     liveSince = versions.pop()!.date;
@@ -360,7 +358,6 @@ export const GET: APIRoute = async ({ url }) => {
 
   const oldest = versions[0];
 
-  // Cada crawl de Common Crawl se asigna a la versión que estaba viva en esa fecha.
   const boundaries = [
     ...versions.map((v) => ({ key: v.date, start: v.date })),
     { key: 'current', start: liveSince || today },
@@ -403,11 +400,14 @@ export const GET: APIRoute = async ({ url }) => {
       }
     : null;
 
+  // Solo se guarda en caché si salieron todas las fuentes principales
+  const complete = archiveOk && snaps.length >= 2 && cc.ok;
+
   return respond(
     {
       domain: liveHost,
       analyzedAt: new Date().toISOString(),
-      archive: { ok: archive.ok },
+      archive: { ok: archiveOk },
       today: {
         fields: live.fields,
         description: live.description,
@@ -424,6 +424,6 @@ export const GET: APIRoute = async ({ url }) => {
       summary,
     },
     200,
-    archive.ok && cc.ok
+    complete
   );
 };
