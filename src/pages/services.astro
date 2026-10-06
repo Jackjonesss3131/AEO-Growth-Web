@@ -9,35 +9,35 @@ export const prerender = true;
 const phases = [
 	{
 		n: '01',
-		title: 'AI Mention Audit',
-		lead: 'Where you stand today, measured rather than assumed.',
-		body: 'I run the unbranded questions your buyers actually ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. For every answer I record whether you were recommended, only mentioned, or absent; the exact sentence describing you; whether the category and segment are right; which competitors appeared instead; and which pages the engine cited.',
-		deliverable: 'A findings document with the specific pages shaping each answer, and a prioritized list of what to fix first.',
-		tags: ['Prompt set design', 'Per-engine tracking', 'Competitor mapping', 'Source analysis'],
+		title: 'Diagnosis',
+		lead: 'What the engines say about you, and where they got it.',
+		body: 'I run the questions your buyers ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. Three things come out of it. Who your actual competitors are in those answers, which is often not the company you think you\'re up against. Where the information describing you is coming from, including the sources saying something you\'d rather they didn\'t. And whether what the models say you sell matches what you actually sell.',
+		deliverable: 'A findings document naming the specific pages shaping each answer, the competitors taking your place, and a prioritized list of what to fix first.',
+		tags: ['Real competitor set', 'Source mapping', 'Description accuracy', 'Content review'],
 	},
 	{
 		n: '02',
-		title: 'Data Architecture & Schema',
-		lead: 'Make your site legible to the systems doing the reading.',
-		body: 'Most AI crawlers don\'t execute JavaScript, so a client-rendered marketing site can rank on Google and still be invisible to ChatGPT. I check crawler access end to end — rendering, robots.txt, firewall and CDN rules — then set up structured data and a single canonical record of what your company is and who it sells to.',
-		deliverable: 'Crawler access confirmed per engine, schema implemented, canonical entity defined, and any domain or redirect conflicts resolved.',
-		tags: ['Crawlability', 'Schema markup', 'Entity resolution', 'Canonical domain'],
+		title: 'The fix',
+		lead: 'What\'s broken, what solves it, and the work itself.',
+		body: 'The findings turn into a specific list: this is failing, this is why, this is what resolves it. Crawler access and schema where the site isn\'t legible. Corrected listings and profiles where the web disagrees with you. The pages your buyers\' constrained questions require — integrations, comparisons, "best for", alternatives. One consistent record of what your company is, instead of three competing ones.',
+		deliverable: 'The plan within five business days of the audit, then the corrections shipped.',
+		tags: ['Crawler access', 'Schema markup', 'Listing corrections', 'Buyer-intent pages'],
 	},
 	{
 		n: '03',
-		title: 'Citation Alignment',
-		lead: 'Make the rest of the web agree with you.',
-		body: 'Models look for agreement across sources. When your site says one thing and your directory profiles, review listings and old roundups say another, the description with more weight behind it wins — usually the outdated one. I inventory every source describing you, correct the ones that disagree, then fill the content gaps your buyers\' constrained questions require.',
-		deliverable: 'Corrected listings and profiles, plus the "best for", integration, comparison and alternatives pages your category needs.',
-		tags: ['Source inventory', 'Directory corrections', 'Buyer-intent content', 'Third-party placement'],
+		title: 'Measurement',
+		lead: 'Whether the engines picked it up.',
+		body: 'The same questions, rerun per engine. Not a visibility score — the things that decide whether this was worth doing: are you recommended or only mentioned, where you sit in the shortlist, whether the description is now accurate, which of the new sources the engines are actually citing, and who still takes your place when you\'re absent.',
+		deliverable: 'A monthly report tying each change in the answers back to a specific source and a specific piece of work.',
+		tags: ['Per-engine tracking', 'Citation sources', 'Description accuracy'],
 	},
 	{
 		n: '04',
-		title: 'Measurement',
-		lead: 'Know what changed, and what caused it.',
-		body: 'The same prompt set, rerun monthly, per engine. Not a visibility score — the five things that actually matter: recommended or not, position in the shortlist, whether the fit is right, whether the description is right, and who took your place. When something moves, we trace it back to the source that moved it.',
-		deliverable: 'A monthly report tying changes in AI answers back to specific sources and specific work.',
-		tags: ['Monthly re-measurement', 'Description accuracy', 'Attribution to source'],
+		title: 'Adjust',
+		lead: 'Once the models have real context, go after what\'s left.',
+		body: 'By this point the engines have a correct picture of what you sell and who you sell it to. That changes which questions are winnable. Some answers move with one more source; others need a page that doesn\'t exist yet. The same loop runs again, aimed at the questions still going to someone else — because engines re-weight, competitors publish, and what worked in March stops working.',
+		deliverable: 'An updated priority list each cycle, built from what moved and what didn\'t.',
+		tags: ['Gap analysis', 'New questions', 'Ongoing correction'],
 	},
 ];
 ---
@@ -47,7 +47,7 @@ const phases = [
 	<head>
 		<BaseHead
 			title="AEO Services for B2B SaaS — AEO Growth"
-			description="Answer engine optimization and GEO for B2B SaaS. Audit, technical architecture, citation alignment and monthly measurement — run by one specialist, starting with a diagnosis."
+			description="Answer engine optimization and GEO for B2B SaaS. Diagnosis, corrections, and monthly measurement of what AI engines say about your company — starting with an audit."
 		/>
 	</head>
 	<body>
@@ -74,68 +74,81 @@ const phases = [
 						<span class="stage-n">1</span>
 						<div>
 							<h3>Retrieval</h3>
-							<p>Can the engine reach and read your pages?</p>
+							<p>Can the engine reach and read your pages at all?</p>
 						</div>
 					</div>
 					<div class="stage">
 						<span class="stage-n">2</span>
 						<div>
 							<h3>Citation</h3>
-							<p>Does it use your content as a source?</p>
+							<p>It can use your content as a source and still name someone else.</p>
 						</div>
 					</div>
 					<div class="stage">
 						<span class="stage-n">3</span>
 						<div>
 							<h3>Interpretation</h3>
-							<p>Does it understand what your content says?</p>
+							<p>Does it understand what you sell today, or what you sold two years ago?</p>
 						</div>
 					</div>
 					<div class="stage is-key">
 						<span class="stage-n">4</span>
 						<div>
 							<h3>Expression</h3>
-							<p>How does it describe your company in the answer?</p>
+							<p>What it answers when your buyer asks the question that ends in a purchase.</p>
 						</div>
 					</div>
 				</div>
 				<p class="framework-note">
-					Most tools measure the first two and report a mention rate. The failures that cost
-					pipeline live in the fourth — companies cited accurately, in the category they've already
-					moved away from. Everything below is built around measuring and fixing that.
+					Most tools measure the first two and report a mention rate. The failures that cost pipeline
+					live in the last two — a model that reads your page, takes a fact from it, recommends a
+					competitor, and describes you as the company you stopped being. Everything below is built
+					around measuring and fixing that.
 				</p>
 			</section>
 
 			<section class="prose">
 				<h2>Who this is for</h2>
-				<p>This tends to be a fit when one or more of these is true:</p>
+				<p>Roughly in order of how often it turns out to be the problem:</p>
 				<ul>
-					<li>You repositioned or renamed in the last two years, and old descriptions are still circulating</li>
-					<li>Buyers mention finding a competitor through ChatGPT or Perplexity</li>
-					<li>You're a specialist competing against incumbents on broad category questions</li>
-					<li>You appear in AI answers, but the descriptions are vague, outdated or aimed at the wrong buyer</li>
-					<li>Your category's buyer's guides are written by your competitors</li>
-					<li>You run more than one domain, or your history is split across two</li>
+					<li>
+						<strong>You compete against companies much larger than you</strong> and don't know how to
+						stand out in an answer that only names three.
+					</li>
+					<li>
+						<strong>You don't appear in AI answers and competitors at your level do.</strong> Sometimes
+						the cause is as basic as the crawlers not being able to read your site — you can check
+						that yourself in two minutes with the <a href="/ai-crawler-check/">Crawler Check</a>.
+					</li>
+					<li>
+						<strong>You appear, but what the model says about you isn't what you'd say.</strong> Vague,
+						outdated, or aimed at a buyer you don't sell to.
+					</li>
+					<li>
+						<strong>Buyers pick a competitor who offers what you offer.</strong> Same capability, same
+						price band, and the model keeps naming them.
+					</li>
+					<li>
+						<strong>You repositioned or renamed in the last two years</strong> and the old description is
+						still circulating. The <a href="/positioning-check/">Positioning Check</a> shows which
+						version of your homepage the recent crawls captured.
+					</li>
+					<li>
+						<strong>Your category's buyer's guides were written by your competitors</strong>, which is
+						most B2B categories.
+					</li>
 				</ul>
 
 				<h2>Who this isn't for</h2>
-				<p>Worth saying plainly, because a bad fit wastes both of our time:</p>
-				<ul>
-					<li><strong>Pre-product companies.</strong> There's no point optimizing how you're described before there's something to describe.</li>
-					<li><strong>Teams needing content at volume.</strong> If you need fifty pages a month produced, an agency with a content team is the better buy.</li>
-					<li><strong>Anyone wanting guaranteed placement.</strong> Nobody controls these systems. If a vendor promises a specific result in a specific engine, that's a guess dressed as a commitment.</li>
-				</ul>
+				<p>
+					<strong>Pre-product companies.</strong> There's no point optimizing how you're described
+					before there's something to describe.
+				</p>
 			</section>
 
 			<section class="offer">
 				<div class="section-head">
-					<p class="eyebrow">The engagement</p>
 					<h2>Four phases, in order</h2>
-					<p>
-						Each one depends on the last. Content published on top of an unresolved entity doesn't
-						compound — it gets attributed to whichever record the model settled on. So the order
-						isn't a preference; it's what makes the later work worth paying for.
-					</p>
 				</div>
 
 				<div class="phases">
@@ -157,17 +170,6 @@ const phases = [
 			</section>
 
 			<section class="prose">
-				<h2>How it starts</h2>
-				<p>
-					The audit comes first, always. It's the lower-risk way in for you and the only honest way
-					for me to scope anything — quoting a retainer before looking at your entity, your category
-					and your current answers would be a rate card, not a proposal.
-				</p>
-				<p>
-					After the audit you can do one of three things: continue with me, hand the findings to your
-					own team, or walk away knowing exactly what's wrong. The deliverable is yours either way.
-				</p>
-
 				<h2>What the first 90 days look like</h2>
 				<table>
 					<thead>
@@ -176,15 +178,15 @@ const phases = [
 					<tbody>
 						<tr>
 							<td><strong>Days 1–30</strong></td>
-							<td>Baseline across every engine. Entity inventory — every listing and profile describing you, checked against how you describe yourself today. A prioritized list of corrections.</td>
+							<td>The audit, then the plan within five business days of it. Baseline across every engine, the sources describing you inventoried against how you describe yourself today, and a prioritized list of corrections.</td>
 						</tr>
 						<tr>
 							<td><strong>Days 31–60</strong></td>
-							<td>Corrections shipped: listings, schema, crawler access, and the fit pages your buyers' questions require. Early re-measurement on the same prompt set.</td>
+							<td>Corrections shipped: crawler access, schema, listings and profiles, and the pages your buyers' constrained questions require. First re-measurement on the same questions.</td>
 						</tr>
 						<tr>
 							<td><strong>Days 61–90</strong></td>
-							<td>Movement on engines that search the web on every question. Off-site work underway but not yet fully reflected — that part is slower. A clear account of what moved and which change caused it.</td>
+							<td>Movement on engines that search the web on every question, where your own pages carry the most weight. Third-party corrections underway but not fully reflected yet — that part is slower, because it depends on other sites updating and being re-crawled.</td>
 						</tr>
 					</tbody>
 				</table>
@@ -195,26 +197,24 @@ const phases = [
 
 				<h2>Pricing</h2>
 				<p>
-					Engagements are scoped after the audit, because the work varies enormously depending on how
-					much outdated information exists about you and how much off-site correction is needed.
+					The audit is fixed at <strong>$1,000</strong>. It's a defined deliverable, so it can carry a
+					price without looking at your site first.
 				</p>
 				<p>
-					For context on what this work costs across the market — audit ranges, retainer bands, and
-					the price floor below which you're usually buying relabelled SEO — I wrote up the published
-					numbers in <a href="/blog/how-to-choose-an-aeo-agency/">How to Choose an AEO Agency</a>.
-					That post also includes the questions I'd ask any vendor in this category, including me.
-				</p>
-
-				<h2>Working with one specialist</h2>
-				<p>
-					I work alone, which is a real trade-off and worth being direct about. The person running
-					your analysis is the person you talk to, and nothing gets handed to a junior. In exchange,
-					I can't produce content at agency volume or run large off-site PR programs in parallel.
+					Everything after that is scoped once the findings exist, because the work varies enormously
+					depending on how much outdated information is circulating about you and how much of it sits
+					on sites you don't control. Quoting a retainer before that would be a rate card, not a
+					proposal.
 				</p>
 				<p>
-					If the problem is diagnostic — unclear category, inconsistent descriptions, a repositioning
-					that never propagated — that's where this fits best. If you need production at scale, buy
-					production.
+					Ongoing measurement runs <strong>$500 per month</strong> — the same questions, every engine,
+					with each change traced back to the source that caused it.
+				</p>
+				<p>
+					For what this work costs across the market, including the floor below which you're usually
+					buying relabelled SEO, I wrote up the published numbers in
+					<a href="/blog/how-to-choose-an-aeo-agency/">How to Choose an AEO Agency</a>. That post also
+					has the questions I'd ask any vendor in this category, including me.
 				</p>
 
 				<h2>Common questions</h2>
@@ -229,8 +229,8 @@ const phases = [
 				<h3>Do I need this if I already use an AI visibility tool?</h3>
 				<p>
 					A tool monitors; it tells you a number changed. This diagnoses; it tells you why and which
-					page to change. Most teams eventually want both. If your positioning is already clean and
-					consistent and you have a team that can act on findings, a tool may be enough on its own.
+					page to change. If your positioning is already clean and consistent and you have a team that
+					can act on findings, a tool may be enough on its own.
 				</p>
 
 				<h3>Which engines do you cover?</h3>
@@ -253,6 +253,33 @@ const phases = [
 					calls, not the copy on your homepage. Access to your site and analytics. Someone who can
 					approve changes to listings and profiles.
 				</p>
+
+				<h3>Can my SEO agency do this instead?</h3>
+				<p>
+					They can handle the technical layer and some of the pages, because it resembles work they
+					already do. Correcting how third parties describe you usually isn't in their scope. Ask them
+					what they measure and how they verify the description is accurate — the answer tells you
+					which you're dealing with.
+				</p>
+			</section>
+
+			<section class="prose">
+				<h2>Not sure where you're stuck?</h2>
+				<p>
+					Two free checks, no call required. Both run on your domain and take under a minute.
+				</p>
+				<ul>
+					<li>
+						<strong><a href="/ai-crawler-check/">Crawler Check</a></strong> — what each AI bot actually
+						receives when it visits your site. If it comes back empty, nothing else matters until
+						that's fixed.
+					</li>
+					<li>
+						<strong><a href="/positioning-check/">Positioning Check</a></strong> — how your homepage
+						described you over the last three years, and which version the recent crawls captured.
+						If the version on record isn't the company you sell today, that's your problem.
+					</li>
+				</ul>
 			</section>
 
 			<section class="close-cta">
