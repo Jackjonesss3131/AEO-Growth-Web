@@ -1,4 +1,3 @@
-**Slug:** `/blog/track-ai-traffic-ga4-b2b-saas/`
 **Title:** How to Track AI Traffic in GA4 — And How to Report It Without Overselling It
 **Meta description:** AI referrals are roughly 1% of sessions and a third to two-thirds of them never arrive labeled. Here's the GA4 setup that captures what's capturable, and what to tell your CFO about the rest.
 
