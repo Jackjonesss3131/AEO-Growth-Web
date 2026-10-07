@@ -9,18 +9,18 @@ export const prerender = true;
 const phases = [
 	{
 		n: '01',
-		title: 'Diagnosis',
-		lead: 'What the engines say about you, and where they got it.',
+		title: 'The audit',
+		lead: 'What the engines say about you, and where they got it. Free.',
 		body: 'I run the questions your buyers ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. Three things come out of it. Who your actual competitors are in those answers, which is often not the company you think you\'re up against. Where the information describing you is coming from, including the sources saying something you\'d rather they didn\'t. And whether what the models say you sell matches what you actually sell.',
-		deliverable: 'A findings document naming the specific pages shaping each answer, the competitors taking your place, and a prioritized list of what to fix first.',
-		tags: ['Real competitor set', 'Source mapping', 'Description accuracy', 'Content review'],
+		deliverable: 'The questions I ran, what each engine answered, who appeared in your place, and the cause. Short enough to read in one sitting. Yours to keep, including if you take it to someone else.',
+		tags: ['Free', 'Real competitor set', 'Source mapping', 'Description accuracy'],
 	},
 	{
 		n: '02',
 		title: 'The fix',
 		lead: 'What\'s broken, what solves it, and the work itself.',
 		body: 'The findings turn into a specific list: this is failing, this is why, this is what resolves it. Crawler access and schema where the site isn\'t legible. Corrected listings and profiles where the web disagrees with you. The pages your buyers\' constrained questions require — integrations, comparisons, "best for", alternatives. One consistent record of what your company is, instead of three competing ones.',
-		deliverable: 'The plan within five business days of the audit, then the corrections shipped.',
+		deliverable: 'The plan within five business days, then the corrections shipped.',
 		tags: ['Crawler access', 'Schema markup', 'Listing corrections', 'Buyer-intent pages'],
 	},
 	{
@@ -197,14 +197,19 @@ const phases = [
 
 				<h2>Pricing</h2>
 				<p>
-					The audit is fixed at <strong>$1,000</strong>. It's a defined deliverable, so it can carry a
-					price without looking at your site first.
+					<strong>The audit is free.</strong> I'd rather show you what the engines say about your
+					company than argue about whether this matters. You keep the findings either way, including
+					if you hand them to your own team or take them to another vendor.
 				</p>
 				<p>
-					Everything after that is scoped once the findings exist, because the work varies enormously
-					depending on how much outdated information is circulating about you and how much of it sits
-					on sites you don't control. Quoting a retainer before that would be a rate card, not a
-					proposal.
+					I run <strong>five a month</strong>. Each one is real work on a real domain, not a generated
+					report, so that's the honest limit.
+				</p>
+				<p>
+					The work that follows starts at <strong>$1,000</strong> and gets scoped from the findings,
+					because it varies enormously depending on how much outdated information is circulating about
+					you and how much of it sits on sites you don't control. Quoting before the audit would be a
+					rate card, not a proposal.
 				</p>
 				<p>
 					Ongoing measurement runs <strong>$500 per month</strong> — the same questions, every engine,
@@ -249,9 +254,17 @@ const phases = [
 
 				<h3>What do you need from us?</h3>
 				<p>
-					A short call to get your buyers' real language — the questions that come up on discovery
-					calls, not the copy on your homepage. Access to your site and analytics. Someone who can
+					For the audit, just your domain and what you sell. Nothing else — no call, no access, no
+					form filled in triplicate. For the work after it, access to your site and someone who can
 					approve changes to listings and profiles.
+				</p>
+
+				<h3>Why is the audit free?</h3>
+				<p>
+					Because I'm new at this and you have no reason to take my word for anything. Showing you
+					what the engines say about your company is faster than convincing you it matters. If the
+					findings are useful and you want help acting on them, we'll talk. If they're useful and you
+					act on them yourself, that's a fine outcome too.
 				</p>
 
 				<h3>Can my SEO agency do this instead?</h3>
@@ -263,35 +276,139 @@ const phases = [
 				</p>
 			</section>
 
-			<section class="prose">
-				<h2>Not sure where you're stuck?</h2>
-				<p>
-					Two free checks, no call required. Both run on your domain and take under a minute.
-				</p>
-				<ul>
-					<li>
-						<strong><a href="/ai-crawler-check/">Crawler Check</a></strong> — what each AI bot actually
-						receives when it visits your site. If it comes back empty, nothing else matters until
-						that's fixed.
-					</li>
-					<li>
-						<strong><a href="/positioning-check/">Positioning Check</a></strong> — how your homepage
-						described you over the last three years, and which version the recent crawls captured.
-						If the version on record isn't the company you sell today, that's your problem.
-					</li>
-				</ul>
+			<section class="tools">
+				<div class="section-head">
+					<p class="eyebrow">Free tools</p>
+					<h2>Not sure where you're stuck?</h2>
+					<p>Both run on your own domain. No signup, no call, under a minute each.</p>
+				</div>
+
+				<div class="tool-grid">
+					<a href="/ai-crawler-check/" class="tool-card">
+						<span class="tool-badge">2 minutes</span>
+						<h3>Crawler Check</h3>
+						<p class="tool-desc">
+							See exactly what each AI bot receives when it visits your site. Most crawlers don't
+							run JavaScript — if yours comes back empty, nothing else you publish matters until
+							that's fixed.
+						</p>
+						<span class="tool-link">Run the check<span aria-hidden="true"> →</span></span>
+					</a>
+
+					<a href="/positioning-check/" class="tool-card">
+						<span class="tool-badge">40 seconds</span>
+						<h3>Positioning Check</h3>
+						<p class="tool-desc">
+							See how your homepage described you over the last three years, and which version the
+							recent crawls captured. If the snapshot on record isn't the company you sell today,
+							that's what the models learned.
+						</p>
+						<span class="tool-link">Check your positioning<span aria-hidden="true"> →</span></span>
+					</a>
+				</div>
 			</section>
 
 			<section class="close-cta">
 				<h2>Start with the findings</h2>
 				<p>
-					I run the audit on your domain before we talk, so the call opens with what the models
-					actually say about you — not with a pitch.
+					Send me your domain and what you sell. I'll run your buyers' questions across every engine
+					and send back what they say about you — whether you're recommended, how you're described,
+					and who appears in your place. No call required to get it. Five a month.
 				</p>
-				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
+				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Request the audit</a>
 			</section>
 		</main>
 
 		<Footer />
+
+		<style>
+			.tools {
+				margin: 4rem 0;
+			}
+
+			.tool-grid {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1.25rem;
+				margin-top: 2rem;
+			}
+
+			.tool-card {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				padding: 1.75rem;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+				border-radius: 14px;
+				background: #fff;
+				text-decoration: none;
+				color: inherit;
+				transition:
+					transform 0.18s ease,
+					box-shadow 0.18s ease,
+					border-color 0.18s ease;
+			}
+
+			.tool-card:hover {
+				transform: translateY(-3px);
+				border-color: rgba(37, 99, 235, 0.45);
+				box-shadow: 0 10px 28px rgba(15, 23, 42, 0.09);
+			}
+
+			.tool-badge {
+				display: inline-block;
+				padding: 0.2rem 0.6rem;
+				border-radius: 999px;
+				background: rgba(37, 99, 235, 0.09);
+				color: #2563eb;
+				font-size: 0.72rem;
+				font-weight: 600;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+			}
+
+			.tool-card h3 {
+				margin: 0.9rem 0 0.6rem;
+				font-size: 1.3rem;
+				line-height: 1.25;
+			}
+
+			.tool-desc {
+				margin: 0 0 1.4rem;
+				font-size: 0.95rem;
+				line-height: 1.6;
+				opacity: 0.78;
+			}
+
+			.tool-link {
+				margin-top: auto;
+				font-weight: 600;
+				font-size: 0.95rem;
+				color: #2563eb;
+			}
+
+			.tool-card:hover .tool-link span {
+				display: inline-block;
+				transform: translateX(3px);
+				transition: transform 0.18s ease;
+			}
+
+			@media (max-width: 720px) {
+				.tool-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.tool-card {
+					background: rgba(255, 255, 255, 0.03);
+					border-color: rgba(255, 255, 255, 0.12);
+				}
+				.tool-card:hover {
+					border-color: rgba(96, 165, 250, 0.5);
+					box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+				}
+			}
+		</style>
 	</body>
 </html>
