@@ -10,10 +10,10 @@ const phases = [
 	{
 		n: '01',
 		title: 'The audit',
-		lead: 'What the engines say about you, and where they got it. Free.',
+		lead: 'What the engines say about you, and where they got it. $800.',
 		body: 'I run the questions your buyers ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. Three things come out of it. Who your actual competitors are in those answers, which is often not the company you think you\'re up against. Where the information describing you is coming from, including the sources saying something you\'d rather they didn\'t. And whether what the models say you sell matches what you actually sell.',
 		deliverable: 'The questions I ran, what each engine answered, who appeared in your place, and the cause. Short enough to read in one sitting. Yours to keep, including if you take it to someone else.',
-		tags: ['Free', 'Real competitor set', 'Source mapping', 'Description accuracy'],
+		tags: ['Real competitor set', 'Source mapping', 'Description accuracy'],
 	},
 	{
 		n: '02',
@@ -47,7 +47,7 @@ const phases = [
 	<head>
 		<BaseHead
 			title="AEO Services for B2B SaaS — AEO Growth"
-			description="Answer engine optimization and GEO for B2B SaaS. Diagnosis, corrections, and monthly measurement of what AI engines say about your company — starting with an audit."
+			description="Answer engine optimization and GEO for B2B SaaS. Diagnosis, corrections, and monthly measurement of what AI engines say about your company. $800 audit, $1,000 per month."
 		/>
 	</head>
 	<body>
@@ -59,13 +59,14 @@ const phases = [
 				<h1>AEO for B2B SaaS, starting with the diagnosis.</h1>
 				<p class="hero-sub">
 					I help B2B software companies get recommended — and described correctly — when buyers ask
-					AI engines what to use. Every engagement starts with an audit, so you see the findings
-					before committing to anything longer.
+					AI engines what to use. Every engagement starts with an audit, so the work that follows is
+					scoped from findings instead of guesses.
 				</p>
 				<div class="hero-cta">
-					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book a call</a>
-					<a href="/blog/what-is-an-ai-visibility-audit/" class="btn-ghost">What the audit covers</a>
+					<a href="/positioning-check/" class="btn-primary">Check your positioning</a>
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-ghost">Book a call</a>
 				</div>
+				<p class="hero-note">The tools are free and run on your domain. No signup.</p>
 			</section>
 
 			<section class="framework">
@@ -102,9 +103,41 @@ const phases = [
 				<p class="framework-note">
 					Most tools measure the first two and report a mention rate. The failures that cost pipeline
 					live in the last two — a model that reads your page, takes a fact from it, recommends a
-					competitor, and describes you as the company you stopped being. Everything below is built
-					around measuring and fixing that.
+					competitor, and describes you as the company you stopped being.
+					<a href="/framework">How each layer fails, in detail</a>.
 				</p>
+			</section>
+
+			<section class="tools">
+				<div class="section-head">
+					<p class="eyebrow">Free tools</p>
+					<h2>Check the first two yourself</h2>
+					<p>Both run on your own domain. No signup, no call, under a minute each.</p>
+				</div>
+
+				<div class="tool-grid">
+					<a href="/ai-crawler-check/" class="tool-card">
+						<span class="tool-badge">2 minutes</span>
+						<h3>Crawler Check</h3>
+						<p class="tool-desc">
+							See exactly what each AI bot receives when it visits your site. Most crawlers don't
+							run JavaScript — if yours comes back empty, nothing else you publish matters until
+							that's fixed.
+						</p>
+						<span class="tool-link">Run the check<span aria-hidden="true"> →</span></span>
+					</a>
+
+					<a href="/positioning-check/" class="tool-card">
+						<span class="tool-badge">40 seconds</span>
+						<h3>Positioning Check</h3>
+						<p class="tool-desc">
+							See how your homepage described you over the last three years, and which version the
+							recent crawls captured. If the snapshot on record isn't the company you sell today,
+							that's what the models learned.
+						</p>
+						<span class="tool-link">Check your positioning<span aria-hidden="true"> →</span></span>
+					</a>
+				</div>
 			</section>
 
 			<section class="prose">
@@ -112,13 +145,16 @@ const phases = [
 				<p>Roughly in order of how often it turns out to be the problem:</p>
 				<ul>
 					<li>
+						<strong>You repositioned or renamed in the last two years</strong> and the old description
+						is still circulating. This is the one I see most.
+					</li>
+					<li>
 						<strong>You compete against companies much larger than you</strong> and don't know how to
 						stand out in an answer that only names three.
 					</li>
 					<li>
 						<strong>You don't appear in AI answers and competitors at your level do.</strong> Sometimes
-						the cause is as basic as the crawlers not being able to read your site — you can check
-						that yourself in two minutes with the <a href="/ai-crawler-check/">Crawler Check</a>.
+						the cause is as basic as the crawlers not being able to read your site.
 					</li>
 					<li>
 						<strong>You appear, but what the model says about you isn't what you'd say.</strong> Vague,
@@ -127,11 +163,6 @@ const phases = [
 					<li>
 						<strong>Buyers pick a competitor who offers what you offer.</strong> Same capability, same
 						price band, and the model keeps naming them.
-					</li>
-					<li>
-						<strong>You repositioned or renamed in the last two years</strong> and the old description is
-						still circulating. The <a href="/positioning-check/">Positioning Check</a> shows which
-						version of your homepage the recent crawls captured.
 					</li>
 					<li>
 						<strong>Your category's buyer's guides were written by your competitors</strong>, which is
@@ -197,23 +228,24 @@ const phases = [
 
 				<h2>Pricing</h2>
 				<p>
-					<strong>The audit is free.</strong> I'd rather show you what the engines say about your
-					company than argue about whether this matters. You keep the findings either way, including
-					if you hand them to your own team or take them to another vendor.
+					<strong>The audit is $800, one time.</strong> I run your buyers' real questions across
+					ChatGPT, Perplexity, Gemini and Google's AI results, map where each description came from,
+					and hand you the findings and the fix list. You keep it either way — including if you act
+					on it yourself or take it to another vendor.
 				</p>
 				<p>
 					I run <strong>five a month</strong>. Each one is real work on a real domain, not a generated
 					report, so that's the honest limit.
 				</p>
 				<p>
-					The work that follows starts at <strong>$1,000</strong> and gets scoped from the findings,
-					because it varies enormously depending on how much outdated information is circulating about
-					you and how much of it sits on sites you don't control. Quoting before the audit would be a
-					rate card, not a proposal.
+					<strong>Ongoing work is $1,000 per month:</strong> the same questions rerun across every
+					engine, positioning work on the specific queries you can win, two pages a month,
+					third-party sources corrected as they're found, and a report tracing each change back to
+					what caused it. No contract, cancel any time.
 				</p>
 				<p>
-					Ongoing measurement runs <strong>$500 per month</strong> — the same questions, every engine,
-					with each change traced back to the source that caused it.
+					If you want to see something before paying anything, both tools above are free and need no
+					signup.
 				</p>
 				<p>
 					For what this work costs across the market, including the floor below which you're usually
@@ -254,17 +286,17 @@ const phases = [
 
 				<h3>What do you need from us?</h3>
 				<p>
-					For the audit, just your domain and what you sell. Nothing else — no call, no access, no
-					form filled in triplicate. For the work after it, access to your site and someone who can
-					approve changes to listings and profiles.
+					For the audit, just your domain and what you sell. Nothing else — no access, no form filled
+					in triplicate. For the work after it, access to your site and someone who can approve
+					changes to listings and profiles.
 				</p>
 
-				<h3>Why is the audit free?</h3>
+				<h3>Why should I pay for the audit before knowing if this works?</h3>
 				<p>
-					Because I'm new at this and you have no reason to take my word for anything. Showing you
-					what the engines say about your company is faster than convincing you it matters. If the
-					findings are useful and you want help acting on them, we'll talk. If they're useful and you
-					act on them yourself, that's a fine outcome too.
+					You shouldn't, entirely on faith. That's what the two free tools are for: they run on your
+					domain, right now, and tell you whether AI crawlers can read your site and which version of
+					your company the training data captured. If both come back clean, you may not need me. If
+					they don't, the audit tells you what the engines are actually saying and why.
 				</p>
 
 				<h3>Can my SEO agency do this instead?</h3>
@@ -276,55 +308,26 @@ const phases = [
 				</p>
 			</section>
 
-			<section class="tools">
-				<div class="section-head">
-					<p class="eyebrow">Free tools</p>
-					<h2>Not sure where you're stuck?</h2>
-					<p>Both run on your own domain. No signup, no call, under a minute each.</p>
-				</div>
-
-				<div class="tool-grid">
-					<a href="/ai-crawler-check/" class="tool-card">
-						<span class="tool-badge">2 minutes</span>
-						<h3>Crawler Check</h3>
-						<p class="tool-desc">
-							See exactly what each AI bot receives when it visits your site. Most crawlers don't
-							run JavaScript — if yours comes back empty, nothing else you publish matters until
-							that's fixed.
-						</p>
-						<span class="tool-link">Run the check<span aria-hidden="true"> →</span></span>
-					</a>
-
-					<a href="/positioning-check/" class="tool-card">
-						<span class="tool-badge">40 seconds</span>
-						<h3>Positioning Check</h3>
-						<p class="tool-desc">
-							See how your homepage described you over the last three years, and which version the
-							recent crawls captured. If the snapshot on record isn't the company you sell today,
-							that's what the models learned.
-						</p>
-						<span class="tool-link">Check your positioning<span aria-hidden="true"> →</span></span>
-					</a>
-				</div>
-			</section>
-
 			<section class="close-cta">
 				<h2>Start with the findings</h2>
 				<p>
 					Send me your domain and what you sell. I'll run your buyers' questions across every engine
 					and send back what they say about you — whether you're recommended, how you're described,
-					and who appears in your place. No call required to get it. Five a month.
+					and who appears in your place. Five a month.
 				</p>
-				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Request the audit</a>
+				<div class="hero-cta">
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Request the audit</a>
+					<a href="/positioning-check/" class="btn-ghost">Check your positioning first</a>
+				</div>
 			</section>
 		</main>
 
 		<Footer />
 
 		<style>
-			.tools {
-				margin: 4rem 0;
-			}
+			.hero-note { margin-top: 0.9rem; font-size: 0.9rem; opacity: 0.6; }
+
+			.tools { margin: 3rem 0 4rem; }
 
 			.tool-grid {
 				display: grid;
