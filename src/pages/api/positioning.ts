@@ -7,7 +7,7 @@ const UA_BROWSER =
 const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
 
 const TARGET_MONTHS = [36, 24, 12, 6];
-const TIME_BUDGET_MS = 48000; // Vercel corta a los 60s; terminamos antes con lo que haya
+const TIME_BUDGET_MS = 48000;
 
 // ---------- helpers ----------
 function respond(data: unknown, status = 200, cacheable = false) {
@@ -34,15 +34,20 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
   for (let attempt = 0; attempt <= retries; attempt++) {
     const timeout = Math.min(ms, timeLeft(b) - 500);
     if (timeout < 1000) break;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
     try {
       const res = await fetch(url, {
         headers: { 'User-Agent': ua, Accept: '*/*' },
         redirect: 'follow',
-        signal: AbortSignal.timeout(timeout),
+        signal: controller.signal,
       });
+      const text = await res.text();
+      clearTimeout(timer);
       if (res.status >= 500 && attempt < retries) { await sleep(800); continue; }
-      return { status: res.status, text: await res.text(), finalUrl: res.url };
+      return { status: res.status, text, finalUrl: res.url };
     } catch {
+      clearTimeout(timer);
       if (attempt < retries) { await sleep(800); continue; }
     }
   }
@@ -172,7 +177,6 @@ function similarity(a: string | null, b: string | null) {
   return union ? [...A].filter((w) => B.has(w)).length / union : 1;
 }
 
-// Misma versión = mismo título y descripción casi igual (un número o un punto no cuentan).
 function sameVersion(a: Page, b: Page) {
   return normalize(a.fields.title) === normalize(b.fields.title) && similarity(a.description, b.description) >= 0.8;
 }
@@ -198,7 +202,6 @@ function overlap(field: string, main: string) {
 }
 
 // ---------- Internet Archive ----------
-// Una búsqueda por fecha objetivo, todas en paralelo. Reintenta si el archivo devuelve vacío.
 async function archivedAt(b: Budget, hosts: string[], months: number) {
   const stamp = ymd(monthsAgo(months));
   let responded = false;
@@ -241,9 +244,12 @@ async function commonCrawl(b: Budget, hosts: string[]) {
   const collections = await reqJson(b, 'https://index.commoncrawl.org/collinfo.json', 8000, 1);
   if (!Array.isArray(collections) || !collections.length) return { ok: false as const, reason: 'down' };
 
-  const picked = [collections[0], collections[3], collections[6], collections[9]].filter(Boolean);
-  const bare = hosts[0].replace(/^www\./, '');
-  const patterns = [...new Set([...hosts, bare, 'www.' + bare])];
+  const picked = [collections[0], collections[3], collections[6], collections[9]]
+    .filter((c) => c && typeof c['cdx-api'] === 'string' && c['cdx-api'].startsWith('http'));
+  if (!picked.length) return { ok: false as const, reason: 'down' };
+
+  const bare = (hosts[0] || '').replace(/^www\./, '');
+  const patterns = [...new Set([...hosts, bare, 'www.' + bare])].filter(Boolean);
   const dates: string[] = [];
   let checked = 0;
 
@@ -301,6 +307,14 @@ async function wikidataEntry(b: Budget, host: string) {
 
 // ---------- endpoint ----------
 export const GET: APIRoute = async ({ url }) => {
+  try {
+    return await handle(url);
+  } catch {
+    return respond({ error: 'Something failed on our side. Try again in a minute.' }, 500);
+  }
+};
+
+async function handle(url: URL) {
   const budget: Budget = { until: Date.now() + TIME_BUDGET_MS };
 
   let typedHost: string;
@@ -336,7 +350,6 @@ export const GET: APIRoute = async ({ url }) => {
   const ccbotBlocked = robots.status === 200 && robotsBlocksCCBot(robots.text);
   const archiveOk = archived.some((a) => a.responded);
 
-  // Versiones en orden. Capturas iguales se fusionan y nos quedamos con la fecha más vieja.
   const seen = new Set<string>();
   const snaps = archived
     .map((a) => a.snap)
@@ -351,7 +364,6 @@ export const GET: APIRoute = async ({ url }) => {
     versions.push(s);
   }
 
-  // Si la última versión archivada es igual a la de hoy, es la actual: sabemos desde cuándo está viva.
   let liveSince: string | null = null;
   while (versions.length && sameVersion(versions[versions.length - 1], live)) {
     liveSince = versions.pop()!.date;
@@ -409,7 +421,6 @@ export const GET: APIRoute = async ({ url }) => {
       }
     : null;
 
-  // Solo se guarda en caché si salieron todas las fuentes principales
   const complete = archiveOk && snaps.length >= 2 && cc.ok;
 
   return respond(
@@ -435,4 +446,4 @@ export const GET: APIRoute = async ({ url }) => {
     200,
     complete
   );
-};
+}
