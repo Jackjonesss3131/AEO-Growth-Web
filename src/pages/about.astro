@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE, CALENDLY_URL, LINKEDIN_URL } from '../consts';
+import { SITE_TITLE, CALENDLY_URL, LINKEDIN_URL, AUTHOR_NAME } from '../consts';
 
 export const prerender = true;
 ---
@@ -12,7 +12,7 @@ export const prerender = true;
 	<head>
 		<BaseHead
 			title={`About — ${SITE_TITLE}`}
-			description="Gerald Gerez — AEO and GEO for B2B SaaS."
+			description="Gerald De Oleo — AEO and GEO for B2B SaaS. Independent consultant, previously product-led growth."
 		/>
 	</head>
 	<body>
@@ -21,12 +21,22 @@ export const prerender = true;
 		<main>
 			<article class="prose">
 				<p class="eyebrow">About</p>
-				<h1>Gerald Gerez</h1>
+				<h1>{AUTHOR_NAME}</h1>
 
 				<p class="lead">
-					I work on answer engine optimization and generative engine optimization for B2B SaaS — how
-					companies get found, cited, and described in AI-generated answers.
+					I work on answer engine optimization for B2B SaaS — how companies get found, cited, and
+					described in AI-generated answers. I work independently, from the Dominican Republic, with
+					clients anywhere.
 				</p>
+
+				<p>
+					Before this I worked on product-led growth for B2B SaaS: the path a buyer takes from first
+					hearing about a product to paying for it without ever talking to sales. That path now
+					starts somewhere else. The buyer asks a model what to use, and the shortlist is decided
+					before anyone lands on your site. Same funnel, different front door.
+				</p>
+
+				<p>I've spent the last year on that front door specifically.</p>
 
 				<p>
 					Most of what gets called AEO stops at a binary question: did the brand appear, yes or no. I
@@ -39,8 +49,22 @@ export const prerender = true;
 					problems. A company pivoted, and most of what's indexed still describes the previous
 					product. A directory profile lists competitors from an adjacent category. Two live domains
 					split two years of citations. The model isn't wrong — it's reasoning correctly from stale
-					material.
+					material. I wrote up how I separate those cases in
+					<a href="/framework">the four layers</a>.
 				</p>
+
+				<h2>What I've built</h2>
+
+				<p>
+					Two tools, because the problem needed measuring before it needed selling.
+					<a href="/ai-crawler-check/">Crawler Check</a> requests your page as each AI bot and shows
+					what they actually receive, which is often less than what a browser gets.
+					<a href="/positioning-check/">Positioning Check</a> pulls your homepage from the Internet
+					Archive at four points over three years and matches it against Common Crawl, so you can see
+					which version of your company the training data captured.
+				</p>
+
+				<p>Both are free, run on any domain, and need no signup.</p>
 
 				<h2>How I work</h2>
 
@@ -59,8 +83,8 @@ export const prerender = true;
 				<h2>Get in touch</h2>
 
 				<p>
-					The fastest way to start is a call. I'll run the audit on your domain beforehand, so we
-					begin with findings rather than questions.
+					The fastest way to start is a call. I'll have run the tools on your domain beforehand, so
+					we begin with findings rather than questions.
 				</p>
 
 				<div class="prose-cta">
