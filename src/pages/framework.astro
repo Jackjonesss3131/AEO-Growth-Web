@@ -1,0 +1,217 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE, AUTHOR_NAME } from '../consts';
+
+export const prerender = true;
+
+const layers = [
+	{
+		n: 1,
+		name: 'Retrieval',
+		question: 'Can the engine reach and read your pages at all?',
+		fails: [
+			'The page renders client-side and the crawler receives an empty shell. Most AI crawlers do not execute JavaScript.',
+			'robots.txt allows the bot, but a WAF or bot-fight rule returns 403 to the same user agent.',
+			'The server returns less content to a bot than to a browser — not a block, a quiet downgrade.',
+			'The page exists but is in no sitemap and nothing links to it.',
+		],
+		measure:
+			'Request the page as each bot and compare the response, word count and status code against what a browser receives. A 200 is not enough; the body has to match.',
+		fix: 'Server-side render or pre-render the pages that matter. Allow search and user-triggered bots at the firewall, not just in robots.txt. Verify bots by IP range instead of blocking the user agent.',
+	},
+	{
+		n: 2,
+		name: 'Citation',
+		question: 'Does the engine use your content as a source?',
+		fails: [
+			'The page is retrievable but answers nothing a buyer asks, so nothing pulls it into an answer.',
+			'A competitor covers the same question with more sources pointing at it.',
+			'The content is correct but undated, so the engine prefers a fresher-looking source.',
+			'The claim worth citing is buried in the middle of a long page instead of stated plainly.',
+		],
+		measure:
+			'Run the buyer question and record which URLs the engine cites. Yours either appears or it does not. Per engine, because they disagree.',
+		fix: 'Write the page that answers the question directly, state the citable claim early, give it a visible date, and earn mentions on pages you do not control.',
+	},
+	{
+		n: 3,
+		name: 'Interpretation',
+		question: 'Does the engine understand what your content says?',
+		fails: [
+			'The page says what you do but never names the category, so the model infers one.',
+			'Your title, meta description, H1, schema and llms.txt each describe the company differently. The model picks one.',
+			'Two live domains split the citations, and neither accumulates enough to settle the record.',
+			'Wikidata, a directory profile, or an old press release carries a category you abandoned — and it has more sources behind it than your homepage.',
+		],
+		measure:
+			'Compare every field on your own site against each other first. Then compare the consensus of your site against what third-party sources say. Disagreement is the finding.',
+		fix: 'One description of the company, repeated identically everywhere you control. Then correct the third-party records, starting with the ones that have the most citations pointing at them.',
+	},
+	{
+		n: 4,
+		name: 'Expression',
+		question: 'How does the engine describe you in the final answer?',
+		fails: [
+			'You are cited accurately and described in the category you left two years ago.',
+			'You are mentioned in a list of ten, which is not the same as being recommended.',
+			'The description is accurate but aimed at a buyer you do not sell to.',
+			'The engine names a competitor as the answer and uses your page as the source for why.',
+		],
+		measure:
+			'Ask the question your buyer would ask, with their constraints attached, five times per engine. Record who was recommended, in what order, and how you were described when you appeared.',
+		fix: 'This layer is downstream. It moves when the first three are resolved and the pages that decide the answer exist — comparisons, alternatives, integrations, "best for" pages built around constrained questions.',
+	},
+];
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: 'The four layers of AI answer failure',
+	description:
+		'A framework for diagnosing why a company is missing or misdescribed in AI-generated answers: retrieval, citation, interpretation, and expression.',
+	author: { '@id': 'https://www.aeogrowth.co/#gerald' },
+	publisher: { '@id': 'https://www.aeogrowth.co/#business' },
+	mainEntityOfPage: 'https://www.aeogrowth.co/framework',
+	about: layers.map((l) => ({
+		'@type': 'DefinedTerm',
+		name: l.name,
+		description: l.question,
+	})),
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`The four layers of AI answer failure — ${SITE_TITLE}`}
+			description="Retrieval, citation, interpretation, expression. A framework for diagnosing why a company is missing or misdescribed in AI-generated answers, and what each layer takes to fix."
+		/>
+		<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+	</head>
+	<body>
+		<Header />
+
+		<main>
+			<article class="prose">
+				<p class="eyebrow">Framework</p>
+				<h1>The four layers of AI answer failure</h1>
+
+				<p class="lead">
+					"We don't show up in ChatGPT" is four different problems wearing the same sentence. They
+					have different causes, different tests, and different fixes. Working on the wrong one is
+					the most common way companies waste a year on this.
+				</p>
+
+				<p>
+					An engine does four things between a buyer's question and the answer on screen. It reaches
+					your pages. It decides whether to use them as a source. It forms an understanding of what
+					your company is. And it writes a description of you into the answer. Each step can fail
+					independently, and each one can fail while the step before it worked perfectly.
+				</p>
+
+				<p>
+					Most tools in this category measure the first two and report a percentage. The failures
+					that cost pipeline tend to live in the last two — where a model reads your page, takes a
+					fact from it, recommends a competitor, and describes you as the company you stopped being.
+				</p>
+
+				<h2>Why the order matters</h2>
+
+				<p>
+					The layers are sequential. Content published on top of an unresolved identity does not
+					compound — it gets filed under whichever record the model already settled on, and adds
+					weight to the wrong one. If the model thinks you are a chatbot company, ten excellent
+					pages about AI agents become ten excellent pages by a chatbot company.
+				</p>
+
+				<p>
+					So the diagnosis runs downward and the work runs upward. You find the lowest layer that is
+					broken, and you fix from there.
+				</p>
+
+				{layers.map((l) => (
+					<section class="layer">
+						<h2>
+							<span class="layer-n">{l.n}</span> {l.name}
+						</h2>
+						<p class="layer-q">{l.question}</p>
+
+						<h3>How it fails</h3>
+						<ul>
+							{l.fails.map((f) => <li>{f}</li>)}
+						</ul>
+
+						<h3>How to measure it</h3>
+						<p>{l.measure}</p>
+
+						<h3>What resolves it</h3>
+						<p>{l.fix}</p>
+					</section>
+				))}
+
+				<h2>Using it</h2>
+
+				<p>
+					Start at layer one, because it is the cheapest to test and the most common silent failure.
+					Request your own page as a bot and compare it to what a browser gets. If the bot receives
+					an empty shell or a 403, stop — nothing above that layer can work, and no amount of
+					content will change it.
+				</p>
+
+				<p>
+					If retrieval is clean, check whether your own site agrees with itself before looking
+					anywhere else. Title, description, H1, schema, llms.txt. Internal disagreement is free to
+					fix and it is where a surprising number of these cases end.
+				</p>
+
+				<p>
+					Only then is it worth running buyer questions across engines. By that point, a bad answer
+					tells you something real: the record describing you is wrong, or it is right and the pages
+					that decide the answer do not exist yet.
+				</p>
+
+				<h2>What this framework does not cover</h2>
+
+				<p>
+					It describes failure modes, not timelines. Changes to your own pages register soonest in
+					engines that search the web on every question. Changes to how third parties describe you
+					depend on those sites updating and being re-crawled, which is outside anyone's control.
+					Any framework that promises a date for a specific engine is guessing.
+				</p>
+
+				<p>
+					It also does not cover whether the buyer wanted your product in the first place. Being
+					described correctly is table stakes, not a strategy.
+				</p>
+
+				<hr />
+
+				<p class="byline">
+					Written by {AUTHOR_NAME}. You can test layers one and three on your own domain with
+					<a href="/ai-crawler-check/">Crawler Check</a> and
+					<a href="/positioning-check/">Positioning Check</a>, both free. The
+					<a href="/services">audit</a> covers all four.
+				</p>
+			</article>
+		</main>
+
+		<Footer />
+
+		<style>
+			.layer { margin-top: 3.5rem; }
+			.layer h2 { display: flex; align-items: baseline; gap: 0.7rem; }
+			.layer-n {
+				display: inline-flex; align-items: center; justify-content: center;
+				width: 1.9rem; height: 1.9rem; flex: none;
+				border-radius: 50%; border: 1px solid currentColor;
+				font-size: 0.95rem; opacity: 0.55;
+			}
+			.layer-q { font-size: 1.1rem; opacity: 0.75; margin-top: 0.4rem; }
+			.layer h3 { font-size: 1rem; margin-top: 1.8rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.05em; }
+			.byline { font-size: 0.95rem; opacity: 0.7; }
+		</style>
+	</body>
+</html>
