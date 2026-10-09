@@ -236,26 +236,35 @@ async function archivedAt(b: Budget, hosts: string[], months: number) {
 }
 
 // ---------- Common Crawl ----------
-// Índice muy limitado: pocas consultas, en serie, con pausa, y cortamos si se acaba el tiempo.
+// CDX indexa por URL completa. Sin comodín, host/ no hace match aunque el sitio esté indexado.
 async function commonCrawl(b: Budget, hosts: string[]) {
   const collections = await reqJson(b, 'https://index.commoncrawl.org/collinfo.json', 8000, 1);
   if (!Array.isArray(collections) || !collections.length) return { ok: false as const, reason: 'down' };
 
   const picked = [collections[0], collections[3], collections[6], collections[9]].filter(Boolean);
+  const bare = hosts[0].replace(/^www\./, '');
+  const patterns = [...new Set([...hosts, bare, 'www.' + bare])];
   const dates: string[] = [];
   let checked = 0;
 
   for (const col of picked) {
     if (timeLeft(b) < 6000) break;
     checked++;
-    for (const host of hosts) {
-      const r = await req(b, `${col['cdx-api']}?url=${encodeURIComponent(host + '/')}&output=json&limit=1`, UA_TOOL, 10000);
+    let hit = false;
+
+    for (const host of patterns) {
+      if (hit || timeLeft(b) < 4000) break;
+      const target = encodeURIComponent(`${host}/*`);
+      const r = await req(b, `${col['cdx-api']}?url=${target}&output=json&limit=5&filter=status:200`, UA_TOOL, 10000);
       if (r.status === 429 || r.status === 503) return { ok: false as const, reason: 'rate-limited' };
-      if (r.status === 200) {
-        try {
-          const row = JSON.parse(r.text.split('\n')[0]);
-          if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); break; }
-        } catch { /* respuesta rara */ }
+      if (r.status === 200 && r.text.trim()) {
+        for (const line of r.text.split('\n')) {
+          if (!line.trim()) continue;
+          try {
+            const row = JSON.parse(line);
+            if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); hit = true; break; }
+          } catch { /* respuesta rara */ }
+        }
       }
       await sleep(300);
     }
