@@ -1,17 +1,18 @@
 ---
-import { CALENDLY_URL, LINKEDIN_URL } from '../consts';
+import { CALENDLY_URL, LINKEDIN_URL, AUTHOR_NAME } from '../consts';
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
 	<div class="footer-top">
 		<div>
-			<p class="footer-name">Gerald Gerez</p>
+			<p class="footer-name">{AUTHOR_NAME}</p>
 			<p class="footer-role">AEO &amp; GEO · B2B SaaS</p>
 		</div>
 		<div class="footer-links">
 			<a href={CALENDLY_URL} target="_blank" rel="noopener">Book a call</a>
 			<a href={LINKEDIN_URL} target="_blank" rel="noopener">LinkedIn</a>
+			<a href="/framework">Framework</a>
 			<a href="/blog">Blog</a>
 		</div>
 	</div>
