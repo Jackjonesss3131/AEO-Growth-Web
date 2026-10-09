@@ -16,25 +16,25 @@ const stages = [
 const steps = [
 	{
 		n: '01',
-		title: 'We find out what AI says about you',
-		body: 'We run the questions your buyer asks — with their stack, team size and budget attached — across ChatGPT, Perplexity, Gemini and Google.',
+		title: 'I find out what AI says about you',
+		body: 'I run the questions your buyer asks — with their stack, team size and budget attached — across ChatGPT, Perplexity, Gemini and Google.',
 		outcome: 'You find out if you get recommended, how you get described, and who takes your place.',
 	},
 	{
 		n: '02',
-		title: 'We fix what describes you wrong',
-		body: 'Your site says one thing. Your old listings say another. The model believes whichever has more sources behind it, and that’s usually the outdated one.',
+		title: 'I fix what describes you wrong',
+		body: 'Your site says one thing. Your old listings say another. The model believes whichever has more sources behind it, and that\u2019s usually the outdated one.',
 		outcome: 'One version of your company across the web instead of three competing.',
 	},
 	{
 		n: '03',
-		title: 'We build the pages that decide the answer',
+		title: 'I build the pages that decide the answer',
 		body: 'The pages people read right before they decide. Integrations, comparisons, pricing, proof.',
 		outcome: 'You show up when someone asks what to use, not what something is.',
 	},
 	{
 		n: '04',
-		title: 'We measure monthly and adjust',
+		title: 'I measure monthly and adjust',
 		body: 'Engines change. Competitors publish. What worked in March stops working. Same questions, every engine, every month.',
 		outcome: 'You know what moved and what moved it.',
 	},
@@ -43,7 +43,7 @@ const steps = [
 const includes = [
 	{
 		title: 'Content built to be cited',
-		body: 'Your blog explains things. It doesn’t get you bought. We build the pages that do.',
+		body: 'Your blog explains things. It doesn\u2019t get you bought. I build the pages that do.',
 	},
 	{
 		title: 'Segment and market targeting',
@@ -51,21 +51,21 @@ const includes = [
 	},
 	{
 		title: 'AEO across your whole site',
-		body: 'Most AI crawlers don’t run JavaScript. If they can’t read your site, none of this works.',
+		body: 'Most AI crawlers don\u2019t run JavaScript. If they can\u2019t read your site, none of this works.',
 	},
 	{
 		title: 'Your identity fixed everywhere',
-		body: 'Half the web still describes what you sold two years ago. We go through it and correct it.',
+		body: 'Half the web still describes what you sold two years ago. I go through it and correct it.',
 	},
 ];
 
 const benefits = [
 	{ n: '1', title: 'Authority that holds', body: 'Algorithm updates stop deciding your quarter. The sources these models trust become yours.' },
-	{ n: '2', title: 'The niches you actually serve', body: 'You won’t win the broad question. You can own every specific one, and that’s where the budget is.' },
+	{ n: '2', title: 'The niches you actually serve', body: 'You won\u2019t win the broad question. You can own every specific one, and that\u2019s where the budget is.' },
 	{ n: '3', title: 'Recommended, not mentioned', body: 'Being one of ten does nothing for you. Being the one they should call does.' },
 	{ n: '4', title: 'Leads that arrive convinced', body: 'They already compared you. They call to talk price, not to ask what you do.' },
 	{ n: '5', title: 'Credibility on contact', body: 'Nobody opens the call confused about what you sell. You stop spending the first ten minutes correcting them.' },
-	{ n: '6', title: 'Ground taken early', body: 'Your competitors aren’t doing this yet. You probably have a year.' },
+	{ n: '6', title: 'Ground taken early', body: 'Your competitors aren\u2019t doing this yet. You probably have a year.' },
 ];
 
 const faqs = [
@@ -82,8 +82,8 @@ const faqs = [
 		a: 'No. A citation means a model used your page as a source. A recommendation means it named your product as an option worth evaluating. Many B2B SaaS companies have the first without the second.',
 	},
 	{
-		q: 'Who is this for?',
-		a: 'B2B SaaS companies that have repositioned in the last two years, compete against incumbents on broad category questions, or appear in AI answers with outdated or inaccurate descriptions.',
+		q: 'What does this cost?',
+		a: 'The audit is $800 one time, and ongoing work is $1,000 per month with no contract. Both free tools run on your domain before you pay anything.',
 	},
 	{
 		q: 'How long does AEO take to work?',
@@ -114,15 +114,42 @@ const faqSchema = {
 		<main>
 			<section class="hero">
 				<p class="eyebrow">AEO &amp; GEO for B2B SaaS</p>
-				<h1>Being cited isn't the same as being understood.</h1>
+				<h1>You repositioned. The models didn't notice.</h1>
 				<p class="hero-sub">
-					Most tools tell you whether your brand appeared in an AI answer. That's a yes or no, and it
-					misses where the real failures are. I look at what the model actually says about you — and
-					whether it matches what you sell today.
+					Your site says what you sell today. Most of what's indexed about you says what you sold two
+					years ago, and there's more of it. The model isn't wrong — it's reasoning correctly from
+					stale material. I find what's feeding it and replace it.
 				</p>
 				<div class="hero-cta">
-					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Get a free audit</a>
+					<a href="/positioning-check/" class="btn-primary">Check your positioning</a>
 					<a href="/services" class="btn-ghost">See how it works</a>
+				</div>
+				<p class="hero-note">Free, runs on your domain, no signup.</p>
+			</section>
+
+			<section class="tools">
+				<div class="tool-grid">
+					<a href="/ai-crawler-check/" class="tool-card">
+						<span class="tool-badge">2 minutes</span>
+						<h3>Crawler Check</h3>
+						<p class="tool-desc">
+							See exactly what each AI bot receives when it visits your site. Most crawlers don't
+							run JavaScript — if yours comes back empty, nothing else you publish matters until
+							that's fixed.
+						</p>
+						<span class="tool-link">Run the check<span aria-hidden="true"> →</span></span>
+					</a>
+
+					<a href="/positioning-check/" class="tool-card">
+						<span class="tool-badge">40 seconds</span>
+						<h3>Positioning Check</h3>
+						<p class="tool-desc">
+							See how your homepage described you over the last three years, and which version the
+							recent crawls captured. If the snapshot on record isn't the company you sell today,
+							that's what the models learned.
+						</p>
+						<span class="tool-link">Check your positioning<span aria-hidden="true"> →</span></span>
+					</a>
 				</div>
 			</section>
 
@@ -141,13 +168,14 @@ const faqSchema = {
 				<p class="framework-note">
 					Most audits measure the first two. The interesting failures live in the fourth — companies
 					cited accurately, in the category they've already moved away from.
+					<a href="/framework">How each layer fails</a>.
 				</p>
 			</section>
 
 			<section class="offer">
 				<div class="section-head">
 					<p class="eyebrow">The process</p>
-					<h2>How we get AI to recommend you</h2>
+					<h2>How I get AI to recommend you</h2>
 					<p>
 						In order. Content built on a broken entity doesn't compound — it gets filed under
 						whichever record the model settled on.
@@ -202,6 +230,33 @@ const faqSchema = {
 				</ol>
 			</section>
 
+			<section class="pricing-section">
+				<div class="section-head">
+					<p class="eyebrow">Pricing</p>
+					<h2>Two numbers</h2>
+				</div>
+				<div class="price-grid">
+					<article class="price-card">
+						<p class="price-label">The audit</p>
+						<p class="price-n">$800<span> one time</span></p>
+						<p class="price-body">
+							Your buyers' questions across ChatGPT, Perplexity, Gemini and Google. Where each
+							description came from, who appears in your place, and the fix list. Yours to keep
+							either way. Five a month.
+						</p>
+					</article>
+					<article class="price-card">
+						<p class="price-label">Ongoing</p>
+						<p class="price-n">$1,000<span> per month</span></p>
+						<p class="price-body">
+							The same questions rerun every engine, positioning work on the queries you can win,
+							two pages a month, third-party sources corrected as they're found, and a report
+							tracing each change back to what caused it. No contract.
+						</p>
+					</article>
+				</div>
+			</section>
+
 			<section class="faq-section">
 				<div class="section-head">
 					<p class="eyebrow">Common questions</p>
@@ -218,15 +273,62 @@ const faqSchema = {
 			</section>
 
 			<section class="close-cta">
-				<h2>AI doesn't cite everyone.</h2>
+				<h2>Find out before you pay anything.</h2>
 				<p>
-					Being mentioned isn't being recommended. Send me your domain and I'll tell you what the
-					models say about you right now. Free, before we talk.
+					Both tools run on your own domain in under two minutes. If they come back clean, you may
+					not need me. If they don't, that's the conversation.
 				</p>
-				<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Get a free audit</a>
+				<div class="hero-cta">
+					<a href="/positioning-check/" class="btn-primary">Check your positioning</a>
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-ghost">Book a call</a>
+				</div>
 			</section>
 		</main>
 
 		<Footer />
+
+		<style>
+			.hero-note { margin-top: 0.9rem; font-size: 0.9rem; opacity: 0.6; }
+
+			.tools { margin: 3rem 0 4rem; }
+			.tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+			.tool-card {
+				display: flex; flex-direction: column; align-items: flex-start; padding: 1.75rem;
+				border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; background: #fff;
+				text-decoration: none; color: inherit;
+				transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+			}
+			.tool-card:hover {
+				transform: translateY(-3px); border-color: rgba(37,99,235,0.45);
+				box-shadow: 0 10px 28px rgba(15,23,42,0.09);
+			}
+			.tool-badge {
+				display: inline-block; padding: .2rem .6rem; border-radius: 999px;
+				background: rgba(37,99,235,0.09); color: #2563eb; font-size: .72rem;
+				font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+			}
+			.tool-card h3 { margin: .9rem 0 .6rem; font-size: 1.3rem; line-height: 1.25; }
+			.tool-desc { margin: 0 0 1.4rem; font-size: .95rem; line-height: 1.6; opacity: .78; }
+			.tool-link { margin-top: auto; font-weight: 600; font-size: .95rem; color: #2563eb; }
+			.tool-card:hover .tool-link span { display: inline-block; transform: translateX(3px); transition: transform .18s ease; }
+
+			.pricing-section { margin: 4rem 0; }
+			.price-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 2rem; }
+			.price-card { padding: 1.75rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 14px; }
+			.price-label { margin: 0; font-size: .82rem; text-transform: uppercase; letter-spacing: .06em; opacity: .6; }
+			.price-n { margin: .5rem 0 1rem; font-size: 2.1rem; font-weight: 700; line-height: 1; }
+			.price-n span { font-size: .95rem; font-weight: 400; opacity: .6; }
+			.price-body { margin: 0; font-size: .95rem; line-height: 1.6; opacity: .78; }
+
+			@media (max-width: 720px) {
+				.tool-grid, .price-grid { grid-template-columns: 1fr; }
+			}
+
+			@media (prefers-color-scheme: dark) {
+				.tool-card { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.12); }
+				.tool-card:hover { border-color: rgba(96,165,250,0.5); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+				.price-card { border-color: rgba(255,255,255,0.12); }
+			}
+		</style>
 	</body>
 </html>
