@@ -165,9 +165,9 @@ export const prerender = false;
     if (cc.ccbotBlocked && (!cc.ok || !cc.captures.length)) {
       return 'Your robots.txt blocks CCBot, so Common Crawl does not collect your site. Models that train on Common Crawl only learn about you from what other sites say.';
     }
-    if (!cc.ok) return 'We could not reach the Common Crawl index this time, so we cannot say which version the recent crawls captured.';
+    if (!cc.ok) return 'We could not complete the Common Crawl check this time, so this says nothing about whether you are indexed there.';
     if (!cc.captures.length) {
-      return 'We did not find your homepage in the ' + cc.checked + ' Common Crawl indexes we sampled. That can mean you are not being crawled, or that our sample missed you.';
+      return 'Our Common Crawl sample came back empty. We check a handful of monthly indexes, not all of them, so this is not evidence that you are missing from it.';
     }
     if (!s || !s.capturesOnOldVersion) {
       return 'All ' + cc.captures.length + ' crawls we found captured your current version. Your record is up to date.';
@@ -248,7 +248,7 @@ export const prerender = false;
   function crawls(data) {
     const cc = data.commonCrawl;
     const title = 'Which version the crawls captured';
-    const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We checked a sample of them.';
+    const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We check a sample of them, not all.';
     const body = el('div');
 
     if (cc.ccbotBlocked) {
@@ -258,13 +258,14 @@ export const prerender = false;
 
     if (!cc.ok) {
       body.append(el('p', null, cc.reason === 'rate-limited'
-        ? 'The Common Crawl index is rate limiting requests right now. Try again in a few minutes.'
-        : 'The Common Crawl index did not respond. Try again in a few minutes.'));
+        ? 'The Common Crawl index is rate limiting requests right now. Try again in a few minutes — this is not a finding about your site.'
+        : 'The Common Crawl index did not respond. Try again in a few minutes — this is not a finding about your site.'));
       return block(title, sub, body);
     }
 
     if (!cc.captures.length) {
-      if (!cc.ccbotBlocked) body.append(el('p', null, 'We did not find your homepage in the ' + cc.checked + ' indexes we sampled.'));
+      if (!cc.ccbotBlocked) body.append(el('p', null,
+        'Nothing came back from the ' + cc.checked + ' indexes we sampled. Common Crawl publishes dozens, so an empty sample does not mean you are absent from it.'));
       return block(title, sub, body);
     }
 
@@ -323,8 +324,8 @@ export const prerender = false;
   function render(data) {
     const cta = el('div', { class: 'pc-cta' });
     cta.append(el('h3', null, 'This is the record. It is not the answer.'));
-    cta.append(el('p', null, 'This shows what models had to learn from. It does not show what ChatGPT, Perplexity or Gemini say about you today. The free audit runs your buyers\' real questions across every engine.'));
-    cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a free audit'));
+    cta.append(el('p', null, 'This shows what models had to learn from. It does not show what ChatGPT, Perplexity or Gemini say about you today. The audit runs your buyers\' real questions across every engine.'));
+    cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a call'));
 
     const method = el('p', { class: 'pc-method' },
       'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes and are matched to the version live on that date, so the split is an estimate. Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
