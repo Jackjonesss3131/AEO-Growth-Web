@@ -42,325 +42,319 @@ export const prerender = false;
     </main>
 
     <Footer />
+
+    <style is:global>
+      .pc { max-width: 960px; margin: 0 auto; padding: 64px 20px 96px; }
+      .pc-head, .pc-form { max-width: 640px; }
+      .pc-kicker { font-size: .875rem; opacity: .65; margin: 0 0 12px; }
+      .pc h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 16px; }
+      .pc-lede { font-size: 1.0625rem; line-height: 1.6; opacity: .8; margin: 0; }
+
+      .pc-form { margin-top: 40px; }
+      .pc-form label { display: block; font-weight: 600; margin-bottom: 8px; }
+      .pc-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .pc-row input {
+        flex: 1 1 260px; padding: 12px 14px; font: inherit; color: inherit; background: transparent;
+        border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 8px;
+      }
+      .pc-row button, .pc-cta a {
+        padding: 12px 20px; font: inherit; font-weight: 600; border: 0; border-radius: 8px;
+        cursor: pointer; background: CanvasText; color: Canvas; text-decoration: none;
+      }
+      .pc-row button:disabled { opacity: .5; cursor: progress; }
+      .pc input:focus-visible, .pc button:focus-visible, .pc a:focus-visible {
+        outline: 2px solid currentColor; outline-offset: 2px;
+      }
+      .pc-hint { font-size: .875rem; opacity: .65; margin: 8px 0 0; }
+
+      .pc-result { margin-top: 64px; display: grid; gap: 56px; }
+      .pc-result[hidden] { display: none; }
+      .pc-result h2 { font-size: clamp(1.5rem, 3.5vw, 2.125rem); line-height: 1.2; margin: 0 0 12px; max-width: 26ch; }
+      .pc-result h3 { font-size: 1.125rem; margin: 0 0 6px; }
+      .pc-sub { opacity: .7; margin: 0 0 20px; line-height: 1.55; max-width: 64ch; }
+      .pc-detail { font-size: 1.0625rem; line-height: 1.6; margin: 0; max-width: 58ch; }
+
+      .pc-switch { margin-top: 28px; padding: 22px; border-radius: 10px; max-width: 58ch;
+        background: color-mix(in srgb, currentColor 5%, transparent); }
+      .pc-switch p { margin: 0; }
+      .pc-switch-label { font-size: .8125rem; opacity: .6; margin-bottom: 4px !important; }
+      .pc-switch-old { font-size: 1.0625rem; opacity: .55; text-decoration: line-through; margin-bottom: 18px !important; }
+      .pc-switch-new { font-size: 1.0625rem; font-weight: 600; }
+
+      .pc-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; }
+      .pc-col { border-top: 2px solid color-mix(in srgb, currentColor 18%, transparent); padding-top: 16px; }
+      .pc-col.is-today { border-top-color: currentColor; }
+      .pc-date { font-weight: 700; margin: 0 0 8px; }
+      .pc-ctitle { font-size: .875rem; opacity: .65; margin: 0 0 8px; }
+      .pc-desc { line-height: 1.55; margin: 0 0 14px; }
+      .pc-small { font-size: .8125rem; opacity: .65; margin: 0 0 6px; }
+      .pc-chips { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+      .pc-chips li { font-size: .8125rem; padding: 3px 9px; border-radius: 999px;
+        background: color-mix(in srgb, currentColor 8%, transparent); }
+      .pc-chips.is-gone li { text-decoration: line-through; }
+      .pc-col a { font-size: .875rem; color: inherit; }
+
+      .pc-bars { display: grid; gap: 10px; max-width: 620px; }
+      .pc-bar { display: grid; grid-template-columns: 170px 1fr 30px; gap: 12px; align-items: center; font-size: .9375rem; }
+      .pc-bar-track { height: 10px; border-radius: 999px; overflow: hidden;
+        background: color-mix(in srgb, currentColor 8%, transparent); }
+      .pc-bar-fill { height: 100%; background: currentColor; }
+      .pc-bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+      .pc-note { margin: 0 0 18px; padding: 14px 16px; border-radius: 8px; line-height: 1.55; max-width: 62ch;
+        background: color-mix(in srgb, #b45309 10%, transparent); }
+
+      .pc-fields { border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+      .pc-field { display: grid; grid-template-columns: 185px 1fr 165px; gap: 16px; padding: 14px 0;
+        border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); line-height: 1.5; }
+      .pc-field > :first-child { font-weight: 600; }
+      .pc-flag { font-size: .875rem; }
+      .pc-flag.is-off { color: #b45309; }
+      .pc-flag.is-unset { opacity: .5; }
+
+      .pc-cta { padding: 32px; border-radius: 12px; background: color-mix(in srgb, currentColor 6%, transparent); }
+      .pc-cta p { margin: 0 0 20px; line-height: 1.6; max-width: 54ch; }
+      .pc-cta a { display: inline-block; }
+
+      .pc-method { font-size: .8125rem; opacity: .6; line-height: 1.6; max-width: 70ch; margin: 0; }
+
+      @media (max-width: 640px) {
+        .pc-field { grid-template-columns: 1fr; gap: 4px; }
+        .pc-bar { grid-template-columns: 120px 1fr 26px; }
+      }
+    </style>
+
+    <script>
+      const CALENDLY = 'https://calendly.com/geraldeoleo/growth-plg';
+
+      const form = document.getElementById('pc-form');
+      const input = document.getElementById('pc-domain');
+      const button = document.getElementById('pc-btn');
+      const statusLine = document.getElementById('pc-status');
+      const output = document.getElementById('pc-result');
+
+      function el(tag, attrs, ...children) {
+        const node = document.createElement(tag);
+        if (attrs) for (const key in attrs) node.setAttribute(key, attrs[key]);
+        for (const child of children) if (child) node.append(child);
+        return node;
+      }
+
+      function monthYear(date) {
+        return new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      }
+
+      function chipList(items, className) {
+        if (!items || !items.length) return null;
+        const list = el('ul', { class: 'pc-chips ' + (className || '') });
+        items.slice(0, 8).forEach(function (w) { list.append(el('li', null, w)); });
+        return list;
+      }
+
+      function block(heading, sub, body) {
+        const wrap = el('div', null, el('h3', null, heading), el('p', { class: 'pc-sub' }, sub));
+        if (body) wrap.append(body);
+        return wrap;
+      }
+
+      function crawlSentence(data) {
+        const cc = data.commonCrawl;
+        const s = data.summary;
+        if (cc.ccbotBlocked && (!cc.ok || !cc.captures.length)) {
+          return 'Your robots.txt blocks CCBot, so Common Crawl does not collect your site. Models that train on Common Crawl only learn about you from what other sites say.';
+        }
+        if (!cc.ok) return 'We could not complete the Common Crawl check this time, so this says nothing about whether you are indexed there.';
+        if (!cc.captures.length) {
+          return 'Our Common Crawl sample came back empty. We check a handful of monthly indexes, not all of them, so this is not evidence that you are missing from it.';
+        }
+        if (!s || !s.capturesOnOldVersion) {
+          return 'All ' + cc.captures.length + ' crawls we found captured your current version. Your record is up to date.';
+        }
+        return s.capturesOnOldVersion + ' of the ' + s.capturesTotal + ' crawls we found captured an older version of your homepage.';
+      }
+
+      function verdict(data) {
+        const wrap = el('div');
+        const s = data.summary;
+
+        if (!data.archive.ok) {
+          wrap.append(el('h2', null, 'The Internet Archive did not respond.'));
+          wrap.append(el('p', { class: 'pc-detail' },
+            'We could not load your history this time. That is on their side. Try again in a minute.'));
+          return wrap;
+        }
+
+        if (!s) {
+          wrap.append(el('h2', null, 'We found no archived versions of your homepage.'));
+          wrap.append(el('p', { class: 'pc-detail' },
+            'Either the domain is new or the Internet Archive has nothing usable for it. What models know about you comes from your pages today and from what other sites say.'));
+          return wrap;
+        }
+
+        const LEVEL = { stable: 'has stayed consistent', shifted: 'has shifted', rewritten: 'has changed almost completely' };
+        const headline = s.titleChanged
+          ? 'You renamed your category since ' + monthYear(s.since) + '.'
+          : 'Your positioning ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.';
+
+        wrap.append(el('h2', null, headline));
+        wrap.append(el('p', { class: 'pc-detail' }, crawlSentence(data)));
+
+        if (s.titleChanged && s.oldTitle && s.newTitle) {
+          const sw = el('div', { class: 'pc-switch' });
+          sw.append(el('p', { class: 'pc-switch-label' }, 'Your title tag in ' + monthYear(s.since)));
+          sw.append(el('p', { class: 'pc-switch-old' }, s.oldTitle));
+          sw.append(el('p', { class: 'pc-switch-label' }, 'Your title tag today'));
+          sw.append(el('p', { class: 'pc-switch-new' }, s.newTitle));
+          wrap.append(sw);
+        }
+        return wrap;
+      }
+
+      function timeline(data) {
+        const grid = el('div', { class: 'pc-timeline' });
+
+        data.history.forEach(function (v) {
+          const col = el('article', { class: 'pc-col' });
+          col.append(el('p', { class: 'pc-date' }, monthYear(v.date)));
+          col.append(el('p', { class: 'pc-ctitle' }, v.fields.title || 'No title'));
+          col.append(el('p', { class: 'pc-desc' }, v.description || 'No description'));
+          if (v.vsToday.dropped.length) {
+            col.append(el('p', { class: 'pc-small' }, 'Gone from your homepage today'));
+            col.append(chipList(v.vsToday.dropped, 'is-gone'));
+          }
+          col.append(el('a', { href: v.archiveUrl, target: '_blank', rel: 'noopener' }, 'View archived page'));
+          grid.append(col);
+        });
+
+        const now = el('article', { class: 'pc-col is-today' });
+        now.append(el('p', { class: 'pc-date' }, 'Today'));
+        if (data.today.liveSince) now.append(el('p', { class: 'pc-small' }, 'Live since ' + monthYear(data.today.liveSince)));
+        now.append(el('p', { class: 'pc-ctitle' }, data.today.fields.title || 'No title'));
+        now.append(el('p', { class: 'pc-desc' }, data.today.description || 'No description'));
+        if (data.today.added.length) {
+          now.append(el('p', { class: 'pc-small' }, 'New since your oldest version'));
+          now.append(chipList(data.today.added));
+        }
+        grid.append(now);
+
+        return block('How your homepage described you', 'Your title and description at each point, from the Internet Archive.', grid);
+      }
+
+      function crawls(data) {
+        const cc = data.commonCrawl;
+        const title = 'Which version the crawls captured';
+        const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We check a sample of them, not all.';
+        const body = el('div');
+
+        if (cc.ccbotBlocked) {
+          body.append(el('p', { class: 'pc-note' },
+            'Your robots.txt blocks CCBot, the Common Crawl crawler. That is a valid choice, but it means models trained on Common Crawl do not read your site directly.'));
+        }
+
+        if (!cc.ok) {
+          body.append(el('p', null, cc.reason === 'rate-limited'
+            ? 'The Common Crawl index is rate limiting requests right now. Try again in a few minutes — this is not a finding about your site.'
+            : 'The Common Crawl index did not respond. Try again in a few minutes — this is not a finding about your site.'));
+          return block(title, sub, body);
+        }
+
+        if (!cc.captures.length) {
+          if (!cc.ccbotBlocked) body.append(el('p', null,
+            'Nothing came back from the ' + cc.checked + ' indexes we sampled. Common Crawl publishes dozens, so an empty sample does not mean you are absent from it.'));
+          return block(title, sub, body);
+        }
+
+        const keys = data.history.map(function (v) { return v.date; }).concat(['current']);
+        let max = 1;
+        keys.forEach(function (k) { if ((cc.byVersion[k] || 0) > max) max = cc.byVersion[k]; });
+
+        const bars = el('div', { class: 'pc-bars' });
+        keys.forEach(function (k) {
+          const n = cc.byVersion[k] || 0;
+          const fill = el('div', { class: 'pc-bar-fill' });
+          fill.style.width = ((n / max) * 100) + '%';
+          bars.append(el('div', { class: 'pc-bar' },
+            el('span', null, k === 'current' ? 'Current version' : monthYear(k) + ' version'),
+            el('div', { class: 'pc-bar-track' }, fill),
+            el('span', null, String(n))
+          ));
+        });
+        body.append(bars);
+        body.append(el('p', { class: 'pc-small', style: 'margin-top:14px' },
+          'Crawled in: ' + cc.captures.map(function (c) { return monthYear(c.date); }).join(', ')));
+
+        return block(title, sub, body);
+      }
+
+      function consistency(data) {
+        const table = el('div', { class: 'pc-fields' });
+        data.consistency.forEach(function (row) {
+          let cls = 'pc-flag', label;
+          if (row.matches === null) { cls += ' is-unset'; label = 'Not set'; }
+          else if (row.matches) { label = 'Agrees'; }
+          else { cls += ' is-off'; label = 'Says something else'; }
+          table.append(el('div', { class: 'pc-field' },
+            el('span', null, row.field),
+            el('span', null, row.value || 'Missing'),
+            el('span', { class: cls }, label)
+          ));
+        });
+        return block('Does your site agree with itself?',
+          'A model reads all of these. When they disagree, it picks one, usually not the one you would choose.', table);
+      }
+
+      function wikidata(data) {
+        const wd = data.wikidata;
+        const sub = 'Models use Wikidata to confirm what a company is.';
+        if (!wd.checked) return block('Wikidata', sub, el('p', null, 'Wikidata did not respond.'));
+        if (!wd.found) return block('Wikidata', sub, el('p', null, 'No Wikidata entry points to your domain.'));
+        const line = el('p');
+        line.append(el('a', { href: wd.url, target: '_blank', rel: 'noopener' }, wd.label || 'Entry'));
+        line.append(': ' + (wd.description || 'no description set'));
+        return block('Wikidata', sub, line);
+      }
+
+      function render(data) {
+        const cta = el('div', { class: 'pc-cta' });
+        cta.append(el('h3', null, 'This is the record. It is not the answer.'));
+        cta.append(el('p', null, 'This shows what models had to learn from. It does not show what ChatGPT, Perplexity or Gemini say about you today. The audit runs your buyers\' real questions across every engine.'));
+        cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a call'));
+
+        const method = el('p', { class: 'pc-method' },
+          'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes and are matched to the version live on that date, so the split is an estimate. Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
+
+        output.innerHTML = '';
+        const sections = data.archive.ok
+          ? [verdict(data), timeline(data), crawls(data), consistency(data), wikidata(data), cta, method]
+          : [verdict(data), crawls(data), consistency(data), wikidata(data), cta, method];
+        sections.forEach(function (s) { output.append(s); });
+      }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const domain = input.value.trim();
+        if (!domain) return;
+
+        button.disabled = true;
+        button.textContent = 'Checking...';
+        statusLine.textContent = 'Reading your homepage, the Internet Archive and Common Crawl.';
+        output.hidden = true;
+
+        fetch('/api/positioning?domain=' + encodeURIComponent(domain))
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.error) throw new Error(data.error);
+            render(data);
+            output.hidden = false;
+            statusLine.textContent = 'Checked ' + data.domain + '.';
+          })
+          .catch(function (err) {
+            statusLine.textContent = err.message || 'Something went wrong. Try again in a minute.';
+          })
+          .then(function () {
+            button.disabled = false;
+            button.textContent = 'Check positioning';
+          });
+      });
+    </script>
   </body>
 </html>
-
-<style is:global>
-  .pc { max-width: 960px; margin: 0 auto; padding: 64px 20px 96px; }
-  .pc-head, .pc-form { max-width: 640px; }
-  .pc-kicker { font-size: .875rem; opacity: .65; margin: 0 0 12px; }
-  .pc h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 16px; }
-  .pc-lede { font-size: 1.0625rem; line-height: 1.6; opacity: .8; margin: 0; }
-
-  .pc-form { margin-top: 40px; }
-  .pc-form label { display: block; font-weight: 600; margin-bottom: 8px; }
-  .pc-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .pc-row input {
-    flex: 1 1 260px; padding: 12px 14px; font: inherit; color: inherit; background: transparent;
-    border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 8px;
-  }
-  .pc-row button, .pc-cta a {
-    padding: 12px 20px; font: inherit; font-weight: 600; border: 0; border-radius: 8px;
-    cursor: pointer; background: CanvasText; color: Canvas; text-decoration: none;
-  }
-  .pc-row button:disabled { opacity: .5; cursor: progress; }
-  .pc input:focus-visible, .pc button:focus-visible, .pc a:focus-visible {
-    outline: 2px solid currentColor; outline-offset: 2px;
-  }
-  .pc-hint { font-size: .875rem; opacity: .65; margin: 8px 0 0; }
-
-  .pc-result { margin-top: 64px; display: grid; gap: 56px; }
-  .pc-result[hidden] { display: none; }
-  .pc-result h2 { font-size: clamp(1.5rem, 3.5vw, 2.125rem); line-height: 1.2; margin: 0 0 12px; max-width: 26ch; }
-  .pc-result h3 { font-size: 1.125rem; margin: 0 0 6px; }
-  .pc-sub { opacity: .7; margin: 0 0 20px; line-height: 1.55; max-width: 64ch; }
-  .pc-detail { font-size: 1.0625rem; line-height: 1.6; margin: 0; max-width: 58ch; }
-
-  .pc-switch { margin-top: 28px; padding: 22px; border-radius: 10px; max-width: 58ch;
-    background: color-mix(in srgb, currentColor 5%, transparent); }
-  .pc-switch p { margin: 0; }
-  .pc-switch-label { font-size: .8125rem; opacity: .6; margin-bottom: 4px !important; }
-  .pc-switch-old { font-size: 1.0625rem; opacity: .55; text-decoration: line-through; margin-bottom: 18px !important; }
-  .pc-switch-new { font-size: 1.0625rem; font-weight: 600; }
-
-  .pc-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; }
-  .pc-col { border-top: 2px solid color-mix(in srgb, currentColor 18%, transparent); padding-top: 16px; }
-  .pc-col.is-today { border-top-color: currentColor; }
-  .pc-date { font-weight: 700; margin: 0 0 8px; }
-  .pc-ctitle { font-size: .875rem; opacity: .65; margin: 0 0 8px; }
-  .pc-desc { line-height: 1.55; margin: 0 0 14px; }
-  .pc-small { font-size: .8125rem; opacity: .65; margin: 0 0 6px; }
-  .pc-chips { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }
-  .pc-chips li { font-size: .8125rem; padding: 3px 9px; border-radius: 999px;
-    background: color-mix(in srgb, currentColor 8%, transparent); }
-  .pc-chips.is-gone li { text-decoration: line-through; }
-  .pc-col a { font-size: .875rem; color: inherit; }
-
-  .pc-bars { display: grid; gap: 10px; max-width: 620px; }
-  .pc-bar { display: grid; grid-template-columns: 170px 1fr 30px; gap: 12px; align-items: center; font-size: .9375rem; }
-  .pc-bar-track { height: 10px; border-radius: 999px; overflow: hidden;
-    background: color-mix(in srgb, currentColor 8%, transparent); }
-  .pc-bar-fill { height: 100%; background: currentColor; }
-  .pc-bar span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
-  .pc-note { margin: 0 0 18px; padding: 14px 16px; border-radius: 8px; line-height: 1.55; max-width: 62ch;
-    background: color-mix(in srgb, #b45309 10%, transparent); }
-
-  .pc-fields { border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
-  .pc-field { display: grid; grid-template-columns: 185px 1fr 165px; gap: 16px; padding: 14px 0;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); line-height: 1.5; }
-  .pc-field > :first-child { font-weight: 600; }
-  .pc-flag { font-size: .875rem; }
-  .pc-flag.is-off { color: #b45309; }
-  .pc-flag.is-unset { opacity: .5; }
-
-  .pc-cta { padding: 32px; border-radius: 12px; background: color-mix(in srgb, currentColor 6%, transparent); }
-  .pc-cta p { margin: 0 0 20px; line-height: 1.6; max-width: 54ch; }
-  .pc-cta a { display: inline-block; }
-
-  .pc-method { font-size: .8125rem; opacity: .6; line-height: 1.6; max-width: 70ch; margin: 0; }
-
-  @media (max-width: 640px) {
-    .pc-field { grid-template-columns: 1fr; gap: 4px; }
-    .pc-bar { grid-template-columns: 120px 1fr 26px; }
-  }
-</style>
-
-<script>
-  const CALENDLY = 'https://calendly.com/geraldeoleo/growth-plg';
-
-  const form = document.getElementById('pc-form');
-  const input = document.getElementById('pc-domain');
-  const button = document.getElementById('pc-btn');
-  const statusLine = document.getElementById('pc-status');
-  const output = document.getElementById('pc-result');
-
-  // Todo el texto entra con textContent: viene de webs de terceros
-  function el(tag, attrs, ...children) {
-    const node = document.createElement(tag);
-    if (attrs) for (const key in attrs) node.setAttribute(key, attrs[key]);
-    for (const child of children) if (child) node.append(child);
-    return node;
-  }
-
-  function monthYear(date) {
-    return new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  }
-
-  function chipList(items, className) {
-    if (!items || !items.length) return null;
-    const list = el('ul', { class: 'pc-chips ' + (className || '') });
-    items.slice(0, 8).forEach(function (w) { list.append(el('li', null, w)); });
-    return list;
-  }
-
-  function block(heading, sub, body) {
-    const wrap = el('div', null, el('h3', null, heading), el('p', { class: 'pc-sub' }, sub));
-    if (body) wrap.append(body);
-    return wrap;
-  }
-
-  function crawlSentence(data) {
-    const cc = data.commonCrawl;
-    const s = data.summary;
-    if (cc.ccbotBlocked && (!cc.ok || !cc.captures.length)) {
-      return 'Your robots.txt blocks CCBot, so Common Crawl does not collect your site. Models that train on Common Crawl only learn about you from what other sites say.';
-    }
-    if (!cc.ok) return 'We could not complete the Common Crawl check this time, so this says nothing about whether you are indexed there.';
-    if (!cc.captures.length) {
-      return 'Our Common Crawl sample came back empty. We check a handful of monthly indexes, not all of them, so this is not evidence that you are missing from it.';
-    }
-    if (!s || !s.capturesOnOldVersion) {
-      return 'All ' + cc.captures.length + ' crawls we found captured your current version. Your record is up to date.';
-    }
-    return s.capturesOnOldVersion + ' of the ' + s.capturesTotal + ' crawls we found captured an older version of your homepage.';
-  }
-
-  // 1. Qué pasó
-  function verdict(data) {
-    const wrap = el('div');
-    const s = data.summary;
-
-    if (!data.archive.ok) {
-      wrap.append(el('h2', null, 'The Internet Archive did not respond.'));
-      wrap.append(el('p', { class: 'pc-detail' },
-        'We could not load your history this time. That is on their side. Try again in a minute.'));
-      return wrap;
-    }
-
-    if (!s) {
-      wrap.append(el('h2', null, 'We found no archived versions of your homepage.'));
-      wrap.append(el('p', { class: 'pc-detail' },
-        'Either the domain is new or the Internet Archive has nothing usable for it. What models know about you comes from your pages today and from what other sites say.'));
-      return wrap;
-    }
-
-    const LEVEL = { stable: 'has stayed consistent', shifted: 'has shifted', rewritten: 'has changed almost completely' };
-    const headline = s.titleChanged
-      ? 'You renamed your category since ' + monthYear(s.since) + '.'
-      : 'Your positioning ' + LEVEL[s.level] + ' since ' + monthYear(s.since) + '.';
-
-    wrap.append(el('h2', null, headline));
-    wrap.append(el('p', { class: 'pc-detail' }, crawlSentence(data)));
-
-    if (s.titleChanged && s.oldTitle && s.newTitle) {
-      const sw = el('div', { class: 'pc-switch' });
-      sw.append(el('p', { class: 'pc-switch-label' }, 'Your title tag in ' + monthYear(s.since)));
-      sw.append(el('p', { class: 'pc-switch-old' }, s.oldTitle));
-      sw.append(el('p', { class: 'pc-switch-label' }, 'Your title tag today'));
-      sw.append(el('p', { class: 'pc-switch-new' }, s.newTitle));
-      wrap.append(sw);
-    }
-    return wrap;
-  }
-
-  // 2. Línea de tiempo
-  function timeline(data) {
-    const grid = el('div', { class: 'pc-timeline' });
-
-    data.history.forEach(function (v) {
-      const col = el('article', { class: 'pc-col' });
-      col.append(el('p', { class: 'pc-date' }, monthYear(v.date)));
-      col.append(el('p', { class: 'pc-ctitle' }, v.fields.title || 'No title'));
-      col.append(el('p', { class: 'pc-desc' }, v.description || 'No description'));
-      if (v.vsToday.dropped.length) {
-        col.append(el('p', { class: 'pc-small' }, 'Gone from your homepage today'));
-        col.append(chipList(v.vsToday.dropped, 'is-gone'));
-      }
-      col.append(el('a', { href: v.archiveUrl, target: '_blank', rel: 'noopener' }, 'View archived page'));
-      grid.append(col);
-    });
-
-    const now = el('article', { class: 'pc-col is-today' });
-    now.append(el('p', { class: 'pc-date' }, 'Today'));
-    if (data.today.liveSince) now.append(el('p', { class: 'pc-small' }, 'Live since ' + monthYear(data.today.liveSince)));
-    now.append(el('p', { class: 'pc-ctitle' }, data.today.fields.title || 'No title'));
-    now.append(el('p', { class: 'pc-desc' }, data.today.description || 'No description'));
-    if (data.today.added.length) {
-      now.append(el('p', { class: 'pc-small' }, 'New since your oldest version'));
-      now.append(chipList(data.today.added));
-    }
-    grid.append(now);
-
-    return block('How your homepage described you', 'Your title and description at each point, from the Internet Archive.', grid);
-  }
-
-  // 3. Common Crawl
-  function crawls(data) {
-    const cc = data.commonCrawl;
-    const title = 'Which version the crawls captured';
-    const sub = 'Common Crawl publishes a new index every month and is one of the main sources models train on. We check a sample of them, not all.';
-    const body = el('div');
-
-    if (cc.ccbotBlocked) {
-      body.append(el('p', { class: 'pc-note' },
-        'Your robots.txt blocks CCBot, the Common Crawl crawler. That is a valid choice, but it means models trained on Common Crawl do not read your site directly.'));
-    }
-
-    if (!cc.ok) {
-      body.append(el('p', null, cc.reason === 'rate-limited'
-        ? 'The Common Crawl index is rate limiting requests right now. Try again in a few minutes — this is not a finding about your site.'
-        : 'The Common Crawl index did not respond. Try again in a few minutes — this is not a finding about your site.'));
-      return block(title, sub, body);
-    }
-
-    if (!cc.captures.length) {
-      if (!cc.ccbotBlocked) body.append(el('p', null,
-        'Nothing came back from the ' + cc.checked + ' indexes we sampled. Common Crawl publishes dozens, so an empty sample does not mean you are absent from it.'));
-      return block(title, sub, body);
-    }
-
-    const keys = data.history.map(function (v) { return v.date; }).concat(['current']);
-    let max = 1;
-    keys.forEach(function (k) { if ((cc.byVersion[k] || 0) > max) max = cc.byVersion[k]; });
-
-    const bars = el('div', { class: 'pc-bars' });
-    keys.forEach(function (k) {
-      const n = cc.byVersion[k] || 0;
-      const fill = el('div', { class: 'pc-bar-fill' });
-      fill.style.width = ((n / max) * 100) + '%';
-      bars.append(el('div', { class: 'pc-bar' },
-        el('span', null, k === 'current' ? 'Current version' : monthYear(k) + ' version'),
-        el('div', { class: 'pc-bar-track' }, fill),
-        el('span', null, String(n))
-      ));
-    });
-    body.append(bars);
-    body.append(el('p', { class: 'pc-small', style: 'margin-top:14px' },
-      'Crawled in: ' + cc.captures.map(function (c) { return monthYear(c.date); }).join(', ')));
-
-    return block(title, sub, body);
-  }
-
-  // 4. Coherencia
-  function consistency(data) {
-    const table = el('div', { class: 'pc-fields' });
-    data.consistency.forEach(function (row) {
-      let cls = 'pc-flag', label;
-      if (row.matches === null) { cls += ' is-unset'; label = 'Not set'; }
-      else if (row.matches) { label = 'Agrees'; }
-      else { cls += ' is-off'; label = 'Says something else'; }
-      table.append(el('div', { class: 'pc-field' },
-        el('span', null, row.field),
-        el('span', null, row.value || 'Missing'),
-        el('span', { class: cls }, label)
-      ));
-    });
-    return block('Does your site agree with itself?',
-      'A model reads all of these. When they disagree, it picks one, usually not the one you would choose.', table);
-  }
-
-  // 5. Wikidata
-  function wikidata(data) {
-    const wd = data.wikidata;
-    const sub = 'Models use Wikidata to confirm what a company is.';
-    if (!wd.checked) return block('Wikidata', sub, el('p', null, 'Wikidata did not respond.'));
-    if (!wd.found) return block('Wikidata', sub, el('p', null, 'No Wikidata entry points to your domain.'));
-    const line = el('p');
-    line.append(el('a', { href: wd.url, target: '_blank', rel: 'noopener' }, wd.label || 'Entry'));
-    line.append(': ' + (wd.description || 'no description set'));
-    return block('Wikidata', sub, line);
-  }
-
-  function render(data) {
-    const cta = el('div', { class: 'pc-cta' });
-    cta.append(el('h3', null, 'This is the record. It is not the answer.'));
-    cta.append(el('p', null, 'This shows what models had to learn from. It does not show what ChatGPT, Perplexity or Gemini say about you today. The audit runs your buyers\' real questions across every engine.'));
-    cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a call'));
-
-    const method = el('p', { class: 'pc-method' },
-      'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes and are matched to the version live on that date, so the split is an estimate. Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
-
-    output.innerHTML = '';
-    const sections = data.archive.ok
-      ? [verdict(data), timeline(data), crawls(data), consistency(data), wikidata(data), cta, method]
-      : [verdict(data), crawls(data), consistency(data), wikidata(data), cta, method];
-    sections.forEach(function (s) { output.append(s); });
-  }
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    const domain = input.value.trim();
-    if (!domain) return;
-
-    button.disabled = true;
-    button.textContent = 'Checking...';
-    statusLine.textContent = 'Reading your homepage, the Internet Archive and Common Crawl.';
-    output.hidden = true;
-
-    fetch('/api/positioning?domain=' + encodeURIComponent(domain))
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (data.error) throw new Error(data.error);
-        render(data);
-        output.hidden = false;
-        statusLine.textContent = 'Checked ' + data.domain + '.';
-      })
-      .catch(function (err) {
-        statusLine.textContent = err.message || 'Something went wrong. Try again in a minute.';
-      })
-      .then(function () {
-        button.disabled = false;
-        button.textContent = 'Check positioning';
-      });
-  });
-</script>
