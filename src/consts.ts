@@ -8,11 +8,12 @@ export const SITE_URL = 'https://www.aeogrowth.co';
 export const AUTHOR_NAME = 'Gerald De Oleo';
 export const JOB_TITLE = 'AEO consultant';
 
-// Prices. Change them here and they update on the home page, /services, the schema and llms.txt.
-export const AUDIT_PRICE = '$800';
-export const AUDIT_PRICE_VALUE = 800;
-export const MONTHLY_PRICE = '$1,750';
-export const MONTHLY_PRICE_VALUE = 1750;
+// Prices. Change them here and they update everywhere: home, /services, schema, llms.txt,
+// and any blog post that writes {AUDIT_PRICE} or {MONTHLY_PRICE} (replaced at build time).
+export const AUDIT_PRICE = '$1,000';
+export const AUDIT_PRICE_VALUE = 1000;
+export const MONTHLY_PRICE = '$2,500';
+export const MONTHLY_PRICE_VALUE = 2500;
 
 // <title> of the home page (other pages use "<Page> — AUTHOR_NAME").
 export const HOME_TITLE = `${AUTHOR_NAME} — AEO consultant for B2B SaaS`;
