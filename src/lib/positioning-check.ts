@@ -90,11 +90,11 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
       });
       const text = await readCapped(res);
       clearTimeout(timer);
-      if (res.status >= 500 && attempt < retries) { await sleep(800); continue; }
+      if (res.status >= 500 && attempt < retries) { await sleep(800 * 2 ** attempt); continue; }
       return { status: res.status, text, finalUrl: res.url };
     } catch {
       clearTimeout(timer);
-      if (attempt < retries) { await sleep(800); continue; }
+      if (attempt < retries) { await sleep(800 * 2 ** attempt); continue; }
     }
   }
   return { status: 0, text: '', finalUrl: '' };
@@ -267,7 +267,8 @@ async function snapshotNear(b: Budget, host: string, target: Date) {
       `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${ymd(from)}&to=${ymd(to)}` +
         `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=${limit}&output=json`,
       UA_TOOL,
-      20000
+      20000,
+      2 // Wayback answers 503 to bursts; req() retries 5xx after a short pause
     );
     let rows: any = null;
     if (r.status === 200) { try { rows = r.text.trim() ? JSON.parse(r.text) : []; } catch { rows = null; } }
@@ -297,7 +298,9 @@ async function snapshotNear(b: Budget, host: string, target: Date) {
   return { responded: ok, ts: ok ? ts : null };
 }
 
-async function archivedAt(b: Budget, hosts: string[], months: number) {
+async function archivedAt(b: Budget, hosts: string[], months: number, order = 0) {
+  // Stagger the per-date lookups: Wayback answers 503 when they all arrive at once.
+  await sleep(order * 400);
   const target = monthsAgo(months);
   let responded = false;
 
@@ -451,7 +454,7 @@ export async function runPositioningCheck(
     req(budget, `https://${liveHost}/robots.txt`, UA_BROWSER, 8000),
     commonCrawl(budget, hosts),
     wikidataEntry(budget, liveHost),
-    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m)),
+    ...TARGET_MONTHS.map((m, i) => archivedAt(budget, hosts, m, i)),
   ]);
 
   const live = readPage(home.text);
