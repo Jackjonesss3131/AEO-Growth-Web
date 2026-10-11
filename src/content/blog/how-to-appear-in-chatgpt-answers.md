@@ -1,5 +1,5 @@
 ---
-title: "How to Rank in ChatGPT (You Don't — Here's What Actually Happens)"
+title: "How to Appear in ChatGPT Answers: A Prioritized Checklist for B2B SaaS"
 description: "A prioritized checklist for B2B SaaS: what actually determines whether AI engines can read, use and recommend your site — starting with the technical failure that makes everything else pointless."
 pubDate: 'Sep 27 2026'
 ---
@@ -83,6 +83,8 @@ The common argument for it is that OpenAI, Anthropic and Perplexity all publish 
 **Where it genuinely helps:** if you sell a developer product and your users pull your docs into Cursor, Claude Code or similar. Stripe, Vercel and Cloudflare ship it for exactly that reason, and it's a real developer-experience win.
 
 **Where it doesn't:** as a lever for getting your marketing pages cited. It costs half a day and won't hurt you. Just don't let it displace items 1 and 2, which are load-bearing.
+
+This site publishes one anyway, generated from the same data as every page so it can't contradict them. That's the only job I'd give it: one more field that agrees with the rest, not a ranking lever.
 
 ## 4. Structure pages so a model can lift the answer
 

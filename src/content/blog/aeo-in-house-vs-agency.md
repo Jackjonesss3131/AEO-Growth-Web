@@ -71,7 +71,7 @@ You can verify this signal yourself before reading further. Models learn from sn
 
 There's a floor on full retainers, and most of the category agrees on it: below roughly $1,500–$2,000 per month, what's usually being sold is traditional SEO with a new label. If you're quoted less for a full program, ask which deliverable is specifically different from an SEO one. A standalone measurement subscription is a different product and sits below that floor legitimately — it isn't the work, it's the scoreboard.
 
-For reference, my own audit is fixed at $1,000 and everything after it gets scoped from the findings. The numbers are on the [services page](https://www.aeogrowth.co/services).
+For reference, my own audit is fixed at $1,000, and ongoing work after it is $2,500 a month with no contract. The numbers are on the [services page](https://www.aeogrowth.co/services).
 
 **In-house:** half a person for six months, plus whatever it costs to discover what doesn't work by trial and error. Don't compare these on price. Compare them on whether they finish. A cheap internal path that never completes part 4 costs more than outsourcing, because you lose the six months anyway and still don't have the diagnosis.
 

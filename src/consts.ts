@@ -43,5 +43,4 @@ export const FRAMEWORK_LAYERS = [
 export const FRAMEWORK_TITLE = 'The four layers of AI answer failure';
 export const FRAMEWORK_DESCRIPTION =
 	'Retrieval, citation, interpretation, expression. A framework for diagnosing why a company is missing or misdescribed in AI-generated answers, and what each layer takes to fix.';
-// TODO: confirm the real publish date.
-export const FRAMEWORK_PUBLISHED = '2026-10-11';
+export const FRAMEWORK_PUBLISHED = '2026-10-09';
