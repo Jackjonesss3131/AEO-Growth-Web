@@ -222,7 +222,8 @@ interface Finding { id: string; level: Level; area: string; title: string; detai
 export const GET: APIRoute = async ({ request }) => {
   try {
     return await handle(request);
-  } catch {
+  } catch (err) {
+    console.error('[check-crawlers] failed for', new URL(request.url).searchParams.get('url'), err);
     return json({ error: 'Something failed on our side. Try again in a minute.' }, 500);
   }
 };

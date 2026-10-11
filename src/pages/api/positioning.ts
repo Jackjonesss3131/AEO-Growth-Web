@@ -337,7 +337,8 @@ async function wikidataEntry(b: Budget, host: string) {
 export const GET: APIRoute = async ({ url }) => {
   try {
     return await handle(url);
-  } catch {
+  } catch (err) {
+    console.error('[positioning] failed for', url.searchParams.get('domain'), err);
     return respond({ error: 'Something failed on our side. Try again in a minute.' }, 500);
   }
 };
