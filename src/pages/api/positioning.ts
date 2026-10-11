@@ -11,7 +11,7 @@ const TARGET_MONTHS = [36, 24, 12, 6];
 // "A server error has occurred" page that the frontend can't parse. Keep a wide margin below it.
 const TIME_BUDGET_MS = 40000;
 // Cap every download so one huge page or llms.txt can't exhaust the function's memory.
-const MAX_BYTES = 2_000_000;
+const MAX_BYTES = 4_000_000;
 
 // ---------- helpers ----------
 function respond(data: unknown, status = 200, cacheable = false) {
@@ -235,16 +235,30 @@ async function archivedAt(b: Budget, hosts: string[], months: number) {
   let responded = false;
 
   for (const host of hosts) {
-    let snap: any = null;
-    for (let attempt = 0; attempt < 2 && !snap; attempt++) {
-      const info = await reqJson(
+    // 1) Availability API: fast, but often answers {"archived_snapshots": {}} even for heavily
+    //    archived sites. 2) Fallback: the CDX index, which is slower but reliable.
+    let snap: { timestamp: string } | null = null;
+    const info = await reqJson(
+      b,
+      `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`,
+      8000
+    );
+    if (info) responded = true;
+    const closest = info?.archived_snapshots?.closest;
+    if (closest?.available && closest.timestamp) snap = { timestamp: String(closest.timestamp) };
+
+    if (!snap) {
+      const from = ymd(monthsAgo(months + 2));
+      const to = ymd(monthsAgo(Math.max(months - 2, 0)));
+      const rows = await reqJson(
         b,
-        `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`,
-        8000
+        `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${from}&to=${to}` +
+          `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=1&output=json`,
+        12000
       );
-      if (info) responded = true;
-      snap = info?.archived_snapshots?.closest;
-      if (!snap?.available || !snap.timestamp) { snap = null; if (attempt === 0) await sleep(600); }
+      if (Array.isArray(rows)) responded = true;
+      const ts = Array.isArray(rows) && Array.isArray(rows[1]) ? rows[1][0] : null;
+      if (typeof ts === 'string' && /^\d{14}$/.test(ts)) snap = { timestamp: ts };
     }
     if (!snap) continue;
 
