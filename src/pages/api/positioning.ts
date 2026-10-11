@@ -55,7 +55,9 @@ const ymd = (d: Date) => isoDay(d).replace(/-/g, '');
 const daysBetween = (a: string, b: string) => Math.abs(+new Date(a) - +new Date(b)) / 86400000;
 const monthsAgo = (m: number) => { const d = new Date(); d.setMonth(d.getMonth() - m); return d; };
 
-type Budget = { until: number };
+// `notes` collects short diagnostic lines returned as `diagnostics` in the JSON (not shown on the page).
+type Budget = { until: number; start: number; notes: string[] };
+const note = (b: Budget, msg: string) => { b.notes.push(`${((Date.now() - b.start) / 1000).toFixed(1)}s ${msg}`); };
 const timeLeft = (b: Budget) => b.until - Date.now();
 
 async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries = 0) {
@@ -249,8 +251,9 @@ async function archiveIndex(b: Budget, hosts: string[]): Promise<ArchiveIndex> {
         15000,
         1
       );
-      if (!Array.isArray(rows)) return;
+      if (!Array.isArray(rows)) { note(b, `archive index ${host}: no answer`); return; }
       responded = true;
+      note(b, `archive index ${host}: ${rows.length - 1} monthly captures`);
       byHost[host] = rows
         .slice(1)
         .map((r: unknown) => (Array.isArray(r) ? String(r[0]) : ''))
@@ -292,13 +295,14 @@ async function archivedAt(b: Budget, hosts: string[], months: number, indexP: Pr
       const closest = info?.archived_snapshots?.closest;
       if (closest?.available && /^\d{14}$/.test(String(closest.timestamp))) ts = String(closest.timestamp);
     }
-    if (!ts) continue;
+    if (!ts) { note(b, `archive ${months}mo ${host}: no capture near ${ymd(target)}`); continue; }
 
     const page = await req(b, `https://web.archive.org/web/${ts}id_/https://${host}/`, UA_TOOL, 12000, 1);
-    if (page.status !== 200 || !page.text) continue;
+    if (page.status !== 200 || !page.text) { note(b, `archive ${months}mo ${host}: page ${ts} -> ${page.status || 'timeout/error'}`); continue; }
 
     const read = readPage(page.text);
-    if (!read.fields.title && !read.description) continue;
+    if (!read.fields.title && !read.description) { note(b, `archive ${months}mo ${host}: page ${ts} has no title/description`); continue; }
+    note(b, `archive ${months}mo ${host}: ok ${ts}`);
 
     return {
       responded: true,
@@ -326,31 +330,36 @@ async function commonCrawl(b: Budget, hosts: string[]) {
   const patterns = [...new Set([...hosts, bare, 'www.' + bare])].filter(Boolean);
   const dates: string[] = [];
   let checked = 0;
+  let rateLimited = false;
 
-  for (const col of picked) {
-    if (timeLeft(b) < 6000) break;
-    checked++;
-    let hit = false;
-
-    for (const host of patterns) {
-      if (hit || timeLeft(b) < 4000) break;
-      const target = encodeURIComponent(`${host}/*`);
-      const r = await req(b, `${col['cdx-api']}?url=${target}&output=json&limit=5&filter=status:200`, UA_TOOL, 10000);
-      if (r.status === 429 || r.status === 503) return { ok: false as const, reason: 'rate-limited' };
-      if (r.status === 200 && r.text.trim()) {
-        for (const line of r.text.split('\n')) {
-          if (!line.trim()) continue;
-          try {
-            const row = JSON.parse(line);
-            if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); hit = true; break; }
-          } catch { /* respuesta rara */ }
+  // The sampled indexes are independent and each one is slow, so query them in parallel
+  // (staggered slightly to stay polite). Sequentially they often ran out of time budget.
+  await Promise.all(
+    picked.map(async (col, i) => {
+      await sleep(i * 250);
+      if (timeLeft(b) < 6000) return;
+      checked++;
+      for (const host of patterns) {
+        if (timeLeft(b) < 4000) return;
+        const target = encodeURIComponent(`${host}/*`);
+        const r = await req(b, `${col['cdx-api']}?url=${target}&output=json&limit=5&filter=status:200`, UA_TOOL, 12000);
+        if (r.status === 429 || r.status === 503) { rateLimited = true; note(b, `cc ${col.id ?? i}: ${r.status}`); return; }
+        if (r.status === 200 && r.text.trim()) {
+          for (const line of r.text.split('\n')) {
+            if (!line.trim()) continue;
+            try {
+              const row = JSON.parse(line);
+              if (row?.timestamp) { dates.push(tsToDate(row.timestamp)); note(b, `cc ${col.id ?? i}: hit ${host}`); return; }
+            } catch { /* odd response line */ }
+          }
         }
+        note(b, `cc ${col.id ?? i}: ${host} -> ${r.status || 'timeout/error'}`);
+        await sleep(300);
       }
-      await sleep(300);
-    }
-    await sleep(700);
-  }
+    })
+  );
 
+  if (rateLimited && !dates.length) return { ok: false as const, reason: 'rate-limited' };
   if (!checked) return { ok: false as const, reason: 'down' };
   return { ok: true as const, checked, dates };
 }
@@ -390,7 +399,7 @@ export const GET: APIRoute = async ({ url }) => {
 };
 
 async function handle(url: URL) {
-  const budget: Budget = { until: Date.now() + TIME_BUDGET_MS };
+  const budget: Budget = { until: Date.now() + TIME_BUDGET_MS, start: Date.now(), notes: [] };
 
   let typedHost: string;
   try {
@@ -533,6 +542,7 @@ async function handle(url: URL) {
       wikidata,
       consistency,
       summary,
+      diagnostics: budget.notes,
     },
     200,
     complete

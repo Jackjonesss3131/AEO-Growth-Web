@@ -174,12 +174,12 @@ export const prerender = true;
             ' between archive snapshots of different versions, so we can\'t tell which one ' + (unknown === 1 ? 'it' : 'they') + ' captured.'
           : '';
         if (unknown === total) {
-          return 'We found ' + total + ' crawls, but the archive snapshots around them are too sparse to tell which version of your homepage they captured.';
+          return 'We found ' + (total === 1 ? '1 crawl' : total + ' crawls') + ', but the archive snapshots around ' + (total === 1 ? 'it' : 'them') + ' are too sparse to tell which version of your homepage ' + (total === 1 ? 'it' : 'they') + ' captured.';
         }
         if (!old) {
           return (unknown ? 'None of the crawls we could date captured an older version.' : 'All ' + total + ' crawls we found captured your current version. Your record is up to date.') + unknownNote;
         }
-        return old + ' of the ' + total + ' crawls we found captured an older version of your homepage.' + unknownNote;
+        return old + ' of the ' + (total === 1 ? '1 crawl' : total + ' crawls') + ' we found captured an older version of your homepage.' + unknownNote;
       }
 
       function verdict(data) {
