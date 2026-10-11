@@ -23,14 +23,14 @@ export const GET: APIRoute = async ({ url }) => {
 	const d = new Date();
 	d.setMonth(d.getMonth() - 12);
 	const stamp = d.toISOString().slice(0, 10).replace(/-/g, '');
-	const available = await hit(`https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`);
-	const cdx = await hit(
-		`https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${stamp.slice(0, 6)}&to=${stamp.slice(0, 6)}&filter=statuscode:200&fl=timestamp&limit=2&output=json`,
-	);
-	let ts: string | null = null;
-	try { ts = JSON.parse((available as any).head?.length ? (await (await fetch(`https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`)).text()) : '{}')?.archived_snapshots?.closest?.timestamp ?? null; } catch {}
-	const page = await hit(`https://web.archive.org/web/${ts ?? stamp}id_/https://${host}/`, 20000);
-	return new Response(JSON.stringify({ host, stamp, ts, available, cdx, page }, null, 2), {
+	const ts = '20251001000000';
+	const [available, cdx, page, pageNoTs] = await Promise.all([
+		hit(`https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`, 9000),
+		hit(`https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${stamp.slice(0, 6)}&to=${stamp.slice(0, 6)}&filter=statuscode:200&fl=timestamp&limit=2&output=json`, 9000),
+		hit(`https://web.archive.org/web/${ts}id_/https://${host}/`, 9000),
+		hit(`https://web.archive.org/web/${stamp}/https://${host}/`, 9000),
+	]);
+	return new Response(JSON.stringify({ host, stamp, ts, available, cdx, page, pageNoTs }, null, 2), {
 		headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
 	});
 };
