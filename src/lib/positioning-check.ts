@@ -3,7 +3,9 @@
 // (scripts/batch-audit.js). Change the logic here and both pick it up.
 // Plain TypeScript with erasable types only, so Node can run it directly (type stripping).
 
-export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+// `timeoutMs` is a hint for wrappers that queue requests (the batch script): it is the time the
+// request itself may take, counted from when it actually starts. Plain fetch ignores it.
+export type FetchLike = (input: string, init?: RequestInit & { timeoutMs?: number }) => Promise<Response>;
 export interface PositioningCheckOptions {
   /** fetch implementation (the batch script passes one with retries and logging). */
   fetch?: FetchLike;
@@ -78,6 +80,7 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
         headers: { 'User-Agent': ua, Accept: '*/*' },
         redirect: 'follow',
         signal: controller.signal,
+        timeoutMs: timeout,
       });
       const text = await readCapped(res);
       clearTimeout(timer);
@@ -239,70 +242,46 @@ function overlap(field: string, main: string) {
 }
 
 // ---------- Internet Archive ----------
-// One CDX query per host returns at most one capture per month for the whole window. That is
-// faster and more reliable than asking the availability API once per target date, which often
-// answers {"archived_snapshots": {}} even for heavily archived sites.
-type ArchiveIndex = { responded: boolean; byHost: Record<string, string[]> };
+// For each target date, ask the CDX index for one capture inside a window around it (limit=1).
+// Narrow queries stay fast even for sites archived many times a day; a single query over the
+// whole three years did not (it timed out for stripe.com). The availability API is only a
+// fallback: it often answers {"archived_snapshots": {}} for heavily archived sites.
+// Wayback treats www.example.com and example.com as the same URL, so hosts are deduplicated.
+const WINDOW_MONTHS = 3;
+const archiveHost = (h: string) => h.replace(/^www\./, '');
 
-async function archiveIndex(b: Budget, hosts: string[]): Promise<ArchiveIndex> {
-  const from = ymd(monthsAgo(Math.max(...TARGET_MONTHS) + 3));
-  const to = ymd(new Date());
-  const byHost: Record<string, string[]> = {};
-  let responded = false;
-  await Promise.all(
-    hosts.map(async (host) => {
-      const rows = await reqJson(
-        b,
-        `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${from}&to=${to}` +
-          `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&collapse=timestamp:6&output=json`,
-        15000,
-        1
-      );
-      if (!Array.isArray(rows)) { note(b, `archive index ${host}: no answer`); return; }
-      responded = true;
-      note(b, `archive index ${host}: ${rows.length - 1} monthly captures`);
-      byHost[host] = rows
-        .slice(1)
-        .map((r: unknown) => (Array.isArray(r) ? String(r[0]) : ''))
-        .filter((ts: string) => /^\d{14}$/.test(ts));
-    })
+async function snapshotNear(b: Budget, host: string, target: Date) {
+  const from = new Date(target); from.setMonth(from.getMonth() - WINDOW_MONTHS);
+  const to = new Date(target); to.setMonth(to.getMonth() + WINDOW_MONTHS);
+  const rows = await reqJson(
+    b,
+    `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${ymd(from)}&to=${ymd(to)}` +
+      `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=1&output=json`,
+    20000
   );
-  return { responded, byHost };
-}
-
-const tsTime = (ts: string) => Date.UTC(+ts.slice(0, 4), +ts.slice(4, 6) - 1, +ts.slice(6, 8));
-
-// Closest capture to the target date, within ±4 months.
-function closestStamp(stamps: string[], target: Date) {
-  let best: string | null = null;
-  let bestGap = Infinity;
-  for (const ts of stamps) {
-    const gap = Math.abs(tsTime(ts) - target.getTime());
-    if (gap < bestGap) { best = ts; bestGap = gap; }
+  if (Array.isArray(rows)) {
+    const ts = Array.isArray(rows[1]) ? String(rows[1][0]) : '';
+    return { responded: true, ts: /^\d{14}$/.test(ts) ? ts : null };
   }
-  return best && bestGap <= 122 * 86400000 ? best : null;
+  const info = await reqJson(
+    b,
+    `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${ymd(target)}`,
+    8000
+  );
+  const closest = info?.archived_snapshots?.closest;
+  const ts = closest?.available ? String(closest.timestamp) : '';
+  return { responded: !!info, ts: /^\d{14}$/.test(ts) ? ts : null };
 }
 
-async function archivedAt(b: Budget, hosts: string[], months: number, indexP: Promise<ArchiveIndex>) {
+async function archivedAt(b: Budget, hosts: string[], months: number) {
   const target = monthsAgo(months);
-  const index = await indexP;
-  let responded = index.responded;
+  let responded = false;
 
-  for (const host of hosts) {
-    let ts = closestStamp(index.byHost[host] || [], target);
-
-    // Fallback when the CDX index didn't answer for this host: the availability API.
-    if (!ts && !index.byHost[host]) {
-      const info = await reqJson(
-        b,
-        `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${ymd(target)}`,
-        8000
-      );
-      if (info) responded = true;
-      const closest = info?.archived_snapshots?.closest;
-      if (closest?.available && /^\d{14}$/.test(String(closest.timestamp))) ts = String(closest.timestamp);
-    }
-    if (!ts) { note(b, `archive ${months}mo ${host}: no capture near ${ymd(target)}`); continue; }
+  for (const host of [...new Set(hosts.map(archiveHost))]) {
+    const found = await snapshotNear(b, host, target);
+    responded ||= found.responded;
+    if (!found.ts) { note(b, `archive ${months}mo ${host}: no capture near ${ymd(target)}`); continue; }
+    const ts = found.ts;
 
     const page = await req(b, `https://web.archive.org/web/${ts}id_/https://${host}/`, UA_TOOL, 12000, 1);
     if (page.status !== 200 || !page.text) { note(b, `archive ${months}mo ${host}: page ${ts} -> ${page.status || 'timeout/error'}`); continue; }
@@ -325,8 +304,17 @@ async function archivedAt(b: Budget, hosts: string[], months: number, indexP: Pr
 
 // ---------- Common Crawl ----------
 // CDX indexa por URL completa. Sin comodín, host/ no hace match aunque el sitio esté indexado.
+// The list of Common Crawl indexes changes once a month: fetch it once per hour, not per check.
+let collinfoCache: { at: number; data: any[] } | null = null;
+async function collinfo(b: Budget) {
+  if (collinfoCache && Date.now() - collinfoCache.at < 3600_000) return collinfoCache.data;
+  const data = await reqJson(b, 'https://index.commoncrawl.org/collinfo.json', 8000, 1);
+  if (Array.isArray(data) && data.length) collinfoCache = { at: Date.now(), data };
+  return data;
+}
+
 async function commonCrawl(b: Budget, hosts: string[]) {
-  const collections = await reqJson(b, 'https://index.commoncrawl.org/collinfo.json', 8000, 1);
+  const collections = await collinfo(b);
   if (!Array.isArray(collections) || !collections.length) return { ok: false as const, reason: 'down' };
 
   const picked = [collections[0], collections[3], collections[6], collections[9]]
@@ -427,13 +415,12 @@ export async function runPositioningCheck(
   const hosts = [...new Set([liveHost, typedHost])];
   const today = isoDay(new Date());
 
-  const archiveIdx = archiveIndex(budget, hosts);
   const [llms, robots, cc, wikidata, ...archived] = await Promise.all([
     req(budget, `https://${liveHost}/llms.txt`, UA_BROWSER, 8000),
     req(budget, `https://${liveHost}/robots.txt`, UA_BROWSER, 8000),
     commonCrawl(budget, hosts),
     wikidataEntry(budget, liveHost),
-    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m, archiveIdx)),
+    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m)),
   ]);
 
   const live = readPage(home.text);

@@ -3,7 +3,8 @@
 // (scripts/batch-audit.js). Change the logic here and both pick it up.
 // Plain TypeScript with erasable types only, so Node can run it directly (type stripping).
 
-export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+// `timeoutMs`: time the request itself may take, for wrappers that queue requests. Plain fetch ignores it.
+export type FetchLike = (input: string, init?: RequestInit & { timeoutMs?: number }) => Promise<Response>;
 export interface CrawlerCheckOptions {
   /** fetch implementation (the batch script passes one with retries and logging). */
   fetch?: FetchLike;
@@ -99,7 +100,7 @@ async function fetchDoc(fetchImpl: FetchLike, url: string, ua: string, deadline 
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     };
     if (ua) headers['User-Agent'] = ua;
-    const r = await fetchImpl(url, { headers, redirect: 'follow', signal: AbortSignal.timeout(timeout) });
+    const r = await fetchImpl(url, { headers, redirect: 'follow', signal: AbortSignal.timeout(timeout), timeoutMs: timeout });
     const text = await readCapped(r);
     return { ok: r.ok, status: r.status, text, finalUrl: r.url || url, headers: r.headers, ms: Date.now() - t0, error: null as string | null };
   } catch (e) {

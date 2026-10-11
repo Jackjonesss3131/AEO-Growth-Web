@@ -187,18 +187,16 @@ async function runTool(name, fn) {
 
 async function auditOnce(item, attempt) {
   const { domain } = item;
-  const budgetMs = timeoutMs - 5000; // leave room to assemble the record
+  // Each check gets its own time limit, so one running long never loses the other's result.
+  // Their internal budget is shorter, leaving room for requests already in flight to finish.
   const crawlerFetch = makeBatchFetch({ onError: logError, domain, tool: 'crawler' });
   const positioningFetch = makeBatchFetch({ onError: logError, domain, tool: 'positioning' });
 
-  const [crawler, positioning] = await withTimeout(
-    Promise.all([
-      runTool('crawler', () => runCrawlerCheck(`https://${domain}/`, { fetch: crawlerFetch, budgetMs })),
-      runTool('positioning', () => runPositioningCheck(domain, { fetch: positioningFetch, budgetMs })),
-    ]),
-    timeoutMs,
-    `${domain}`
-  );
+  const budgetMs = Math.max(10000, timeoutMs - 15000);
+  const [crawler, positioning] = await Promise.all([
+    runTool('crawler', () => withTimeout(runCrawlerCheck(`https://${domain}/`, { fetch: crawlerFetch, budgetMs }), timeoutMs, `crawler check for ${domain}`)),
+    runTool('positioning', () => withTimeout(runPositioningCheck(domain, { fetch: positioningFetch, budgetMs }), timeoutMs, `positioning check for ${domain}`)),
+  ]);
 
   const extra = {};
   for (const e of enrichers) {

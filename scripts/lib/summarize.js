@@ -20,7 +20,11 @@ export function summarizeCrawler(result) {
     parts.push('robots.txt blocks ' + robotsBlocked.map((b) => `${b.name} (${b.robots.matched ?? 'blocked'})`).join(', '));
   }
   if (serverBlocked.length) {
-    parts.push('server blocks ' + serverBlocked.map((b) => `${b.name} (${b.live.note})`).join(', '));
+    parts.push(
+      'server refuses requests sent with the user agent of ' +
+        serverBlocked.map((b) => `${b.name} (${b.live.note})`).join(', ') +
+        ' — sites that verify real bots by IP may still let the real crawler in'
+    );
   }
 
   let status = 'ok';
