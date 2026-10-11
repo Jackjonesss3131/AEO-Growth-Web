@@ -339,6 +339,7 @@ async function commonCrawl(b: Budget, hosts: string[]) {
   const patterns = [...new Set([...hosts, bare, 'www.' + bare])].filter(Boolean);
   const dates: string[] = [];
   let checked = 0;
+  let answered = 0; // indexes that actually returned a response (even an empty one)
   let rateLimited = false;
 
   // The sampled indexes are independent and each one is slow, so query them in parallel
@@ -351,8 +352,10 @@ async function commonCrawl(b: Budget, hosts: string[]) {
       for (const host of patterns) {
         if (timeLeft(b) < 4000) return;
         const target = encodeURIComponent(`${host}/*`);
-        const r = await req(b, `${col['cdx-api']}?url=${target}&output=json&limit=5&filter=status:200`, UA_TOOL, 12000);
+        // Index queries for large sites routinely take 8–20 s.
+        const r = await req(b, `${col['cdx-api']}?url=${target}&output=json&limit=5&filter=status:200`, UA_TOOL, 18000);
         if (r.status === 429 || r.status === 503) { rateLimited = true; note(b, `cc ${col.id ?? i}: ${r.status}`); return; }
+        if (r.status === 200 || r.status === 404) answered++;
         if (r.status === 200 && r.text.trim()) {
           for (const line of r.text.split('\n')) {
             if (!line.trim()) continue;
@@ -369,7 +372,8 @@ async function commonCrawl(b: Budget, hosts: string[]) {
   );
 
   if (rateLimited && !dates.length) return { ok: false as const, reason: 'rate-limited' };
-  if (!checked) return { ok: false as const, reason: 'down' };
+  // No index answered at all (timeouts, connection errors): that's "down", not "you're not in it".
+  if (!checked || (!answered && !dates.length)) return { ok: false as const, reason: 'down' };
   return { ok: true as const, checked, dates };
 }
 

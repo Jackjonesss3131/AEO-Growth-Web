@@ -18,5 +18,7 @@ jobs:
           printf 'domain,company_name\nstripe.com,Stripe\nhttps://www.notion.so/,Notion\nhubspot.com,HubSpot\nlinear.app,Linear\nwww.intercom.com,Intercom\n' > domains-test.csv
           mkdir -p out
           { time node scripts/batch-audit.js --input domains-test.csv --output out/results ; } > out/run.log 2>&1 || true
+          mkdir -p out/first && cp out/results.csv out/first/results.csv
+          { time node scripts/batch-audit.js --input domains-test.csv --output out/results --resume --retry-failed ; } > out/run2.log 2>&1 || true
           git config user.name probe; git config user.email probe@users.noreply.github.com
           git add -f out && git commit -m "batch test result" && git push

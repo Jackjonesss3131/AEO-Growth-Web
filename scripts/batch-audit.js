@@ -49,7 +49,7 @@ if (opt.help || !opt.input) {
   --input FILE         CSV with a "domain" column (optional "company_name")
   --output PREFIX      writes PREFIX.csv, PREFIX.json, PREFIX.jsonl, PREFIX.errors.log (default: results)
   --resume             continue a previous run, skipping domains already processed
-  --retry-failed       with --resume, also re-run domains that ended in error
+  --retry-failed       with --resume, also re-run domains that ended in error or incomplete (partial)
   --force              start over: previous output is moved to PREFIX.backup-<time>.*
   --concurrency N      domains processed at the same time (default 3)
   --timeout SECONDS    time limit per domain and attempt (default 60)
@@ -138,7 +138,7 @@ if (hasPrevious && opt.force) {
 const todo = queue.filter((q) => {
   const prev = records.get(q.domain);
   if (!prev) return true;
-  return opt['retry-failed'] && prev.status === 'error';
+  return opt['retry-failed'] && (prev.status === 'error' || prev.status === 'partial');
 });
 
 // ---------- writing ----------
@@ -213,6 +213,13 @@ async function auditOnce(item, attempt) {
   const errors = [];
   if (crawler.status !== 200) errors.push(`crawler: ${crawler.data?.error ?? 'failed'}`);
   if (positioning.status !== 200) errors.push(`positioning: ${positioning.data?.error ?? 'failed'}`);
+  // Sources that didn't answer leave the row incomplete (not wrong): flag it so it can be re-run
+  // later with --resume --retry-failed, when those services are less busy.
+  const gaps = [];
+  if (positioning.status === 200) {
+    if (!positioning.data?.archive?.ok) gaps.push('Internet Archive did not respond');
+    if (!positioning.data?.commonCrawl?.ok) gaps.push(`Common Crawl did not respond (${positioning.data?.commonCrawl?.reason ?? 'unknown'})`);
+  }
   for (const e of enrichers) if (!extra[e.name].ok) errors.push(`${e.name}: ${extra[e.name].error}`);
   for (const [tool, r] of [['crawler', crawler], ['positioning', positioning]]) {
     if (r.status !== 200) logError({ domain, tool, kind: 'check-failed', status: r.status, error: r.data?.error, attempt });
@@ -224,9 +231,10 @@ async function auditOnce(item, attempt) {
     ...Object.fromEntries(enrichers.map((e) => [e.column, extra[e.name].ok ? e.summarize(extra[e.name].result) : ''])),
   };
   const bothFailed = crawler.status !== 200 && positioning.status !== 200;
+  const problems = [...errors, ...gaps.map((g) => `incomplete: ${g}`)];
   return {
-    status: bothFailed ? 'error' : errors.length ? 'partial' : 'ok',
-    error: errors.join(' | '),
+    status: bothFailed ? 'error' : problems.length ? 'partial' : 'ok',
+    error: problems.join(' | '),
     summary,
     crawler: crawler.data,
     positioning: positioning.data,
