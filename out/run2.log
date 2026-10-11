@@ -1,0 +1,20 @@
+Domains in input: 5
+Already done: 1. To process now: 4. Concurrency 3, timeout 60s per domain.
+Output: /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.csv, /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.json  ·  errors: /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.errors.log
+
+[1/4] hubspot.com                  partial   45s  | crawler=ok crawl_matches=cant_tell  | remaining 3, failed 0, ETA 2m14s
+      ↳ incomplete: Internet Archive did not respond | incomplete: Common Crawl did not respond (down)
+[2/4] notion.so                    partial   45s  | crawler=blocked crawl_matches=cant_tell  | remaining 2, failed 0, ETA 45s
+      ↳ incomplete: Common Crawl did not respond (down)
+[3/4] linear.app                   partial   45s  | crawler=ok crawl_matches=cant_tell  | remaining 1, failed 0, ETA 15s
+      ↳ incomplete: Common Crawl did not respond (down)
+[4/4] intercom.com                 partial   45s  | crawler=ok crawl_matches=cant_tell  | remaining 0, failed 0, ETA 0s
+      ↳ incomplete: Common Crawl did not respond (down)
+
+Finished 4 domains in 1m30s (0 failed, average 22s per domain at concurrency 3).
+→ /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.csv
+→ /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.json
+
+real	1m29.922s
+user	0m1.579s
+sys	0m0.251s

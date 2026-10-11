@@ -366,6 +366,9 @@ async function commonCrawl(b: Budget, hosts: string[]) {
           }
         }
         note(b, `cc ${col.id ?? i}: ${host} -> ${r.status || 'timeout/error'}`);
+        // This index didn't answer (timeout, 5xx): trying other host variants only adds load
+        // to an overloaded server. Variants are only worth it when it answered "no captures".
+        if (r.status !== 200 && r.status !== 404) return;
         await sleep(300);
       }
     })
