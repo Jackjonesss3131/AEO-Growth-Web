@@ -1,7 +1,8 @@
 ---
-title: 'How to Rank in ChatGPT (And Why "Rank" Is the Wrong Word)'
-description: "There's no position one in ChatGPT. Here's how it decides which companies appear in its answers, what SEO still does for you, and what to measure instead of rankings."
+title: "How to Rank in ChatGPT When There's No Position One"
+description: "There's no position one in ChatGPT. How it decides which companies show up, what SEO still does for you, and what to measure instead of rank."
 pubDate: 'Sep 23 2026'
+ogImage: '../../assets/og/how-to-rank-in-chatgpt.jpg'
 ---
 
 Sooner or later, someone on your team asks: *"Where do we rank in ChatGPT?"*
@@ -184,7 +185,7 @@ I run hundreds of real buyer prompts across ChatGPT, Perplexity, Gemini and AI O
 
 I'll run it on your domain before we talk, so the call starts with findings instead of questions.
 
-[Book a call](https://calendly.com/geraldgerez/growth-plg)
+[Book a call](https://calendly.com/geraldeoleo/growth-plg)
 
 ---
 

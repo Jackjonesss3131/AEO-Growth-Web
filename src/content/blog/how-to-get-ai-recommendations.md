@@ -1,7 +1,8 @@
 ---
-title: "How to Get AI Recommendations (Not Just Citations)"
-description: "Being cited by ChatGPT, Perplexity or Gemini doesn't mean you're being recommended. What separates a mention, a citation and a recommendation, and what a B2B SaaS company needs to make the shortlist."
+title: "How to Get AI Recommendations: Why Citations Aren't Enough"
+description: "Being cited by ChatGPT, Perplexity or Gemini isn't being recommended. What separates a mention, a citation and a recommendation, and how to get shortlisted."
 pubDate: 'Sep 23 2026'
+ogImage: '../../assets/og/how-to-get-ai-recommendations.jpg'
 ---
 
 **The short answer:** a citation means an AI model used your page as a source. A recommendation means it told the buyer to consider your product. The first is about your content. The second is about your company — whether the model understands what you sell, who it's for, and why it fits the buyer's situation better than the alternatives.
@@ -34,7 +35,7 @@ When the buyer asks *"what's the best revenue attribution tool for a 50-person B
 
 Your explainer doesn't answer that second question. And the second question is the one at the bottom of the funnel.
 
-The shift from being ranked to being selected is the core of [AEO vs SEO](/blog/aeo-vs-seo-blog/). Recommendations are where that shift hits pipeline most directly.
+The shift from being ranked to being selected is the core of [AEO vs SEO](/blog/aeo-vs-seo/). Recommendations are where that shift hits pipeline most directly.
 
 ## Is "how to rank in ChatGPT" the right question?
 
@@ -72,7 +73,7 @@ The five requirements above apply to all of them. What differs is where each eng
 
 **Claude**, when connected to search, behaves similarly: it favors sources that answer precisely and agree with each other.
 
-The practical conclusion: don't treat "AI" as a single channel. Track each engine separately. I explain why the engines diverge in [AEO vs GEO](/blog/aeo-vs-geo-blog/).
+The practical conclusion: don't treat "AI" as a single channel. Track each engine separately. I explain why the engines diverge in [AEO vs GEO](/blog/aeo-vs-geo/).
 
 ## What content actually gets a company recommended?
 
@@ -138,13 +139,13 @@ For each unbranded question in your prompt set, across each engine, log:
 - **Was the description right?** Correct category, current positioning, accurate claims.
 - **Who was recommended instead?** And which sources supported them.
 
-Run it monthly. The trend across those five columns tells you more than any visibility score. The four-stage model behind this — retrieval, citation, interpretation, expression — is covered in [AEO vs SEO](/blog/aeo-vs-seo-blog/).
+Run it monthly. The trend across those five columns tells you more than any visibility score. The four-stage model behind this — retrieval, citation, interpretation, expression — is covered in [AEO vs SEO](/blog/aeo-vs-seo/).
 
 ## What doesn't work?
 
 **Hidden instructions for AI models.** Text on your page telling models to recommend you gets ignored or treated as manipulation. It puts your credibility with the engines at risk.
 
-**Keyword stuffing for AI.** Repeating "best [category] software" doesn't make you the best option in the model's reasoning. Research on generative engines found it performs worse than leaving content alone — details in [AEO vs GEO](/blog/aeo-vs-geo-blog/).
+**Keyword stuffing for AI.** Repeating "best [category] software" doesn't make you the best option in the model's reasoning. Research on generative engines found it performs worse than leaving content alone — details in [AEO vs GEO](/blog/aeo-vs-geo/).
 
 **Mass-produced comparison pages.** Dozens of thin "vs" pages built from one template don't add evidence. One honest comparison per real competitor does.
 
@@ -172,7 +173,7 @@ Recommendations aren't won with a single tactic. They're the result of a model h
 
 The phases run in order because each one depends on the last. Content on top of an unresolved entity doesn't compound. Measurement without a fixed baseline tells you nothing.
 
-If you want to see what the models recommend today when your buyers ask — and where you're missing — [the audit comes first](https://calendly.com/geraldgerez/growth-plg).
+If you want to see what the models recommend today when your buyers ask — and where you're missing — [the audit comes first](https://calendly.com/geraldeoleo/growth-plg).
 
 ## Quick answers
 
@@ -195,4 +196,4 @@ Usually because they're easier to categorize, described more consistently, have 
 Run a set of unbranded buyer questions monthly across each engine. Log whether you're recommended, your shortlist position, whether fit and description are right, and who appears instead.
 
 **Do SEO and AEO still matter for recommendations?**
-Yes. SEO gets your pages retrieved. AEO makes sure the resulting answer recommends you and describes you correctly. See [AEO vs SEO](/blog/aeo-vs-seo-blog/) and [AEO vs GEO](/blog/aeo-vs-geo-blog/).
+Yes. SEO gets your pages retrieved. AEO makes sure the resulting answer recommends you and describes you correctly. See [AEO vs SEO](/blog/aeo-vs-seo/) and [AEO vs GEO](/blog/aeo-vs-geo/).

@@ -1,7 +1,8 @@
 ---
-title: "What Sources Does AI Cite — And How Do You Get Into Them?"
-description: "How to find the pages actually shaping the AI answers about your company, and what to do about the ones you don't control."
+title: "What Sources Does AI Cite About You? How to Find Them"
+description: "How to find the exact pages shaping AI answers about your company, and what to do about the ones you don't control."
 pubDate: 'Sep 30 2026'
+ogImage: '../../assets/og/what-sources-does-ai-cite.jpg'
 ---
 
 **The short answer:** it depends on the engine and the question, which is why borrowed percentages are useless here. What matters is which sources shape *your* answers — and you can find that out in about an hour.
@@ -99,4 +100,4 @@ No. Most companies named in an AI answer don't get the citation pointing at thei
 
 ---
 
-If you'd rather see the source map for your category than build it by hand, that's the first thing the audit produces: every question, every engine, every cited page, and how you're described in each. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you'd rather see the source map for your category than build it by hand, that's the first thing the audit produces: every question, every engine, every cited page, and how you're described in each. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

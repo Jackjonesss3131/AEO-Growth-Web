@@ -1,7 +1,8 @@
 ---
-title: "Do G2 and Capterra Reviews Get You Recommended by AI?"
-description: "Review profiles work as an eligibility check, not a citation source. What that means for a B2B SaaS deciding how much to spend on review platforms."
+title: "G2 Reviews Won't Get You Cited by AI. Here's What They Do"
+description: "Review profiles work as an eligibility check, not a citation source. What that means before you spend more on G2 and Capterra."
 pubDate: 'Sep 29 2026'
+ogImage: '../../assets/og/g2-capterra-ai-recommendations.jpg'
 ---
 
 **The short answer:** review profiles get you *considered*, not cited. AI engines appear to check that you exist as a real product in a real category before naming you — and then cite something else entirely. That should change what you expect from the spend, not whether you spend it.
@@ -76,4 +77,4 @@ A profile that still describes the company you were two years ago. It passes eve
 
 ---
 
-If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

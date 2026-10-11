@@ -1,7 +1,8 @@
 ---
-title: "How to Rank in ChatGPT (You Don't — Here's What Actually Happens)"
-description: "A prioritized checklist for B2B SaaS: what actually determines whether AI engines can read, use and recommend your site — starting with the technical failure that makes everything else pointless."
+title: "How to Appear in ChatGPT Answers: 8 Steps, in Order"
+description: "A prioritized checklist for B2B SaaS, starting with the failure that makes everything else pointless: AI crawlers that can't read your pages."
 pubDate: 'Sep 27 2026'
+ogImage: '../../assets/og/how-to-appear-in-chatgpt-answers.jpg'
 ---
 
 **The short answer:** start by confirming AI crawlers can actually read your pages, because most of them don't run JavaScript. Then make sure they're allowed in. Then give them content that answers your buyer's real questions with specifics they can quote, and make sure the rest of the web describes your company the same way you do.
@@ -84,6 +85,8 @@ The common argument for it is that OpenAI, Anthropic and Perplexity all publish 
 
 **Where it doesn't:** as a lever for getting your marketing pages cited. It costs half a day and won't hurt you. Just don't let it displace items 1 and 2, which are load-bearing.
 
+This site publishes one anyway, generated from the same data as every page so it can't contradict them. That's the only job I'd give it: one more field that agrees with the rest, not a ranking lever.
+
 ## 4. Structure pages so a model can lift the answer
 
 Once crawlers can read you, the question becomes whether your content is usable.
@@ -96,7 +99,7 @@ Once crawlers can read you, the question becomes whether your content is usable.
 
 **Self-contained sections.** Models retrieve chunks, not whole pages. A section that only makes sense after reading the previous one often arrives without it.
 
-**Sources on claims.** Attribution and statistics are among the content features that research on generative engines found most consistently improves how content is used — I covered that research in [AEO vs GEO](/blog/aeo-vs-geo-blog/).
+**Sources on claims.** Attribution and statistics are among the content features that research on generative engines found most consistently improves how content is used — I covered that research in [AEO vs GEO](/blog/aeo-vs-geo/).
 
 **Plain HTML for anything important.** Text in images, canvas elements or JavaScript-built tables is invisible. If a comparison table matters, it should be a `<table>`.
 
@@ -186,11 +189,11 @@ Not for AI search visibility. Google has said no AI system uses it, and large-sc
 At minimum the retrieval bots that power live answers: `OAI-SearchBot`, `ChatGPT-User`, `Claude-SearchBot`, `PerplexityBot`. Whether you also allow training crawlers like `GPTBot`, `ClaudeBot` and `Google-Extended` is a separate business decision.
 
 **Why is my site not showing up in ChatGPT even though it ranks on Google?**
-The most common technical cause is client-side rendering: Googlebot renders your JavaScript, AI crawlers don't. The most common non-technical cause is inconsistent descriptions across the web. [AEO vs SEO](/blog/aeo-vs-seo-blog/) covers why ranking doesn't transfer automatically.
+The most common technical cause is client-side rendering: Googlebot renders your JavaScript, AI crawlers don't. The most common non-technical cause is inconsistent descriptions across the web. [AEO vs SEO](/blog/aeo-vs-seo/) covers why ranking doesn't transfer automatically.
 
 **How long does this take to work?**
 Changes to your own site register soonest in engines that search the web on every question. Changes to how third parties describe you take longer. Nobody can honestly promise a date for a specific engine.
 
 ---
 
-If you'd rather see the diagnosis before doing any of this, I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If you'd rather see the diagnosis before doing any of this, I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

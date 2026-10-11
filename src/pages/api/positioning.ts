@@ -7,7 +7,11 @@ const UA_BROWSER =
 const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
 
 const TARGET_MONTHS = [36, 24, 12, 6];
-const TIME_BUDGET_MS = 48000;
+// Vercel kills the function at maxDuration (60 s in astro.config.mjs) and returns a plain-text
+// "A server error has occurred" page that the frontend can't parse. Keep a wide margin below it.
+const TIME_BUDGET_MS = 40000;
+// Cap every download so one huge page or llms.txt can't exhaust the function's memory.
+const MAX_BYTES = 2_000_000;
 
 // ---------- helpers ----------
 function respond(data: unknown, status = 200, cacheable = false) {
@@ -18,6 +22,30 @@ function respond(data: unknown, status = 200, cacheable = false) {
       'Cache-Control': cacheable ? 'public, s-maxage=86400, stale-while-revalidate=604800' : 'no-store',
     },
   });
+}
+
+// Reads at most `max` bytes of the body, then cancels the rest of the download.
+async function readCapped(res: Response, max = MAX_BYTES) {
+  if (!res.body) return '';
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  while (size < max) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    size += value.byteLength;
+  }
+  if (size >= max) await reader.cancel().catch(() => {});
+  const all = new Uint8Array(Math.min(size, max));
+  let offset = 0;
+  for (const c of chunks) {
+    const part = c.subarray(0, Math.min(c.byteLength, all.length - offset));
+    all.set(part, offset);
+    offset += part.byteLength;
+    if (offset >= all.length) break;
+  }
+  return new TextDecoder().decode(all);
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -42,7 +70,7 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
         redirect: 'follow',
         signal: controller.signal,
       });
-      const text = await res.text();
+      const text = await readCapped(res);
       clearTimeout(timer);
       if (res.status >= 500 && attempt < retries) { await sleep(800); continue; }
       return { status: res.status, text, finalUrl: res.url };

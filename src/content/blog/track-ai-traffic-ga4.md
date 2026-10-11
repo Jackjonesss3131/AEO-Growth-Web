@@ -1,7 +1,8 @@
 ---
-title: "How to Track AI Traffic in GA4 (And How to Report It Without Overselling It)"
-description: "AI referrals are around 1% of sessions, and between a third and two-thirds of them never arrive labeled. The GA4 setup that captures what's capturable, why the conversion stat everyone quotes comes from a single client, and the five lines worth putting on a monthly report."
+title: "How to Track AI Traffic in GA4 (Much of It Arrives Unlabeled)"
+description: "AI referrals are about 1% of sessions, and a third to two-thirds arrive unlabeled. The GA4 setup that captures what it can, and how to report it honestly."
 pubDate: 'Oct 7 2026'
+ogImage: '../../assets/og/track-ai-traffic-ga4.jpg'
 ---
 
 **The short answer:** build a custom channel group that sits above Referral and matches AI domains by regex. GA4's native AI Assistant channel, added in May 2026, covers some engines but not Perplexity, and it isn't retroactive — so run both. Then accept that you will never see most of this traffic, and build the report around that fact instead of pretending otherwise.
@@ -88,4 +89,4 @@ A measurement problem and a visibility problem look identical in GA4. They need 
 
 ---
 
-If your AI referrals are flat and you can't tell whether that's a tracking problem or a visibility problem, send me your domain. I'll run your buyer's real questions across ChatGPT, Perplexity, Gemini and Google and tell you whether you appear, how you're described, and who gets named instead. Free, before we talk. <a href="https://calendly.com/geraldgerez/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.
+If your AI referrals are flat and you can't tell whether that's a tracking problem or a visibility problem, send me your domain. I'll run your buyer's real questions across ChatGPT, Perplexity, Gemini and Google and tell you whether you appear, how you're described, and who gets named instead. Free, before we talk. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.

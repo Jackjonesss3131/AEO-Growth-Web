@@ -1,7 +1,8 @@
 ---
-title: "How to Choose an AEO Agency for B2B SaaS (Without Wasting Six Months)"
-description: "Real 2026 price bands for AEO and GEO work, the questions to ask before signing, the red flags that predict a wasted retainer, and when a solo specialist beats an agency."
+title: "How to Choose an AEO Agency: Real 2026 Prices and Red Flags"
+description: "Real 2026 price bands for AEO work, the questions to ask before signing, the red flags behind wasted retainers, and when a solo specialist wins."
 pubDate: 'Sep 26 2026'
+ogImage: '../../assets/og/how-to-choose-an-aeo-agency.jpg'
 ---
 
 **The short answer:** most AEO proposals fail for one of three reasons — you bought monitoring when you needed diagnosis, you bought content when your entity was broken, or you signed a twelve-month retainer before anyone could tell you what was wrong. Start with a paid audit, insist on recommendation and description metrics rather than mention counts, and don't commit to a long retainer until someone has shown you the specific pages shaping your answers.
@@ -131,7 +132,7 @@ The honest test: ask what proportion of your fee goes to thinking versus produci
 >
 > Often yes, and it's usually the cheapest route — the market adds roughly 20–30% to an existing retainer for GEO work.
 >
-> The question to ask your current agency is the same one in the list above: what do you measure, and how do you check that the description is accurate? Some SEO teams have built real capability here. Others have relabelled the same deliverables. The measurement answer tells you which you're dealing with. It also helps to understand what genuinely carries over from SEO and what doesn't, which I cover in [AEO vs SEO](/blog/aeo-vs-seo-blog/).
+> The question to ask your current agency is the same one in the list above: what do you measure, and how do you check that the description is accurate? Some SEO teams have built real capability here. Others have relabelled the same deliverables. The measurement answer tells you which you're dealing with. It also helps to understand what genuinely carries over from SEO and what doesn't, which I cover in [AEO vs SEO](/blog/aeo-vs-seo/).
 
 ## Judging the first 90 days
 
@@ -167,4 +168,4 @@ Buying content before fixing the entity. If the web describes your company three
 
 ---
 
-If you want to start with the diagnosis rather than a retainer, that's what I'd suggest to anyone. I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer — so the call starts with findings instead of a pitch. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want to start with the diagnosis rather than a retainer, that's what I'd suggest to anyone. I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer — so the call starts with findings instead of a pitch. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

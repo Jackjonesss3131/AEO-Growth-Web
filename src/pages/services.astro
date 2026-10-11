@@ -2,7 +2,17 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { CALENDLY_URL } from '../consts';
+import {
+	CALENDLY_URL,
+	FRAMEWORK_LAYERS,
+	AUTHOR_NAME,
+	SITE_URL,
+	AUDIT_PRICE,
+	AUDIT_PRICE_VALUE,
+	MONTHLY_PRICE,
+	MONTHLY_PRICE_VALUE,
+	SERVICES_DESCRIPTION,
+} from '../consts';
 
 export const prerender = true;
 
@@ -10,7 +20,7 @@ const phases = [
 	{
 		n: '01',
 		title: 'The audit',
-		lead: 'What the engines say about you, and where they got it. $800.',
+		lead: `What the engines say about you, and where they got it. ${AUDIT_PRICE}.`,
 		body: 'I run the questions your buyers ask — with their real constraints attached — across ChatGPT, Perplexity, Gemini and Google\'s AI results. Three things come out of it. Who your actual competitors are in those answers, which is often not the company you think you\'re up against. Where the information describing you is coming from, including the sources saying something you\'d rather they didn\'t. And whether what the models say you sell matches what you actually sell.',
 		deliverable: 'The questions I ran, what each engine answered, who appeared in your place, and the cause. Short enough to read in one sitting. Yours to keep, including if you take it to someone else.',
 		tags: ['Real competitor set', 'Source mapping', 'Description accuracy'],
@@ -40,14 +50,53 @@ const phases = [
 		tags: ['Gap analysis', 'New questions', 'Ongoing correction'],
 	},
 ];
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	'@id': `${SITE_URL}/services#service`,
+	name: 'AEO for B2B SaaS',
+	serviceType: 'Answer engine optimization (AEO) and GEO',
+	description: SERVICES_DESCRIPTION,
+	url: `${SITE_URL}/services`,
+	provider: { '@id': `${SITE_URL}/#business` },
+	areaServed: 'Worldwide',
+	audience: { '@type': 'BusinessAudience', name: 'B2B SaaS companies' },
+	offers: [
+		{
+			'@type': 'Offer',
+			name: 'The audit',
+			description:
+				"Your buyers' real questions across ChatGPT, Perplexity, Gemini and Google's AI results, where each description came from, and the fix list. One time.",
+			price: AUDIT_PRICE_VALUE,
+			priceCurrency: 'USD',
+			url: `${SITE_URL}/services`,
+		},
+		{
+			'@type': 'Offer',
+			name: 'Ongoing work',
+			description:
+				'The same questions rerun across every engine, positioning work on the queries you can win, two pages a month, third-party sources corrected as they are found, and a monthly report. No contract.',
+			priceSpecification: {
+				'@type': 'UnitPriceSpecification',
+				price: MONTHLY_PRICE_VALUE,
+				priceCurrency: 'USD',
+				unitCode: 'MON',
+				referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'MON' },
+			},
+			url: `${SITE_URL}/services`,
+		},
+	],
+};
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead
-			title="AEO Services for B2B SaaS — AEO Growth"
-			description="Answer engine optimization and GEO for B2B SaaS. Diagnosis, corrections, and monthly measurement of what AI engines say about your company. $800 audit, $1,000 per month."
+			title={`AEO Services for B2B SaaS — ${AUTHOR_NAME}`}
+			description={SERVICES_DESCRIPTION}
+			schema={schema}
 		/>
 	</head>
 	<body>
@@ -71,34 +120,15 @@ const phases = [
 
 			<section class="framework">
 				<div class="stages">
-					<div class="stage">
-						<span class="stage-n">1</span>
-						<div>
-							<h3>Retrieval</h3>
-							<p>Can the engine reach and read your pages at all?</p>
+					{FRAMEWORK_LAYERS.map((l) => (
+						<div class:list={['stage', { 'is-key': l.n === 4 }]}>
+							<span class="stage-n">{l.n}</span>
+							<div>
+								<h3>{l.name}</h3>
+								<p>{l.question}</p>
+							</div>
 						</div>
-					</div>
-					<div class="stage">
-						<span class="stage-n">2</span>
-						<div>
-							<h3>Citation</h3>
-							<p>It can use your content as a source and still name someone else.</p>
-						</div>
-					</div>
-					<div class="stage">
-						<span class="stage-n">3</span>
-						<div>
-							<h3>Interpretation</h3>
-							<p>Does it understand what you sell today, or what you sold two years ago?</p>
-						</div>
-					</div>
-					<div class="stage is-key">
-						<span class="stage-n">4</span>
-						<div>
-							<h3>Expression</h3>
-							<p>What it answers when your buyer asks the question that ends in a purchase.</p>
-						</div>
-					</div>
+					))}
 				</div>
 				<p class="framework-note">
 					Most tools measure the first two and report a mention rate. The failures that cost pipeline
@@ -228,7 +258,7 @@ const phases = [
 
 				<h2>Pricing</h2>
 				<p>
-					<strong>The audit is $800, one time.</strong> I run your buyers' real questions across
+					<strong>The audit is {AUDIT_PRICE}, one time.</strong> I run your buyers' real questions across
 					ChatGPT, Perplexity, Gemini and Google's AI results, map where each description came from,
 					and hand you the findings and the fix list. You keep it either way — including if you act
 					on it yourself or take it to another vendor.
@@ -238,7 +268,7 @@ const phases = [
 					report, so that's the honest limit.
 				</p>
 				<p>
-					<strong>Ongoing work is $1,000 per month:</strong> the same questions rerun across every
+					<strong>Ongoing work is {MONTHLY_PRICE} per month:</strong> the same questions rerun across every
 					engine, positioning work on the specific queries you can win, two pages a month,
 					third-party sources corrected as they're found, and a report tracing each change back to
 					what caused it. No contract, cancel any time.
@@ -260,7 +290,7 @@ const phases = [
 				<p>
 					SEO gets your pages retrieved. It measures whether you rank. AEO measures whether the model
 					chooses you and what it says about you. Both matter, and one depends on the other — covered
-					in <a href="/blog/aeo-vs-seo-blog/">AEO vs SEO</a>.
+					in <a href="/blog/aeo-vs-seo/">AEO vs SEO</a>.
 				</p>
 
 				<h3>Do I need this if I already use an AI visibility tool?</h3>

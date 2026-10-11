@@ -1,7 +1,8 @@
 ---
-title: "How Long Does AEO Take to Work?"
-description: "AEO runs on two clocks, and confusing them is why people over- or under-estimate it. The crawl clock runs in days; the recommendation clock runs in months. What to expect, engine by engine, with the 2026 recrawl data."
+title: "How Long Does AEO Take? Days to Crawl, Months to Get Picked"
+description: "AEO runs on two clocks: crawls take days, recommendations take months. What to expect engine by engine, with 2026 recrawl data."
 pubDate: 'Oct 3 2026'
+ogImage: '../../assets/og/how-long-aeo-take.jpg'
 ---
 
 **The short answer:** there are two clocks, and confusing them is why people think AEO either works in a week or never works at all. The first clock — can the engines *read* your page — runs in days to about three weeks. The second — are you *recommended* in your buyer's decision questions — runs in months, and it never fully stops. Start at BOFU and the second clock runs as fast as it can. Start at the top of the funnel and it may never finish.
@@ -106,4 +107,4 @@ From there the work is ordered — fix what describes you wrong before publishin
 
 Want to know where your clock actually stands? Send me your domain and I'll run your BOFU questions across every engine: whether you appear today, how you're described, and who's taking your place. Free, before we talk.
 
-<a href="https://calendly.com/geraldgerez/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.

@@ -1,7 +1,8 @@
 ---
-title: "Why ChatGPT Recommends Your Competitor's AI Agent (And Still Calls Yours a Chatbot)"
-description: "Your category renamed itself from chatbot to agent in about eighteen months. The sources the models read didn't follow. Why AI agent companies get filed under the category they left, what it costs on the shortlist, and the order to fix it in."
+title: "Why ChatGPT Still Calls Your AI Agent a Chatbot"
+description: "Your category went from chatbot to agent in 18 months. The sources AI reads didn't. Why you're still filed under the old category, and how to fix it."
 pubDate: 'Oct 6 2026'
+ogImage: '../../assets/og/why-chatgpt-calls-your-agent-a-chatbot.jpg'
 ---
 
 **The short answer:** your product changed, your website changed, and roughly forty other pages describing you didn't. Models don't weigh your claim against theirs — they go with the version that has more sources behind it, which is the old one. The fix isn't saying "agent" more often on your own site. It's correcting the record everywhere else, in that order, before you publish anything new.
@@ -137,4 +138,4 @@ Two free checks before you talk to anyone, both on your own domain:
 - **<a href="/positioning-check/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Positioning Check</a>** — which version of your company the crawls captured. Forty seconds.
 - **<a href="/ai-crawler-check/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Crawler Check</a>** — what each AI bot receives when it visits your site. Two minutes.
 
-If the snapshot on record still describes the product you replaced, send me your domain and I'll tell you what the models say about you right now: whether you appear, whether they call you an agent, and who gets named instead. <a href="https://calendly.com/geraldgerez/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.
+If the snapshot on record still describes the product you replaced, send me your domain and I'll tell you what the models say about you right now: whether you appear, whether they call you an agent, and who gets named instead. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.

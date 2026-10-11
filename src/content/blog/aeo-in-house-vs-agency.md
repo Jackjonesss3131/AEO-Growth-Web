@@ -1,7 +1,8 @@
 ---
-title: "Should We Do AEO In-House or Hire Someone?"
-description: "The real calculation for a B2B SaaS in 2026: which half of the work your team can do, which half never gets finished internally, what each path costs with published figures, and three signals that in-house won't get there."
+title: "AEO In-House or Outsourced? The Half Your Team Won't Finish"
+description: "Which half of AEO your team can own, which half never gets finished in-house, what each path really costs, and 3 signs in-house won't get there."
 pubDate: 'Oct 6 2026'
+ogImage: '../../assets/og/aeo-in-house-vs-agency.jpg'
 ---
 
 **The short answer:** if you have someone on content with real hours and the patience for six months, you can do half of this in-house and it will work. The other half is the half that decides whether you appear at all — correcting the third-party sources that describe you wrong. It isn't hard, it's tedious, and it's never Monday's priority. Before you decide either way, buy a diagnosis first. It's the cheapest thing in this category and it tells you which half is actually your problem.
@@ -71,7 +72,7 @@ You can verify this signal yourself before reading further. Models learn from sn
 
 There's a floor on full retainers, and most of the category agrees on it: below roughly $1,500–$2,000 per month, what's usually being sold is traditional SEO with a new label. If you're quoted less for a full program, ask which deliverable is specifically different from an SEO one. A standalone measurement subscription is a different product and sits below that floor legitimately — it isn't the work, it's the scoreboard.
 
-For reference, my own audit is fixed at $1,000 and everything after it gets scoped from the findings. The numbers are on the [services page](https://www.aeogrowth.co/services).
+For reference, my own audit is fixed at $1,000, and ongoing work after it is $2,500 a month with no contract. The numbers are on the [services page](https://www.aeogrowth.co/services).
 
 **In-house:** half a person for six months, plus whatever it costs to discover what doesn't work by trial and error. Don't compare these on price. Compare them on whether they finish. A cheap internal path that never completes part 4 costs more than outsourcing, because you lose the six months anyway and still don't have the diagnosis.
 
@@ -107,7 +108,7 @@ What you shouldn't expect is a number for the board by day 30. What you should d
 
 ## Quick answers
 
-**Can my SEO agency do this?** They can do 2 and part of 3, because it resembles work they already do. Part 4 isn't SEO. Ask your agency the same question you'd ask any new vendor: what exactly do you measure, and how do you verify the description is accurate? The answer tells you whether they built real capability or relabelled existing deliverables. More on what carries over and what doesn't in [AEO vs SEO](https://www.aeogrowth.co/blog/aeo-vs-seo-blog/).
+**Can my SEO agency do this?** They can do 2 and part of 3, because it resembles work they already do. Part 4 isn't SEO. Ask your agency the same question you'd ask any new vendor: what exactly do you measure, and how do you verify the description is accurate? The answer tells you whether they built real capability or relabelled existing deliverables. More on what carries over and what doesn't in [AEO vs SEO](https://www.aeogrowth.co/blog/aeo-vs-seo/).
 
 **Do I need a full-time hire?** Almost never. The load is heavy for the first two months and drops considerably after. It's project-shaped, not headcount-shaped.
 
@@ -134,4 +135,4 @@ You don't have to decide this blind, and you don't have to start with a call. Tw
 - **[Crawler Check](https://www.aeogrowth.co/ai-crawler-check)** — what each AI bot actually receives when it visits your site. Two minutes.
 - **[Positioning Check](https://www.aeogrowth.co/positioning-check)** — which version of your company got captured in the snapshots the models read. Forty seconds.
 
-If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and I'll tell you what the models say about you right now, before we talk. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and I'll tell you what the models say about you right now, before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

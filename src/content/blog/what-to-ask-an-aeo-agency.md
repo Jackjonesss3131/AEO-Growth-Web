@@ -1,7 +1,8 @@
 ---
-title: "What to Ask an AEO Agency Before You Sign"
-description: "The questions I'd ask any vendor selling AEO to a B2B SaaS, the deliverables a proposal should name, and what a realistic first 90 days looks like."
+title: "What to Ask an AEO Agency Before You Sign: A Vendor Checklist"
+description: "The questions to ask any AEO vendor, the deliverables a proposal should name, and what a realistic first 90 days looks like."
 pubDate: 'Oct 2 2026'
+ogImage: '../../assets/og/what-to-ask-an-aeo-agency.jpg'
 ---
 
 **The short answer:** ask for the prompt set, the engine list and a sample report before you sign anything. If a vendor can't show you what a month of work produces, the scope isn't defined yet.
@@ -97,4 +98,4 @@ Changes to your own site register soonest. Changes to how third parties describe
 
 ---
 
-If you want the diagnosis before deciding anything, that's what the audit is. I run it on your domain before we talk. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want the diagnosis before deciding anything, that's what the audit is. I run it on your domain before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

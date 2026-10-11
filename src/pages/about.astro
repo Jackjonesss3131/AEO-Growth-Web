@@ -2,17 +2,30 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE, CALENDLY_URL, LINKEDIN_URL, AUTHOR_NAME } from '../consts';
+import { CALENDLY_URL, LINKEDIN_URL, AUTHOR_NAME, SITE_URL, ABOUT_DESCRIPTION } from '../consts';
 
 export const prerender = true;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfilePage',
+	'@id': `${SITE_URL}/about#profile`,
+	name: `About — ${AUTHOR_NAME}`,
+	description: ABOUT_DESCRIPTION,
+	url: `${SITE_URL}/about`,
+	isPartOf: { '@id': `${SITE_URL}/#website` },
+	mainEntity: { '@id': `${SITE_URL}/#gerald` },
+	inLanguage: 'en',
+};
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead
-			title={`About — ${SITE_TITLE}`}
-			description="Gerald De Oleo — AEO and GEO for B2B SaaS. Independent consultant, previously product-led growth."
+			title={`About — ${AUTHOR_NAME}`}
+			description={ABOUT_DESCRIPTION}
+			schema={schema}
 		/>
 	</head>
 	<body>

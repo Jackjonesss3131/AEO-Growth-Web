@@ -1,7 +1,8 @@
 ---
-title: "AI Visibility Tools for B2B SaaS: How to Pick One"
-description: "What these tools actually meter, the engine-gating trap at entry tiers, and where a dashboard stops being useful for a B2B SaaS."
+title: "AI Visibility Tools for B2B SaaS: What They Don't Measure"
+description: "What AI visibility tools actually meter, the engine-gating trap in entry tiers, and where a dashboard stops helping a B2B SaaS team."
 pubDate: 'Sep 28 2026'
+ogImage: '../../assets/og/ai-visibility-tools-b2b-saas.jpg'
 ---
 
 **The short answer:** buy one, but buy it as monitoring rather than diagnosis. The sticker price matters less than what the money meters — prompts, engines, seats or credits — and entry tiers frequently cover a single engine, which is close to useless for B2B.
@@ -93,4 +94,4 @@ Not necessarily. If your positioning is clean and your team can act on findings,
 
 ---
 
-If you've got a tool and the numbers don't explain themselves, that's the gap I work in. I run the audit on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you've got a tool and the numbers don't explain themselves, that's the gap I work in. I run the audit on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

@@ -1,12 +1,13 @@
 ---
-title: "AEO vs SEO: What Actually Changed"
-description: "SEO measures whether you rank. AEO measures whether an AI model chooses you, and what it says about you when it does. What changed, what didn't, and why you need both."
+title: "AEO vs SEO: Ranking #1 No Longer Means You Get Chosen"
+description: "SEO gets you ranked. AEO decides whether an AI model picks you and how it describes you. What changed, what didn't, and why you still need both."
 pubDate: 'Sep 21 2026'
+ogImage: '../../assets/og/aeo-vs-seo.jpg'
 ---
 
 **The short answer:** SEO optimizes for being ranked on a page of links. AEO — answer engine optimization — optimizes for being selected, cited, and described correctly inside an answer an AI writes.
 
-SEO isn't obsolete, and AEO isn't a new name for it. It's also not the same as <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO — generative engine optimization</a>, though the terms overlap. The real difference between SEO and AEO is where the decision happens. In SEO, the buyer reads the results and decides. In AEO, a model reads the results and decides what the buyer sees.
+SEO isn't obsolete, and AEO isn't a new name for it. It's also not the same as <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO — generative engine optimization</a>, though the terms overlap. The real difference between SEO and AEO is where the decision happens. In SEO, the buyer reads the results and decides. In AEO, a model reads the results and decides what the buyer sees.
 
 Everything else follows from that.
 
@@ -32,7 +33,7 @@ Two details in that data matter for B2B.
 
 **Being cited doesn't bring the buyer to you.** At a 1% click rate on cited sources, the summary *is* the impression. Whatever the model wrote about you is the version of your company the buyer leaves with.
 
-That's the part SEO has no metric for — and it's the part where <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">understanding how generative engines assemble their answers</a> becomes essential.
+That's the part SEO has no metric for — and it's the part where <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">understanding how generative engines assemble their answers</a> becomes essential.
 
 ## Rankings still help — less predictably than you'd think
 
@@ -46,7 +47,7 @@ Same question, three answers, ranging from a sixth to three quarters.
 
 The honest reading isn't any single number. It's that **ranking is an input to citation, not a proxy for it.** You can rank second and not be cited. You can be cited from page four.
 
-Part of the reason is that AI systems don't only search your exact query. They generate related sub-queries and pull sources from those too — so the page that earns the citation is often one ranking for a question next to the one you optimized for. This retrieval behavior is one of the key mechanisms that <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research has studied in depth</a>.
+Part of the reason is that AI systems don't only search your exact query. They generate related sub-queries and pull sources from those too — so the page that earns the citation is often one ranking for a question next to the one you optimized for. This retrieval behavior is one of the key mechanisms that <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research has studied in depth</a>.
 
 ## Where SEO's instruments go blind
 
@@ -56,7 +57,7 @@ I break AI visibility into <a href="/blog/being-cited-isnt-being-understood/" st
 This is where SEO fundamentals do most of the work: crawlability, indexing, speed, clean HTML. If a system that grounds its answers in search results can't reach your page, nothing downstream matters. Strong overlap with SEO.
 
 **2. Citation — does it use your content as a source?**
-Partial overlap. Ranking helps, as above. But citation also depends on whether your page answers the question directly, whether it's specific enough to quote, and whether other sources say the same thing. <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research shows</a> that verifiable claims, statistics with sources and clear prose consistently outperform keyword-stuffed content at this stage.
+Partial overlap. Ranking helps, as above. But citation also depends on whether your page answers the question directly, whether it's specific enough to quote, and whether other sources say the same thing. <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research shows</a> that verifiable claims, statistics with sources and clear prose consistently outperform keyword-stuffed content at this stage.
 
 **3. Interpretation — does it understand what your content says?**
 No SEO equivalent. A page can rank and be cited while the model extracts the wrong claim from it — the integration you mention in passing instead of the product you actually sell.
@@ -80,7 +81,7 @@ By presence metrics, that company looks healthy.
 | Typical failure | Not found | Found, cited, and described wrong |
 | Unit of research | Keywords | Questions and prompts |
 
-For a comparison with GEO — how it differs from AEO and where the two overlap — see <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>.
+For a comparison with GEO — how it differs from AEO and where the two overlap — see <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>.
 
 ## What doesn't change
 
@@ -99,7 +100,7 @@ In SEO, an outdated directory listing is a minor consistency issue. In AEO it ca
 <a href="https://www.tryanalyze.ai/blog/state-of-ai-search-source-family-mix" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">One study of 22,295 AI answers to B2B prompts</a> found ChatGPT drew 69% of its citations from brand websites and product pages, while Perplexity and Google AI Mode spread theirs roughly evenly across brand sites, comparison lists and editorial content. <a href="https://kime.ai/blog/chatgpt-citation-sources-decoded" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Other research reports the opposite for ChatGPT</a> — a strong preference for third-party coverage. The practical conclusion holds either way: your own site has to be the clearest source on what you do, *and* the lists and reviews in your category have to agree with it.
 
 **Content is written to be quoted, not only to be found.**
-Direct answers at the top of sections. Clear definitions. Specific numbers with sources. First-party data nobody else can publish. A model can't cite a claim it has to dig for. The <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research paper</a> tested exactly this — and found that adding citations, statistics and quotations improved visibility by 30–40% in controlled experiments, while keyword stuffing performed worse than doing nothing.
+Direct answers at the top of sections. Clear definitions. Specific numbers with sources. First-party data nobody else can publish. A model can't cite a claim it has to dig for. The <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">GEO research paper</a> tested exactly this — and found that adding citations, statistics and quotations improved visibility by 30–40% in controlled experiments, while keyword stuffing performed worse than doing nothing.
 
 **The unit of research moves from keywords to questions.**
 Buyers ask models full questions with context — company size, industry, constraints. The content that gets used answers those questions specifically, not the head term.
@@ -129,7 +130,7 @@ No. AEO depends on SEO for retrieval. It adds a layer SEO was never built to mea
 It helps, but it doesn't decide the outcome. Published estimates of the overlap between top-10 rankings and AI citations vary widely by study, engine and method. Treat ranking as an input, not a guarantee.
 
 **What's the difference between AEO and GEO?**
-They overlap heavily, and the industry uses both terms loosely. I wrote a full breakdown in <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>. The short version: GEO focuses on how generative engines assemble answers. AEO focuses on whether you end up as the answer — and are described correctly.
+They overlap heavily, and the industry uses both terms loosely. I wrote a full breakdown in <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>. The short version: GEO focuses on how generative engines assemble answers. AEO focuses on whether you end up as the answer — and are described correctly.
 
 **Do I need a separate team for AEO?**
 Usually not. You need someone who owns the second measurement layer — the prompt set — and who can trace what the models say back to the specific pages, listings and descriptions that need fixing.
@@ -145,6 +146,6 @@ Before any call, I run a full audit on your domain across ChatGPT, Perplexity, G
 
 On the call, we walk through findings, not slides. From there, the work follows the layers: fix what's wrong in how you're described, make your content worth citing, and measure the results per engine, monthly.
 
-If you want to understand how generative engines decide which sources to use — and what the research says actually works — I break that down in <a href="/blog/aeo-vs-geo-blog/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>.
+If you want to understand how generative engines decide which sources to use — and what the research says actually works — I break that down in <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>.
 
-<a href="https://calendly.com/geraldgerez/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.

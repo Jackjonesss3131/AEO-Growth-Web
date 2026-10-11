@@ -2,16 +2,19 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE, CALENDLY_URL } from '../consts';
+import {
+	SITE_DESCRIPTION,
+	HOME_TITLE,
+	AUTHOR_NAME,
+	CALENDLY_URL,
+	FRAMEWORK_LAYERS,
+	AUDIT_PRICE,
+	MONTHLY_PRICE,
+} from '../consts';
 
 export const prerender = true;
 
-const stages = [
-	{ n: 1, name: 'Retrieval', q: 'Does the model pull your content at all?' },
-	{ n: 2, name: 'Citation', q: 'Does it use your content as a source?' },
-	{ n: 3, name: 'Interpretation', q: 'Does it understand what your content says?' },
-	{ n: 4, name: 'Expression', q: 'How does it describe your company in the final answer?', key: true },
-];
+const stages = FRAMEWORK_LAYERS.map((l) => ({ n: l.n, name: l.name, q: l.question, key: l.n === 4 }));
 
 const steps = [
 	{
@@ -83,7 +86,7 @@ const faqs = [
 	},
 	{
 		q: 'What does this cost?',
-		a: 'The audit is $800 one time, and ongoing work is $1,000 per month with no contract. Both free tools run on your domain before you pay anything.',
+		a: `The audit is ${AUDIT_PRICE} one time, and ongoing work is ${MONTHLY_PRICE} per month with no contract. Both free tools run on your domain before you pay anything.`,
 	},
 	{
 		q: 'How long does AEO take to work?',
@@ -105,7 +108,7 @@ const faqSchema = {
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={HOME_TITLE} description={SITE_DESCRIPTION} />
 		<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline />
 	</head>
 	<body>
@@ -115,6 +118,10 @@ const faqSchema = {
 			<section class="hero">
 				<p class="eyebrow">AEO &amp; GEO for B2B SaaS</p>
 				<h1>You repositioned. The models didn't notice.</h1>
+				<p class="hero-byline">
+					I'm <a href="/about">{AUTHOR_NAME}</a>, an independent AEO consultant. You work with me
+					directly — not an agency.
+				</p>
 				<p class="hero-sub">
 					Your site says what you sell today. Most of what's indexed about you says what you sold two
 					years ago, and there's more of it. The model isn't wrong — it's reasoning correctly from
@@ -238,7 +245,7 @@ const faqSchema = {
 				<div class="price-grid">
 					<article class="price-card">
 						<p class="price-label">The audit</p>
-						<p class="price-n">$800<span> one time</span></p>
+						<p class="price-n">{AUDIT_PRICE}<span> one time</span></p>
 						<p class="price-body">
 							Your buyers' questions across ChatGPT, Perplexity, Gemini and Google. Where each
 							description came from, who appears in your place, and the fix list. Yours to keep
@@ -247,7 +254,7 @@ const faqSchema = {
 					</article>
 					<article class="price-card">
 						<p class="price-label">Ongoing</p>
-						<p class="price-n">$1,000<span> per month</span></p>
+						<p class="price-n">{MONTHLY_PRICE}<span> per month</span></p>
 						<p class="price-body">
 							The same questions rerun every engine, positioning work on the queries you can win,
 							two pages a month, third-party sources corrected as they're found, and a report
@@ -289,6 +296,8 @@ const faqSchema = {
 
 		<style>
 			.hero-note { margin-top: 0.9rem; font-size: 0.9rem; opacity: 0.6; }
+			.hero-byline { margin: 0.6rem 0 0; font-size: 1rem; opacity: 0.75; }
+			.hero-byline a { color: inherit; font-weight: 600; text-underline-offset: 2px; }
 
 			.tools { margin: 3rem 0 4rem; }
 			.tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }

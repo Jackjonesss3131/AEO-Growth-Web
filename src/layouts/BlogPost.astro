@@ -5,16 +5,38 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { SITE_URL } from '../consts';
+import { DEFAULT_OG_IMAGE } from '../og-image';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, ogImage } = Astro.props;
+
+// Social image: ogImage from frontmatter → heroImage → site default.
+const socialImage = ogImage ?? heroImage ?? DEFAULT_OG_IMAGE;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	datePublished: pubDate.toISOString(),
+	dateModified: (updatedDate ?? pubDate).toISOString(),
+	author: { '@id': `${SITE_URL}/#gerald` },
+	publisher: { '@id': `${SITE_URL}/#business` },
+	isPartOf: { '@id': `${SITE_URL}/#website` },
+	mainEntityOfPage: canonicalURL,
+	url: canonicalURL,
+	image: new URL(socialImage.src, Astro.site).href,
+	inLanguage: 'en',
+};
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} image={heroImage} />
+		<BaseHead title={title} description={description} image={socialImage} schema={schema} />
 	</head>
 	<body>
 		<Header />

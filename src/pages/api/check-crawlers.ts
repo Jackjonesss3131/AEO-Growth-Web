@@ -6,6 +6,11 @@ export const prerender = false;
 
 const UA_BROWSER = 'Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)';
 const TIMEOUT = 8000;
+// Whole-request time budget. Vercel kills the function at maxDuration (60 s) and returns a
+// plain-text error page; without a budget the sequential steps below could add up to ~70 s.
+const BUDGET_MS = 40000;
+// Cap every download so one huge page can't exhaust the function's memory.
+const MAX_BYTES = 2_000_000;
 const CACHE_TTL = 15 * 60 * 1000;
 const cache = new Map<string, { at: number; body: string }>();
 
@@ -52,15 +57,43 @@ const json = (data: unknown, status = 200) =>
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=900' },
   });
 
-async function fetchDoc(url: string, ua: string) {
+// Reads at most `max` bytes of the body, then cancels the rest of the download.
+async function readCapped(res: Response, max = MAX_BYTES) {
+  if (!res.body) return '';
+  const reader = res.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  while (size < max) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    size += value.byteLength;
+  }
+  if (size >= max) await reader.cancel().catch(() => {});
+  const all = new Uint8Array(Math.min(size, max));
+  let offset = 0;
+  for (const c of chunks) {
+    const part = c.subarray(0, Math.min(c.byteLength, all.length - offset));
+    all.set(part, offset);
+    offset += part.byteLength;
+    if (offset >= all.length) break;
+  }
+  return new TextDecoder().decode(all);
+}
+
+async function fetchDoc(url: string, ua: string, deadline = Infinity) {
   const t0 = Date.now();
+  const timeout = Math.min(TIMEOUT, deadline - t0 - 500);
+  if (timeout < 1000) {
+    return { ok: false, status: null as number | null, text: '', finalUrl: url, headers: new Headers(), ms: 0, error: 'TimeBudgetExceeded' as string | null };
+  }
   try {
     const headers: Record<string, string> = {
       Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     };
     if (ua) headers['User-Agent'] = ua;
-    const r = await fetch(url, { headers, redirect: 'follow', signal: AbortSignal.timeout(TIMEOUT) });
-    const text = await r.text();
+    const r = await fetch(url, { headers, redirect: 'follow', signal: AbortSignal.timeout(timeout) });
+    const text = await readCapped(r);
     return { ok: r.ok, status: r.status, text, finalUrl: r.url || url, headers: r.headers, ms: Date.now() - t0, error: null as string | null };
   } catch (e) {
     return { ok: false, status: null as number | null, text: '', finalUrl: url, headers: new Headers(), ms: Date.now() - t0, error: e instanceof Error ? e.name : 'error' };
@@ -187,6 +220,14 @@ type Level = 'critical' | 'high' | 'medium' | 'low';
 interface Finding { id: string; level: Level; area: string; title: string; detail: string; evidence: string; fix: string }
 
 export const GET: APIRoute = async ({ request }) => {
+  try {
+    return await handle(request);
+  } catch {
+    return json({ error: 'Something failed on our side. Try again in a minute.' }, 500);
+  }
+};
+
+async function handle(request: Request) {
   const raw = new URL(request.url).searchParams.get('url');
   if (!raw) return json({ error: 'Missing url parameter' }, 400);
 
@@ -210,12 +251,14 @@ export const GET: APIRoute = async ({ request }) => {
   const origin = target.origin;
   const path = target.pathname || '/';
   const start = Date.now();
+  const deadline = start + BUDGET_MS;
+  const get = (u: string, ua: string) => fetchDoc(u, ua, deadline);
 
   /* 1. parallel base fetches */
   const [robotsRes, pageRes, llmsRes] = await Promise.all([
-    fetchDoc(`${origin}/robots.txt`, UA_BROWSER),
-    fetchDoc(target.href, UA_BROWSER),
-    fetchDoc(`${origin}/llms.txt`, UA_BROWSER),
+    get(`${origin}/robots.txt`, UA_BROWSER),
+    get(target.href, UA_BROWSER),
+    get(`${origin}/llms.txt`, UA_BROWSER),
   ]);
 
   if (pageRes.status === null) {
@@ -305,14 +348,14 @@ export const GET: APIRoute = async ({ request }) => {
   let pageUrls: string[] = [];
 
   for (const smUrl of candidates) {
-    const res = await fetchDoc(smUrl, UA_BROWSER);
+    const res = await get(smUrl, UA_BROWSER);
     if (!res.ok || !/<(urlset|sitemapindex)/i.test(res.text)) continue;
     const isIndex = /<sitemapindex/i.test(res.text);
     const locs = [...res.text.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)].map((m) => m[1].trim());
     const lastmods = [...res.text.matchAll(/<lastmod>([\s\S]*?)<\/lastmod>/gi)].map((m) => m[1].trim());
 
     if (isIndex) {
-      const child = await fetchDoc(locs[0] ?? '', UA_BROWSER);
+      const child = await get(locs[0] ?? '', UA_BROWSER);
       const childLocs = [...child.text.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)].map((m) => m[1].trim());
       const childMods = [...child.text.matchAll(/<lastmod>([\s\S]*?)<\/lastmod>/gi)].map((m) => m[1].trim());
       pageUrls = childLocs;
@@ -329,7 +372,7 @@ export const GET: APIRoute = async ({ request }) => {
     const robots = decide(groups, bot.token, path);
     let live: { blocked: boolean; status: number | null; note: string } | null = null;
     if (bot.live && bot.ua) {
-      const r = await fetchDoc(target.href, bot.ua);
+      const r = await get(target.href, bot.ua);
       if (r.status !== null) {
         const thin = words > 150 && wordsOf(r.text) < words * 0.5;
         const blocked = [401, 403, 429, 451, 503].includes(r.status) || thin;
@@ -347,7 +390,7 @@ export const GET: APIRoute = async ({ request }) => {
   /* 6. sample internal pages */
   const sampleUrls = pageUrls.filter((u) => u.startsWith(origin) && u !== finalUrl).slice(0, 5);
   const samples = await pool(sampleUrls, 3, async (u) => {
-    const r = await fetchDoc(u, UA_BROWSER);
+    const r = await get(u, UA_BROWSER);
     const p = new URL(u).pathname;
     const types = [...new Set([...r.text.matchAll(/"@type"\s*:\s*"([^"]+)"/gi)].map((m) => m[1]))];
     return {
@@ -521,4 +564,4 @@ export const GET: APIRoute = async ({ request }) => {
   if (cache.size > 300) cache.delete(cache.keys().next().value as string);
 
   return new Response(body, { status: 200, headers: { 'Content-Type': 'application/json', 'X-Cache': 'MISS' } });
-};
+}

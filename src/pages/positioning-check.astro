@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE } from '../consts';
+import { AUTHOR_NAME } from '../consts';
 
 export const prerender = true;
 ---
@@ -11,7 +11,7 @@ export const prerender = true;
 <html lang="en">
   <head>
     <BaseHead
-      title={`Positioning Check — ${SITE_TITLE}`}
+      title={`Positioning Check — ${AUTHOR_NAME}`}
       description="See how your homepage described your company over time, and which version AI training data most likely captured."
     />
   </head>
@@ -340,15 +340,32 @@ export const prerender = true;
         output.hidden = true;
 
         fetch('/api/positioning?domain=' + encodeURIComponent(domain))
-          .then(function (res) { return res.json(); })
+          .catch(function () {
+            throw new Error('We could not reach the server. Check your connection and try again.');
+          })
+          .then(function (res) {
+            // Only parse JSON when the server actually sent JSON. A crashed or timed-out
+            // serverless function returns a plain-text/HTML error page instead.
+            const type = res.headers.get('content-type') || '';
+            if (!type.includes('application/json')) {
+              throw new Error(res.status === 504
+                ? 'The check took too long this time. The archives we read are slow right now. Try again in a minute.'
+                : 'Something failed on our side. Try again in a minute.');
+            }
+            return res.json().catch(function () { return null; }).then(function (data) {
+              if (!res.ok || !data || data.error) {
+                throw new Error((data && data.error) || 'Something failed on our side. Try again in a minute.');
+              }
+              return data;
+            });
+          })
           .then(function (data) {
-            if (data.error) throw new Error(data.error);
             render(data);
             output.hidden = false;
             statusLine.textContent = 'Checked ' + data.domain + '.';
           })
           .catch(function (err) {
-            statusLine.textContent = err.message || 'Something went wrong. Try again in a minute.';
+            statusLine.textContent = (err && err.message) || 'Something went wrong. Try again in a minute.';
           })
           .then(function () {
             button.disabled = false;

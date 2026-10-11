@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE } from '../consts';
+import { AUTHOR_NAME } from '../consts';
 
 export const prerender = true;
 ---
@@ -11,7 +11,7 @@ export const prerender = true;
 <html lang="en">
 	<head>
 		<BaseHead
-			title={`What an AI sees on your site — ${SITE_TITLE}`}
+			title={`What an AI sees on your site — ${AUTHOR_NAME}`}
 			description="Check if ChatGPT, Claude, Perplexity and Google can read your site, and what they find when they crawl it."
 		/>
 	</head>
