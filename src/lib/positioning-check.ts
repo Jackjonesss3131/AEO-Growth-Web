@@ -261,13 +261,19 @@ async function snapshotNear(b: Budget, host: string, target: Date) {
   const before = new Date(target); before.setMonth(before.getMonth() - WINDOW_MONTHS);
   const after = new Date(target); after.setMonth(after.getMonth() + WINDOW_MONTHS);
   if (after > new Date()) after.setTime(Date.now());
-  const query = (from: Date, to: Date, limit: number) =>
-    reqJson(
+  const query = async (from: Date, to: Date, limit: number) => {
+    const r = await req(
       b,
       `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${ymd(from)}&to=${ymd(to)}` +
         `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=${limit}&output=json`,
+      UA_TOOL,
       20000
     );
+    let rows: any = null;
+    if (r.status === 200) { try { rows = r.text.trim() ? JSON.parse(r.text) : []; } catch { rows = null; } }
+    if (!Array.isArray(rows)) note(b, `archive cdx ${host} ${ymd(from)}: ${r.status || 'timeout/error'}`);
+    return rows;
+  };
   const firstTs = (rows: any) => {
     const ts = Array.isArray(rows) && Array.isArray(rows[1]) ? String(rows[1][0]) : '';
     return /^\d{14}$/.test(ts) ? ts : null;
@@ -277,6 +283,9 @@ async function snapshotNear(b: Budget, host: string, target: Date) {
     const ts = firstTs(rowsAfter) ?? firstTs(await query(before, target, -1));
     return { responded: true, ts };
   }
+  // CDX failed (error status or timeout). The availability API is a last resort, and it only
+  // counts as an answer if it actually returns a capture: it also answers {} when it's struggling,
+  // and reporting that as "no archived versions" would be wrong.
   const info = await reqJson(
     b,
     `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${ymd(target)}`,
@@ -284,7 +293,8 @@ async function snapshotNear(b: Budget, host: string, target: Date) {
   );
   const closest = info?.archived_snapshots?.closest;
   const ts = closest?.available ? String(closest.timestamp) : '';
-  return { responded: !!info, ts: /^\d{14}$/.test(ts) ? ts : null };
+  const ok = /^\d{14}$/.test(ts);
+  return { responded: ok, ts: ok ? ts : null };
 }
 
 async function archivedAt(b: Budget, hosts: string[], months: number) {
