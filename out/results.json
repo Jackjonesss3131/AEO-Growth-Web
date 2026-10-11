@@ -1,0 +1,2498 @@
+[
+  {
+    "domain": "stripe.com",
+    "company_name": "Stripe",
+    "input": "stripe.com",
+    "processed_at": "2026-10-11T22:43:38.897Z",
+    "duration_ms": 44504,
+    "status": "partial",
+    "error": "incomplete: Common Crawl did not respond (down)",
+    "summary": {
+      "crawler_status": "ok",
+      "crawler_detail": "",
+      "current_description": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+      "historical_descriptions": "2026-04-11: (same as today)",
+      "latest_crawl_date": "",
+      "crawl_matches_current": "cant_tell",
+      "mismatch_severity": "cant_tell"
+    },
+    "crawler": {
+      "finalUrl": "https://stripe.com/",
+      "redirected": false,
+      "viewAs": "Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)",
+      "ms": 2360,
+      "score": 94,
+      "counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 3
+      },
+      "findings": [
+        {
+          "id": "h1-many",
+          "level": "low",
+          "area": "Content",
+          "title": "The page has 2 H1 headings",
+          "detail": "Multiple H1s blur which one is the actual topic.",
+          "evidence": "\"Financial infrastructure to grow your re\" · \"Financial infrastructure to grow your re\"",
+          "fix": "Keep one H1 and demote the rest to H2."
+        },
+        {
+          "id": "sitemap-lastmod",
+          "level": "low",
+          "area": "Sitemap",
+          "title": "Your sitemap has no lastmod dates",
+          "detail": "Crawlers use lastmod to decide what is worth re-fetching.",
+          "evidence": "241 URLs, 0 with <lastmod>",
+          "fix": "Emit a real lastmod per URL."
+        },
+        {
+          "id": "dates",
+          "level": "low",
+          "area": "Dates",
+          "title": "Nothing tells crawlers when this was updated",
+          "detail": "When two sources disagree, AI systems tend to favour the one that can prove it is recent.",
+          "evidence": "no date in schema, meta tags or <time> elements",
+          "fix": "Add datePublished and dateModified to your JSON-LD."
+        }
+      ],
+      "good": [
+        "Every AI bot that can cite you is allowed in robots.txt.",
+        "The page has 1975 words of real body text, enough to be understood and quoted.",
+        "Structured data found: WebSite, Organization.",
+        "Your sitemap exists and is declared in robots.txt.",
+        "You publish an /llms.txt file."
+      ],
+      "bots": [
+        {
+          "name": "OAI-SearchBot",
+          "token": "oai-searchbot",
+          "company": "OpenAI",
+          "kind": "search",
+          "product": "ChatGPT Search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "token": "chatgpt-user",
+          "company": "OpenAI",
+          "kind": "user",
+          "product": "ChatGPT browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "GPTBot",
+          "token": "gptbot",
+          "company": "OpenAI",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "token": "claude-searchbot",
+          "company": "Anthropic",
+          "kind": "search",
+          "product": "Claude search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-User",
+          "token": "claude-user",
+          "company": "Anthropic",
+          "kind": "user",
+          "product": "Claude browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ClaudeBot",
+          "token": "claudebot",
+          "company": "Anthropic",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "token": "perplexitybot",
+          "company": "Perplexity",
+          "kind": "search",
+          "product": "Perplexity index",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Perplexity-User",
+          "token": "perplexity-user",
+          "company": "Perplexity",
+          "kind": "user",
+          "product": "Perplexity answers",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Googlebot",
+          "token": "googlebot",
+          "company": "Google",
+          "kind": "search",
+          "product": "Search + AI Overviews",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Google-Extended",
+          "token": "google-extended",
+          "company": "Google",
+          "kind": "training",
+          "product": "Gemini training",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Bingbot",
+          "token": "bingbot",
+          "company": "Microsoft",
+          "kind": "search",
+          "product": "Bing + Copilot",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot",
+          "token": "applebot",
+          "company": "Apple",
+          "kind": "search",
+          "product": "Siri / Spotlight",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot-Extended",
+          "token": "applebot-extended",
+          "company": "Apple",
+          "kind": "training",
+          "product": "Apple Intelligence",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Meta-ExternalAgent",
+          "token": "meta-externalagent",
+          "company": "Meta",
+          "kind": "training",
+          "product": "Meta AI",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "CCBot",
+          "token": "ccbot",
+          "company": "Common Crawl",
+          "kind": "training",
+          "product": "Open dataset",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Amazonbot",
+          "token": "amazonbot",
+          "company": "Amazon",
+          "kind": "search",
+          "product": "Alexa / Rufus",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        }
+      ],
+      "page": {
+        "title": "Stripe | Financial Infrastructure to Grow Your Revenue",
+        "description": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+        "canonical": "https://stripe.com/",
+        "h1": "Financial infrastructure to grow your revenue. Accept payments, handle business banking,1 and implement custom revenue models—from your first transaction to your billionth.",
+        "h1Count": 2,
+        "subheads": 30,
+        "words": 1975,
+        "responseMs": 277,
+        "status": 200,
+        "schema": {
+          "blocks": 1,
+          "broken": 0,
+          "microdata": false,
+          "types": [
+            "WebSite",
+            "Organization"
+          ],
+          "entities": [
+            {
+              "type": "WebSite",
+              "name": "Stripe",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 0
+            },
+            {
+              "type": "Organization",
+              "name": "Stripe",
+              "missing": [],
+              "sameAs": 12
+            }
+          ]
+        }
+      },
+      "sitemap": {
+        "found": true,
+        "url": "https://stripe.com/sitemap/sitemap.xml",
+        "inRobots": true,
+        "children": 9,
+        "count": 241,
+        "withLastmod": 0,
+        "newest": null,
+        "sameDate": false
+      },
+      "freshness": null,
+      "samples": [
+        {
+          "url": "https://stripe.com/legal",
+          "path": "/legal",
+          "status": 200,
+          "redirected": false,
+          "title": "Legal",
+          "words": 332,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://stripe.com/legal/ssa",
+          "path": "/legal/ssa",
+          "status": 200,
+          "redirected": false,
+          "title": "Stripe Services Agreement—General Terms",
+          "words": 19825,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://stripe.com/ssa",
+          "path": "/ssa",
+          "status": 200,
+          "redirected": true,
+          "title": "Stripe Services Agreement—General Terms",
+          "words": 19825,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://stripe.com/climate/legal",
+          "path": "/climate/legal",
+          "status": 200,
+          "redirected": true,
+          "title": "Stripe Services Agreement—Service Terms",
+          "words": 102480,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://stripe.com/connect/legal",
+          "path": "/connect/legal",
+          "status": 200,
+          "redirected": true,
+          "title": "Stripe Services Agreement—Service Terms",
+          "words": 102480,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        }
+      ]
+    },
+    "positioning": {
+      "domain": "stripe.com",
+      "analyzedAt": "2026-10-11T22:43:38.896Z",
+      "archive": {
+        "ok": true
+      },
+      "today": {
+        "fields": {
+          "title": "Stripe | Financial Infrastructure to Grow Your Revenue",
+          "metaDescription": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+          "ogDescription": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+          "h1": "Financial infrastructure to grow your revenue. Accept payments, handle business banking, 1 and implement custom revenue models—from your first transaction to your billionth.",
+          "schemaDescription": "Stripe powers online and in-person payment processing and financial solutions for businesses of all sizes."
+        },
+        "description": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+        "llms": "Stripe is a technology company that provides financial infrastructure for businesses. Businesses of every size—from new startups to established public companies—use Stripe to accept payments online and in person, embed financial services, and create custom revenue models.",
+        "liveSince": "2026-04-11",
+        "added": []
+      },
+      "history": [],
+      "commonCrawl": {
+        "ok": false,
+        "reason": "down",
+        "ccbotBlocked": false
+      },
+      "wikidata": {
+        "checked": true,
+        "found": true,
+        "url": "http://www.wikidata.org/entity/Q7624104",
+        "label": "Stripe",
+        "description": "Irish-American payment technology company"
+      },
+      "consistency": [
+        {
+          "field": "Title tag",
+          "value": "Stripe | Financial Infrastructure to Grow Your Revenue",
+          "matches": true
+        },
+        {
+          "field": "Meta description",
+          "value": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+          "matches": true
+        },
+        {
+          "field": "Open Graph description",
+          "value": "Stripe is a financial services platform that helps all types of businesses accept payments, build flexible billing models, and manage money movement.",
+          "matches": true
+        },
+        {
+          "field": "H1",
+          "value": "Financial infrastructure to grow your revenue. Accept payments, handle business banking, 1 and implement custom revenue models—from your first transaction to your billionth.",
+          "matches": false
+        },
+        {
+          "field": "Schema description",
+          "value": "Stripe powers online and in-person payment processing and financial solutions for businesses of all sizes.",
+          "matches": true
+        },
+        {
+          "field": "llms.txt summary",
+          "value": "Stripe is a technology company that provides financial infrastructure for businesses. Businesses of every size—from new startups to established public companies—use Stripe to accept payments online and in person, embed financial services, and create custom revenue models.",
+          "matches": true
+        }
+      ],
+      "summary": {
+        "since": "2026-04-11",
+        "level": "stable",
+        "titleChanged": false,
+        "oldTitle": null,
+        "newTitle": "Stripe | Financial Infrastructure to Grow Your Revenue",
+        "capturesTotal": 0,
+        "capturesOnOldVersion": 0,
+        "capturesUnknown": 0
+      },
+      "diagnostics": [
+        "28.6s archive 6mo stripe.com: ok 20260411023936",
+        "38.6s archive cdx stripe.com 20241011: timeout/error",
+        "41.6s archive cdx stripe.com 20251011: timeout/error",
+        "43.0s archive cdx stripe.com 20260711: timeout/error",
+        "44.5s archive cdx stripe.com 20231011: timeout/error",
+        "44.5s archive 36mo stripe.com: no capture near 20231011",
+        "44.5s archive 24mo stripe.com: no capture near 20241011",
+        "44.5s archive 3mo stripe.com: no capture near 20260711",
+        "44.5s archive 12mo stripe.com: no capture near 20251011"
+      ]
+    },
+    "attempts": 1
+  },
+  {
+    "domain": "notion.so",
+    "company_name": "Notion",
+    "input": "https://www.notion.so/",
+    "processed_at": "2026-10-11T22:43:39.712Z",
+    "duration_ms": 45317,
+    "status": "partial",
+    "error": "incomplete: Internet Archive did not respond | incomplete: Common Crawl did not respond (down)",
+    "summary": {
+      "crawler_status": "blocked",
+      "crawler_detail": "robots.txt blocks Amazonbot (Disallow: /); server refuses requests sent with the user agent of Googlebot (HTTP 403, but served 122 words vs 424 to a browser), Bingbot (HTTP 403, but served 122 words vs 424 to a browser) — sites that verify real bots by IP may still let the real crawler in",
+      "current_description": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+      "historical_descriptions": "",
+      "latest_crawl_date": "",
+      "crawl_matches_current": "cant_tell",
+      "mismatch_severity": "cant_tell"
+    },
+    "crawler": {
+      "finalUrl": "https://www.notion.com/",
+      "redirected": true,
+      "viewAs": "Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)",
+      "ms": 1232,
+      "score": 40,
+      "counts": {
+        "critical": 2,
+        "high": 0,
+        "medium": 1,
+        "low": 2
+      },
+      "findings": [
+        {
+          "id": "robots-citing",
+          "level": "critical",
+          "area": "Access",
+          "title": "1 bot that can cite you are blocked",
+          "detail": "These crawlers are the ones that fetch pages to answer questions and link back to the source. Blocking them means you cannot appear as a citation, no matter how good the content is.",
+          "evidence": "Amazonbot → Disallow: / (group: amazonbot)",
+          "fix": "Edit /robots.txt and remove or narrow the Disallow rules for Amazonbot."
+        },
+        {
+          "id": "live-block",
+          "level": "critical",
+          "area": "Access",
+          "title": "Your server turns bots away even though robots.txt allows them",
+          "detail": "robots.txt is only a declaration. When we requested the page identifying as these bots, the server refused or returned far less content than it gives a browser. This is usually a WAF, Cloudflare bot-fight mode, or rate limiting.",
+          "evidence": "Googlebot: HTTP 403, but served 122 words vs 424 to a browser · Bingbot: HTTP 403, but served 122 words vs 424 to a browser",
+          "fix": "Allow these user agents in your firewall / CDN bot rules, or verify them by IP range instead of blocking them."
+        },
+        {
+          "id": "schema-none",
+          "level": "medium",
+          "area": "Structured Data",
+          "title": "The page has no structured data",
+          "detail": "Structured data states in machine-readable form what the page is, who publishes it, and how the entities relate. Without it, crawlers have to guess.",
+          "evidence": "no JSON-LD blocks and no microdata found",
+          "fix": "Add a JSON-LD block with Organization and WebPage (or Article/Product) including name, description and url."
+        },
+        {
+          "id": "sitemap-lastmod",
+          "level": "low",
+          "area": "Sitemap",
+          "title": "Your sitemap has no lastmod dates",
+          "detail": "Crawlers use lastmod to decide what is worth re-fetching.",
+          "evidence": "116 URLs, 0 with <lastmod>",
+          "fix": "Emit a real lastmod per URL."
+        },
+        {
+          "id": "dates",
+          "level": "low",
+          "area": "Dates",
+          "title": "Nothing tells crawlers when this was updated",
+          "detail": "When two sources disagree, AI systems tend to favour the one that can prove it is recent.",
+          "evidence": "no date in schema, meta tags or <time> elements",
+          "fix": "Add datePublished and dateModified to your JSON-LD."
+        }
+      ],
+      "good": [
+        "The page has 424 words of real body text, enough to be understood and quoted.",
+        "Your sitemap exists and is declared in robots.txt.",
+        "You publish an /llms.txt file."
+      ],
+      "bots": [
+        {
+          "name": "OAI-SearchBot",
+          "token": "oai-searchbot",
+          "company": "OpenAI",
+          "kind": "search",
+          "product": "ChatGPT Search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "token": "chatgpt-user",
+          "company": "OpenAI",
+          "kind": "user",
+          "product": "ChatGPT browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "GPTBot",
+          "token": "gptbot",
+          "company": "OpenAI",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "token": "claude-searchbot",
+          "company": "Anthropic",
+          "kind": "search",
+          "product": "Claude search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-User",
+          "token": "claude-user",
+          "company": "Anthropic",
+          "kind": "user",
+          "product": "Claude browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ClaudeBot",
+          "token": "claudebot",
+          "company": "Anthropic",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "token": "perplexitybot",
+          "company": "Perplexity",
+          "kind": "search",
+          "product": "Perplexity index",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Perplexity-User",
+          "token": "perplexity-user",
+          "company": "Perplexity",
+          "kind": "user",
+          "product": "Perplexity answers",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Googlebot",
+          "token": "googlebot",
+          "company": "Google",
+          "kind": "search",
+          "product": "Search + AI Overviews",
+          "cites": true,
+          "live": {
+            "blocked": true,
+            "status": 403,
+            "note": "HTTP 403, but served 122 words vs 424 to a browser"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Google-Extended",
+          "token": "google-extended",
+          "company": "Google",
+          "kind": "training",
+          "product": "Gemini training",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Bingbot",
+          "token": "bingbot",
+          "company": "Microsoft",
+          "kind": "search",
+          "product": "Bing + Copilot",
+          "cites": true,
+          "live": {
+            "blocked": true,
+            "status": 403,
+            "note": "HTTP 403, but served 122 words vs 424 to a browser"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot",
+          "token": "applebot",
+          "company": "Apple",
+          "kind": "search",
+          "product": "Siri / Spotlight",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot-Extended",
+          "token": "applebot-extended",
+          "company": "Apple",
+          "kind": "training",
+          "product": "Apple Intelligence",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Meta-ExternalAgent",
+          "token": "meta-externalagent",
+          "company": "Meta",
+          "kind": "training",
+          "product": "Meta AI",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "CCBot",
+          "token": "ccbot",
+          "company": "Common Crawl",
+          "kind": "training",
+          "product": "Open dataset",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": "Allow: /",
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Amazonbot",
+          "token": "amazonbot",
+          "company": "Amazon",
+          "kind": "search",
+          "product": "Alexa / Rufus",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": false,
+            "matched": "Disallow: /",
+            "src": "amazonbot",
+            "delay": null
+          }
+        }
+      ],
+      "page": {
+        "title": "The AI workspace that works for you. | Notion",
+        "description": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+        "canonical": "https://www.notion.com/",
+        "h1": "Where teams and agents Think together.",
+        "h1Count": 1,
+        "subheads": 14,
+        "words": 424,
+        "responseMs": 415,
+        "status": 200,
+        "schema": {
+          "blocks": 0,
+          "broken": 0,
+          "microdata": false,
+          "types": [],
+          "entities": []
+        }
+      },
+      "sitemap": {
+        "found": true,
+        "url": "https://www.notion.com/sitemap.xml",
+        "inRobots": true,
+        "children": 169,
+        "count": 116,
+        "withLastmod": 0,
+        "newest": null,
+        "sameDate": false
+      },
+      "freshness": null,
+      "samples": []
+    },
+    "positioning": {
+      "domain": "www.notion.com",
+      "analyzedAt": "2026-10-11T22:43:39.712Z",
+      "archive": {
+        "ok": false
+      },
+      "today": {
+        "fields": {
+          "title": "The AI workspace that works for you. | Notion",
+          "metaDescription": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+          "ogDescription": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+          "h1": "Where teams and agents Think together.",
+          "schemaDescription": null
+        },
+        "description": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+        "llms": "Notion is the connected workspace where better, faster work happens. From notes and docs to projects and wikis, Notion's highly customizable building blocks make it the all-in-one workspace for modern teams. More than 50 million people and teams around the world use Notion to organize their work and get more done.",
+        "liveSince": null,
+        "added": []
+      },
+      "history": [],
+      "commonCrawl": {
+        "ok": false,
+        "reason": "down",
+        "ccbotBlocked": false
+      },
+      "wikidata": {
+        "checked": true,
+        "found": true,
+        "url": "http://www.wikidata.org/entity/Q60747998",
+        "label": "Notion",
+        "description": "productivity software"
+      },
+      "consistency": [
+        {
+          "field": "Title tag",
+          "value": "The AI workspace that works for you. | Notion",
+          "matches": true
+        },
+        {
+          "field": "Meta description",
+          "value": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+          "matches": true
+        },
+        {
+          "field": "Open Graph description",
+          "value": "Build Custom Agents, search across all your apps, and automate busywork. The AI workspace where teams get more done, faster.",
+          "matches": true
+        },
+        {
+          "field": "H1",
+          "value": "Where teams and agents Think together.",
+          "matches": true
+        },
+        {
+          "field": "Schema description",
+          "value": null,
+          "matches": null
+        },
+        {
+          "field": "llms.txt summary",
+          "value": "Notion is the connected workspace where better, faster work happens. From notes and docs to projects and wikis, Notion's highly customizable building blocks make it the all-in-one workspace for modern teams. More than 50 million people and teams around the world use Notion to organize their work and get more done.",
+          "matches": false
+        }
+      ],
+      "summary": null,
+      "diagnostics": [
+        "35.2s archive cdx notion.com 20241011: timeout/error",
+        "35.3s archive cdx notion.com 20231011: timeout/error",
+        "40.6s archive cdx notion.com 20260711: timeout/error",
+        "42.3s archive 24mo notion.com: no capture near 20241011",
+        "42.7s archive 36mo notion.com: no capture near 20231011",
+        "43.8s archive cdx notion.so 20231011: timeout/error",
+        "43.8s archive 36mo notion.so: no capture near 20231011",
+        "44.5s archive cdx notion.com 20251011: timeout/error",
+        "44.5s archive 12mo notion.com: no capture near 20251011",
+        "44.5s archive cdx notion.so 20251011: timeout/error",
+        "44.5s archive 12mo notion.so: no capture near 20251011",
+        "44.5s archive cdx notion.com 20260411: timeout/error",
+        "44.5s archive 6mo notion.com: no capture near 20260411",
+        "44.5s archive cdx notion.so 20260411: timeout/error",
+        "44.5s archive 6mo notion.so: no capture near 20260411",
+        "44.5s archive 3mo notion.com: no capture near 20260711",
+        "44.5s archive cdx notion.so 20260711: timeout/error",
+        "44.5s archive 3mo notion.so: no capture near 20260711",
+        "45.3s archive cdx notion.so 20241011: timeout/error",
+        "45.3s archive 24mo notion.so: no capture near 20241011"
+      ]
+    },
+    "attempts": 1
+  },
+  {
+    "domain": "hubspot.com",
+    "company_name": "HubSpot",
+    "input": "hubspot.com",
+    "processed_at": "2026-10-11T22:43:38.906Z",
+    "duration_ms": 44511,
+    "status": "partial",
+    "error": "incomplete: Common Crawl did not respond (down)",
+    "summary": {
+      "crawler_status": "ok",
+      "crawler_detail": "",
+      "current_description": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+      "historical_descriptions": "2024-10-11: HubSpot | Software & Tools for your Business - Homepage — HubSpot's CRM platform contains the marketing, sales, service, operations, and website-building software you need to grow your business.",
+      "latest_crawl_date": "",
+      "crawl_matches_current": "cant_tell",
+      "mismatch_severity": "cant_tell"
+    },
+    "crawler": {
+      "finalUrl": "https://www.hubspot.com/",
+      "redirected": true,
+      "viewAs": "Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)",
+      "ms": 2780,
+      "score": 96,
+      "counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 2
+      },
+      "findings": [
+        {
+          "id": "sitemap-undeclared",
+          "level": "low",
+          "area": "Sitemap",
+          "title": "Your sitemap is not declared in robots.txt",
+          "detail": "We found it by guessing the path. Crawlers that do not guess will miss it.",
+          "evidence": "https://hubspot.com/sitemap.xml exists, no Sitemap: line in robots.txt",
+          "fix": "Add \"Sitemap: https://hubspot.com/sitemap.xml\" to your robots.txt."
+        },
+        {
+          "id": "dates",
+          "level": "low",
+          "area": "Dates",
+          "title": "Nothing tells crawlers when this was updated",
+          "detail": "When two sources disagree, AI systems tend to favour the one that can prove it is recent.",
+          "evidence": "no date in schema, meta tags or <time> elements",
+          "fix": "Add datePublished and dateModified to your JSON-LD."
+        }
+      ],
+      "good": [
+        "Every AI bot that can cite you is allowed in robots.txt.",
+        "The page has 2290 words of real body text, enough to be understood and quoted.",
+        "Structured data found: Organization, WebSite, WebPage, Product.",
+        "You publish an /llms.txt file."
+      ],
+      "bots": [
+        {
+          "name": "OAI-SearchBot",
+          "token": "oai-searchbot",
+          "company": "OpenAI",
+          "kind": "search",
+          "product": "ChatGPT Search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "token": "chatgpt-user",
+          "company": "OpenAI",
+          "kind": "user",
+          "product": "ChatGPT browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "GPTBot",
+          "token": "gptbot",
+          "company": "OpenAI",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "token": "claude-searchbot",
+          "company": "Anthropic",
+          "kind": "search",
+          "product": "Claude search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-User",
+          "token": "claude-user",
+          "company": "Anthropic",
+          "kind": "user",
+          "product": "Claude browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ClaudeBot",
+          "token": "claudebot",
+          "company": "Anthropic",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "token": "perplexitybot",
+          "company": "Perplexity",
+          "kind": "search",
+          "product": "Perplexity index",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Perplexity-User",
+          "token": "perplexity-user",
+          "company": "Perplexity",
+          "kind": "user",
+          "product": "Perplexity answers",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Googlebot",
+          "token": "googlebot",
+          "company": "Google",
+          "kind": "search",
+          "product": "Search + AI Overviews",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Google-Extended",
+          "token": "google-extended",
+          "company": "Google",
+          "kind": "training",
+          "product": "Gemini training",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Bingbot",
+          "token": "bingbot",
+          "company": "Microsoft",
+          "kind": "search",
+          "product": "Bing + Copilot",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot",
+          "token": "applebot",
+          "company": "Apple",
+          "kind": "search",
+          "product": "Siri / Spotlight",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot-Extended",
+          "token": "applebot-extended",
+          "company": "Apple",
+          "kind": "training",
+          "product": "Apple Intelligence",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Meta-ExternalAgent",
+          "token": "meta-externalagent",
+          "company": "Meta",
+          "kind": "training",
+          "product": "Meta AI",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "CCBot",
+          "token": "ccbot",
+          "company": "Common Crawl",
+          "kind": "training",
+          "product": "Open dataset",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Amazonbot",
+          "token": "amazonbot",
+          "company": "Amazon",
+          "kind": "search",
+          "product": "Alexa / Rufus",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        }
+      ],
+      "page": {
+        "title": "HubSpot | Software &amp; Tools for your Business - Homepage",
+        "description": "HubSpot",
+        "canonical": "https://www.hubspot.com",
+        "h1": "Build demand, win deals, and delight customers — all on one platform",
+        "h1Count": 1,
+        "subheads": 110,
+        "words": 2290,
+        "responseMs": 1282,
+        "status": 200,
+        "schema": {
+          "blocks": 1,
+          "broken": 0,
+          "microdata": false,
+          "types": [
+            "Organization",
+            "WebSite",
+            "WebPage",
+            "Product"
+          ],
+          "entities": [
+            {
+              "type": "Organization",
+              "name": "HubSpot",
+              "missing": [],
+              "sameAs": 7
+            },
+            {
+              "type": "WebSite",
+              "name": "HubSpot",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 0
+            },
+            {
+              "type": "WebPage",
+              "name": "HubSpot | Software & Tools for your Business",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 0
+            },
+            {
+              "type": "Product",
+              "name": "HubSpot Customer Platform",
+              "missing": [],
+              "sameAs": 0
+            }
+          ]
+        }
+      },
+      "sitemap": {
+        "found": true,
+        "url": "https://hubspot.com/sitemap.xml",
+        "inRobots": false,
+        "count": 3071,
+        "withLastmod": 3071,
+        "newest": "2026-10-09",
+        "sameDate": false
+      },
+      "freshness": null,
+      "samples": []
+    },
+    "positioning": {
+      "domain": "www.hubspot.com",
+      "analyzedAt": "2026-10-11T22:43:38.906Z",
+      "archive": {
+        "ok": true
+      },
+      "today": {
+        "fields": {
+          "title": "HubSpot | Software & Tools for your Business - Homepage",
+          "metaDescription": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+          "ogDescription": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+          "h1": "Build demand, win deals, and delight customers — all on one platform",
+          "schemaDescription": "HubSpot is an AI-powered customer platform with software for marketing, sales, customer service, content management, operations, and commerce."
+        },
+        "description": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+        "llms": "HubSpot is an AI-powered customer platform connecting marketing, sales, service, content, data, commerce, and AI in one system built around Smart CRM — a single source of customer intelligence shared across every team.",
+        "liveSince": null,
+        "added": [
+          "customer",
+          "includes"
+        ]
+      },
+      "history": [
+        {
+          "date": "2024-10-11",
+          "archiveUrl": "https://web.archive.org/web/20241011084755/https://hubspot.com/",
+          "fields": {
+            "title": "HubSpot | Software & Tools for your Business - Homepage",
+            "metaDescription": "HubSpot's CRM platform contains the marketing, sales, service, operations, and website-building software you need to grow your business.",
+            "ogDescription": "HubSpot's CRM platform contains the marketing, sales, service, operations, and website-building software you need to grow your business.",
+            "h1": "Grow better with HubSpot",
+            "schemaDescription": null
+          },
+          "description": "HubSpot's CRM platform contains the marketing, sales, service, operations, and website-building software you need to grow your business.",
+          "vsToday": {
+            "level": "stable",
+            "dropped": [
+              "contains",
+              "operations",
+              "website",
+              "building"
+            ],
+            "added": [
+              "customer",
+              "includes"
+            ]
+          }
+        }
+      ],
+      "commonCrawl": {
+        "ok": false,
+        "reason": "down",
+        "ccbotBlocked": false
+      },
+      "wikidata": {
+        "checked": true,
+        "found": true,
+        "url": "http://www.wikidata.org/entity/Q4963923",
+        "label": "Brian Halligan",
+        "description": "American businessman"
+      },
+      "consistency": [
+        {
+          "field": "Title tag",
+          "value": "HubSpot | Software & Tools for your Business - Homepage",
+          "matches": true
+        },
+        {
+          "field": "Meta description",
+          "value": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+          "matches": true
+        },
+        {
+          "field": "Open Graph description",
+          "value": "HubSpot's customer platform includes all the marketing, sales, customer service, and CRM software you need to grow your business.",
+          "matches": true
+        },
+        {
+          "field": "H1",
+          "value": "Build demand, win deals, and delight customers — all on one platform",
+          "matches": false
+        },
+        {
+          "field": "Schema description",
+          "value": "HubSpot is an AI-powered customer platform with software for marketing, sales, customer service, content management, operations, and commerce.",
+          "matches": true
+        },
+        {
+          "field": "llms.txt summary",
+          "value": "HubSpot is an AI-powered customer platform connecting marketing, sales, service, content, data, commerce, and AI in one system built around Smart CRM — a single source of customer intelligence shared across every team.",
+          "matches": true
+        }
+      ],
+      "summary": {
+        "since": "2024-10-11",
+        "level": "stable",
+        "titleChanged": false,
+        "oldTitle": "HubSpot | Software & Tools for your Business - Homepage",
+        "newTitle": "HubSpot | Software & Tools for your Business - Homepage",
+        "capturesTotal": 0,
+        "capturesOnOldVersion": 0,
+        "capturesUnknown": 0
+      },
+      "diagnostics": [
+        "35.0s archive cdx hubspot.com 20251011: timeout/error",
+        "35.1s archive cdx hubspot.com 20231011: timeout/error",
+        "41.0s archive cdx hubspot.com 20260411: timeout/error",
+        "41.6s archive 24mo hubspot.com: ok 20241011084755",
+        "42.3s archive 12mo hubspot.com: no capture near 20251011",
+        "42.4s archive 36mo hubspot.com: no capture near 20231011",
+        "44.5s archive cdx hubspot.com 20260711: timeout/error",
+        "44.5s archive 3mo hubspot.com: no capture near 20260711",
+        "44.5s archive 6mo hubspot.com: no capture near 20260411"
+      ]
+    },
+    "attempts": 1
+  },
+  {
+    "domain": "linear.app",
+    "company_name": "Linear",
+    "input": "linear.app",
+    "processed_at": "2026-10-11T22:44:24.202Z",
+    "duration_ms": 45302,
+    "status": "partial",
+    "error": "incomplete: Common Crawl did not respond (down)",
+    "summary": {
+      "crawler_status": "ok",
+      "crawler_detail": "",
+      "current_description": "Purpose-built for planning and building products with AI agents.",
+      "historical_descriptions": "",
+      "latest_crawl_date": "",
+      "crawl_matches_current": "cant_tell",
+      "mismatch_severity": "cant_tell"
+    },
+    "crawler": {
+      "finalUrl": "https://linear.app/",
+      "redirected": false,
+      "viewAs": "Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)",
+      "ms": 1297,
+      "score": 92,
+      "counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 1,
+        "low": 1
+      },
+      "findings": [
+        {
+          "id": "schema-none",
+          "level": "medium",
+          "area": "Structured Data",
+          "title": "The page has no structured data",
+          "detail": "Structured data states in machine-readable form what the page is, who publishes it, and how the entities relate. Without it, crawlers have to guess.",
+          "evidence": "no JSON-LD blocks and no microdata found",
+          "fix": "Add a JSON-LD block with Organization and WebPage (or Article/Product) including name, description and url."
+        },
+        {
+          "id": "dates",
+          "level": "low",
+          "area": "Dates",
+          "title": "Nothing tells crawlers when this was updated",
+          "detail": "When two sources disagree, AI systems tend to favour the one that can prove it is recent.",
+          "evidence": "no date in schema, meta tags or <time> elements",
+          "fix": "Add datePublished and dateModified to your JSON-LD."
+        }
+      ],
+      "good": [
+        "Every AI bot that can cite you is allowed in robots.txt.",
+        "The page has 1647 words of real body text, enough to be understood and quoted.",
+        "Your sitemap exists and is declared in robots.txt.",
+        "You publish an /llms.txt file."
+      ],
+      "bots": [
+        {
+          "name": "OAI-SearchBot",
+          "token": "oai-searchbot",
+          "company": "OpenAI",
+          "kind": "search",
+          "product": "ChatGPT Search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "token": "chatgpt-user",
+          "company": "OpenAI",
+          "kind": "user",
+          "product": "ChatGPT browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "GPTBot",
+          "token": "gptbot",
+          "company": "OpenAI",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "token": "claude-searchbot",
+          "company": "Anthropic",
+          "kind": "search",
+          "product": "Claude search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-User",
+          "token": "claude-user",
+          "company": "Anthropic",
+          "kind": "user",
+          "product": "Claude browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ClaudeBot",
+          "token": "claudebot",
+          "company": "Anthropic",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "token": "perplexitybot",
+          "company": "Perplexity",
+          "kind": "search",
+          "product": "Perplexity index",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Perplexity-User",
+          "token": "perplexity-user",
+          "company": "Perplexity",
+          "kind": "user",
+          "product": "Perplexity answers",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Googlebot",
+          "token": "googlebot",
+          "company": "Google",
+          "kind": "search",
+          "product": "Search + AI Overviews",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Google-Extended",
+          "token": "google-extended",
+          "company": "Google",
+          "kind": "training",
+          "product": "Gemini training",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Bingbot",
+          "token": "bingbot",
+          "company": "Microsoft",
+          "kind": "search",
+          "product": "Bing + Copilot",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot",
+          "token": "applebot",
+          "company": "Apple",
+          "kind": "search",
+          "product": "Siri / Spotlight",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot-Extended",
+          "token": "applebot-extended",
+          "company": "Apple",
+          "kind": "training",
+          "product": "Apple Intelligence",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Meta-ExternalAgent",
+          "token": "meta-externalagent",
+          "company": "Meta",
+          "kind": "training",
+          "product": "Meta AI",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "CCBot",
+          "token": "ccbot",
+          "company": "Common Crawl",
+          "kind": "training",
+          "product": "Open dataset",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Amazonbot",
+          "token": "amazonbot",
+          "company": "Amazon",
+          "kind": "search",
+          "product": "Alexa / Rufus",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        }
+      ],
+      "page": {
+        "title": "Linear – The system for product development",
+        "description": "Purpose-built for planning and building products with AI agents.",
+        "canonical": "https://linear.app",
+        "h1": "The product development system for teams and agentsThe product developmentsystem for teams and agentsThe product development system for teams and agents",
+        "h1Count": 1,
+        "subheads": 14,
+        "words": 1647,
+        "responseMs": 226,
+        "status": 200,
+        "schema": {
+          "blocks": 0,
+          "broken": 0,
+          "microdata": false,
+          "types": [],
+          "entities": []
+        }
+      },
+      "sitemap": {
+        "found": true,
+        "url": "https://linear.app/sitemap.xml",
+        "inRobots": true,
+        "count": 1032,
+        "withLastmod": 978,
+        "newest": "2026-10-09T20:57:19Z",
+        "sameDate": false
+      },
+      "freshness": null,
+      "samples": [
+        {
+          "url": "https://linear.app/about",
+          "path": "/about",
+          "status": 200,
+          "redirected": false,
+          "title": "About – Linear",
+          "words": 763,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://linear.app/agents",
+          "path": "/agents",
+          "status": 200,
+          "redirected": false,
+          "title": "Linear for Agents",
+          "words": 1164,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://linear.app/ai",
+          "path": "/ai",
+          "status": 200,
+          "redirected": false,
+          "title": "Linear – Agents that follow work from conversation to code",
+          "words": 830,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://linear.app/blog",
+          "path": "/blog",
+          "status": 200,
+          "redirected": true,
+          "title": "Now – Updates from the Linear team",
+          "words": 1352,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        },
+        {
+          "url": "https://linear.app/careers",
+          "path": "/careers",
+          "status": 200,
+          "redirected": false,
+          "title": "We&#x27;re hiring – Linear",
+          "words": 748,
+          "noindex": false,
+          "allowed": true,
+          "types": []
+        }
+      ]
+    },
+    "positioning": {
+      "domain": "linear.app",
+      "analyzedAt": "2026-10-11T22:44:24.202Z",
+      "archive": {
+        "ok": true
+      },
+      "today": {
+        "fields": {
+          "title": "Linear – The system for product development",
+          "metaDescription": "Purpose-built for planning and building products with AI agents.",
+          "ogDescription": "Purpose-built for planning and building products with AI agents.",
+          "h1": "The product development system for teams and agents The product development system for teams and agents The product development system for teams and agents",
+          "schemaDescription": null
+        },
+        "description": "Purpose-built for planning and building products with AI agents.",
+        "llms": "Linear is a purpose-built tool for planning and building products. Meet the system for modern software development. Streamline issues, projects, and product roadmaps.",
+        "liveSince": null,
+        "added": []
+      },
+      "history": [],
+      "commonCrawl": {
+        "ok": false,
+        "reason": "down",
+        "ccbotBlocked": false
+      },
+      "wikidata": {
+        "checked": true,
+        "found": false
+      },
+      "consistency": [
+        {
+          "field": "Title tag",
+          "value": "Linear – The system for product development",
+          "matches": false
+        },
+        {
+          "field": "Meta description",
+          "value": "Purpose-built for planning and building products with AI agents.",
+          "matches": true
+        },
+        {
+          "field": "Open Graph description",
+          "value": "Purpose-built for planning and building products with AI agents.",
+          "matches": true
+        },
+        {
+          "field": "H1",
+          "value": "The product development system for teams and agents The product development system for teams and agents The product development system for teams and agents",
+          "matches": false
+        },
+        {
+          "field": "Schema description",
+          "value": null,
+          "matches": null
+        },
+        {
+          "field": "llms.txt summary",
+          "value": "Linear is a purpose-built tool for planning and building products. Meet the system for modern software development. Streamline issues, projects, and product roadmaps.",
+          "matches": false
+        }
+      ],
+      "summary": null,
+      "diagnostics": [
+        "14.0s archive cdx linear.app 20251011: timeout/error",
+        "14.3s archive cdx linear.app 20260411: timeout/error",
+        "14.5s archive 6mo linear.app: no capture near 20260411",
+        "19.9s archive 12mo linear.app: no capture near 20251011",
+        "23.9s archive cdx linear.app 20241011: timeout/error",
+        "43.5s archive cdx linear.app 20231011: timeout/error",
+        "43.5s archive 36mo linear.app: no capture near 20231011",
+        "44.5s archive cdx linear.app 20260711: timeout/error",
+        "44.5s archive 3mo linear.app: no capture near 20260711",
+        "45.3s archive 24mo linear.app: page 20241014204418 -> timeout/error"
+      ]
+    },
+    "attempts": 1
+  },
+  {
+    "domain": "intercom.com",
+    "company_name": "Intercom",
+    "input": "www.intercom.com",
+    "processed_at": "2026-10-11T22:44:23.411Z",
+    "duration_ms": 44503,
+    "status": "partial",
+    "error": "incomplete: Internet Archive did not respond | incomplete: Common Crawl did not respond (down)",
+    "summary": {
+      "crawler_status": "ok",
+      "crawler_detail": "",
+      "current_description": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+      "historical_descriptions": "",
+      "latest_crawl_date": "",
+      "crawl_matches_current": "cant_tell",
+      "mismatch_severity": "cant_tell"
+    },
+    "crawler": {
+      "finalUrl": "https://www.intercom.com/",
+      "redirected": true,
+      "viewAs": "Mozilla/5.0 (compatible; AEOGrowth-Checker/1.0)",
+      "ms": 1560,
+      "score": 96,
+      "counts": {
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 2
+      },
+      "findings": [
+        {
+          "id": "sitemap-lastmod",
+          "level": "low",
+          "area": "Sitemap",
+          "title": "Your sitemap has no lastmod dates",
+          "detail": "Crawlers use lastmod to decide what is worth re-fetching.",
+          "evidence": "62 URLs, 0 with <lastmod>",
+          "fix": "Emit a real lastmod per URL."
+        },
+        {
+          "id": "dates",
+          "level": "low",
+          "area": "Dates",
+          "title": "Nothing tells crawlers when this was updated",
+          "detail": "When two sources disagree, AI systems tend to favour the one that can prove it is recent.",
+          "evidence": "no date in schema, meta tags or <time> elements",
+          "fix": "Add datePublished and dateModified to your JSON-LD."
+        }
+      ],
+      "good": [
+        "Every AI bot that can cite you is allowed in robots.txt.",
+        "The page has 1418 words of real body text, enough to be understood and quoted.",
+        "Structured data found: WebSite, Organization, WebPage, Product / SoftwareApplication.",
+        "Your sitemap exists and is declared in robots.txt.",
+        "You publish an /llms.txt file."
+      ],
+      "bots": [
+        {
+          "name": "OAI-SearchBot",
+          "token": "oai-searchbot",
+          "company": "OpenAI",
+          "kind": "search",
+          "product": "ChatGPT Search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ChatGPT-User",
+          "token": "chatgpt-user",
+          "company": "OpenAI",
+          "kind": "user",
+          "product": "ChatGPT browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "GPTBot",
+          "token": "gptbot",
+          "company": "OpenAI",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-SearchBot",
+          "token": "claude-searchbot",
+          "company": "Anthropic",
+          "kind": "search",
+          "product": "Claude search",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Claude-User",
+          "token": "claude-user",
+          "company": "Anthropic",
+          "kind": "user",
+          "product": "Claude browsing",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "ClaudeBot",
+          "token": "claudebot",
+          "company": "Anthropic",
+          "kind": "training",
+          "product": "Model training",
+          "cites": false,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "PerplexityBot",
+          "token": "perplexitybot",
+          "company": "Perplexity",
+          "kind": "search",
+          "product": "Perplexity index",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Perplexity-User",
+          "token": "perplexity-user",
+          "company": "Perplexity",
+          "kind": "user",
+          "product": "Perplexity answers",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Googlebot",
+          "token": "googlebot",
+          "company": "Google",
+          "kind": "search",
+          "product": "Search + AI Overviews",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Google-Extended",
+          "token": "google-extended",
+          "company": "Google",
+          "kind": "training",
+          "product": "Gemini training",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Bingbot",
+          "token": "bingbot",
+          "company": "Microsoft",
+          "kind": "search",
+          "product": "Bing + Copilot",
+          "cites": true,
+          "live": {
+            "blocked": false,
+            "status": 200,
+            "note": "HTTP 200"
+          },
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot",
+          "token": "applebot",
+          "company": "Apple",
+          "kind": "search",
+          "product": "Siri / Spotlight",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Applebot-Extended",
+          "token": "applebot-extended",
+          "company": "Apple",
+          "kind": "training",
+          "product": "Apple Intelligence",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Meta-ExternalAgent",
+          "token": "meta-externalagent",
+          "company": "Meta",
+          "kind": "training",
+          "product": "Meta AI",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "CCBot",
+          "token": "ccbot",
+          "company": "Common Crawl",
+          "kind": "training",
+          "product": "Open dataset",
+          "cites": false,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        },
+        {
+          "name": "Amazonbot",
+          "token": "amazonbot",
+          "company": "Amazon",
+          "kind": "search",
+          "product": "Alexa / Rufus",
+          "cites": true,
+          "live": null,
+          "robots": {
+            "allowed": true,
+            "matched": null,
+            "src": "*",
+            "delay": null
+          }
+        }
+      ],
+      "page": {
+        "title": "Intercom | A complete system for human and AI customer service",
+        "description": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+        "canonical": "https://www.intercom.com",
+        "h1": "A complete system forAI and humancustomer service",
+        "h1Count": 1,
+        "subheads": 24,
+        "words": 1418,
+        "responseMs": 594,
+        "status": 200,
+        "schema": {
+          "blocks": 1,
+          "broken": 0,
+          "microdata": false,
+          "types": [
+            "WebSite",
+            "Organization",
+            "WebPage",
+            "Product / SoftwareApplication",
+            "ItemList",
+            "BreadcrumbList"
+          ],
+          "entities": [
+            {
+              "type": "WebSite",
+              "name": "Intercom",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 0
+            },
+            {
+              "type": "Organization",
+              "name": "Intercom",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 7
+            },
+            {
+              "type": "WebPage",
+              "name": "Intercom | A complete system for human and AI customer service",
+              "missing": [],
+              "sameAs": 0
+            },
+            {
+              "type": "Product / SoftwareApplication",
+              "name": "Intercom Customer Service Suite",
+              "missing": [],
+              "sameAs": 0
+            },
+            {
+              "type": "Product / SoftwareApplication",
+              "name": "Intercom Helpdesk",
+              "missing": [],
+              "sameAs": 0
+            },
+            {
+              "type": "Product / SoftwareApplication",
+              "name": "Fin AI Agent",
+              "missing": [],
+              "sameAs": 0
+            },
+            {
+              "type": "ItemList",
+              "name": "Products in the Intercom Platform",
+              "missing": [
+                "description"
+              ],
+              "sameAs": 0
+            },
+            {
+              "type": "BreadcrumbList",
+              "name": "",
+              "missing": [
+                "name",
+                "description"
+              ],
+              "sameAs": 0
+            }
+          ]
+        }
+      },
+      "sitemap": {
+        "found": true,
+        "url": "https://www.intercom.com/sitemap.xml",
+        "inRobots": true,
+        "children": 7,
+        "count": 62,
+        "withLastmod": 0,
+        "newest": null,
+        "sameDate": false
+      },
+      "freshness": null,
+      "samples": []
+    },
+    "positioning": {
+      "domain": "www.intercom.com",
+      "analyzedAt": "2026-10-11T22:44:23.411Z",
+      "archive": {
+        "ok": false
+      },
+      "today": {
+        "fields": {
+          "title": "Intercom | A complete system for human and AI customer service",
+          "metaDescription": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+          "ogDescription": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+          "h1": "A complete system for AI and human customer service",
+          "schemaDescription": "A complete solution for AI and human agents. Intercom helpdesk and Fin AI Agent are built together, so you have full visibility across your entire operation, and your team and Fin can collaborate seamlessly to deliver perfect customer experiences."
+        },
+        "description": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+        "llms": "This file helps large language models (LLMs) understand the content structure, canonical sources, and retrieval rules for intercom.com and its sister properties.",
+        "liveSince": null,
+        "added": []
+      },
+      "history": [],
+      "commonCrawl": {
+        "ok": false,
+        "reason": "down",
+        "ccbotBlocked": false
+      },
+      "wikidata": {
+        "checked": true,
+        "found": true,
+        "url": "http://www.wikidata.org/entity/Q48965215",
+        "label": "Intercom",
+        "description": "American software company"
+      },
+      "consistency": [
+        {
+          "field": "Title tag",
+          "value": "Intercom | A complete system for human and AI customer service",
+          "matches": true
+        },
+        {
+          "field": "Meta description",
+          "value": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+          "matches": true
+        },
+        {
+          "field": "Open Graph description",
+          "value": "Intercom is the only helpdesk with a natively integrated AI Agent, Fin, meaning every customer conversation improves the next one, enabling perfect experiences that were never possible before.",
+          "matches": true
+        },
+        {
+          "field": "H1",
+          "value": "A complete system for AI and human customer service",
+          "matches": false
+        },
+        {
+          "field": "Schema description",
+          "value": "A complete solution for AI and human agents. Intercom helpdesk and Fin AI Agent are built together, so you have full visibility across your entire operation, and your team and Fin can collaborate seamlessly to deliver perfect customer experiences.",
+          "matches": true
+        },
+        {
+          "field": "llms.txt summary",
+          "value": "This file helps large language models (LLMs) understand the content structure, canonical sources, and retrieval rules for intercom.com and its sister properties.",
+          "matches": false
+        }
+      ],
+      "summary": null,
+      "diagnostics": [
+        "14.1s archive cdx intercom.com 20241011: timeout/error",
+        "14.3s archive 24mo intercom.com: no capture near 20241011",
+        "35.4s archive cdx intercom.com 20260711: timeout/error",
+        "40.6s archive 3mo intercom.com: no capture near 20260711",
+        "44.5s archive cdx intercom.com 20251011: timeout/error",
+        "44.5s archive 12mo intercom.com: no capture near 20251011",
+        "44.5s archive cdx intercom.com 20231011: timeout/error",
+        "44.5s archive 36mo intercom.com: no capture near 20231011",
+        "44.5s archive cdx intercom.com 20260411: timeout/error",
+        "44.5s archive 6mo intercom.com: no capture near 20260411"
+      ]
+    },
+    "attempts": 1
+  }
+]
