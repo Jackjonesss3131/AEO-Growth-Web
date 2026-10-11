@@ -184,7 +184,7 @@ I run hundreds of real buyer prompts across ChatGPT, Perplexity, Gemini and AI O
 
 I'll run it on your domain before we talk, so the call starts with findings instead of questions.
 
-[Book a call](https://calendly.com/geraldgerez/growth-plg)
+[Book a call](https://calendly.com/geraldeoleo/growth-plg)
 
 ---
 

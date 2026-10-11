@@ -76,4 +76,4 @@ A profile that still describes the company you were two years ago. It passes eve
 
 ---
 
-If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

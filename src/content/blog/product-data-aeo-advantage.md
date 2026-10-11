@@ -12,7 +12,7 @@ Most B2B SaaS companies are sitting on this and publishing blog posts about best
 
 This isn't a hunch. The research that coined the term GEO tested nine different ways of rewriting content and measured how much each changed that content's visibility inside AI-generated answers. The strongest methods were adding citations, adding quotations and **adding statistics** — each improving visibility by roughly 30–40% on the paper's main metric. Keyword stuffing performed worse than leaving the content alone.
 
-I covered that study in more detail in [AEO vs GEO](/blog/aeo-vs-geo-blog/). The mechanism is simple enough: a model assembling an answer needs claims it can attribute. A sentence with a number and a source is usable. "Industry leaders agree that alignment is critical" is not.
+I covered that study in more detail in [AEO vs GEO](/blog/aeo-vs-geo/). The mechanism is simple enough: a model assembling an answer needs claims it can attribute. A sentence with a number and a source is usable. "Industry leaders agree that alignment is critical" is not.
 
 > **"Doesn't that just mean citing other people's statistics?"**
 >
@@ -136,4 +136,4 @@ Annually, on the same metric, is the version that compounds. The second edition 
 
 ---
 
-If you want to know which questions in your category currently get answered without any real data — and which number of yours would land hardest — that's part of what the audit surfaces. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want to know which questions in your category currently get answered without any real data — and which number of yours would land hardest — that's part of what the audit surfaces. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

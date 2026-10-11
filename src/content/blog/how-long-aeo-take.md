@@ -106,4 +106,4 @@ From there the work is ordered — fix what describes you wrong before publishin
 
 Want to know where your clock actually stands? Send me your domain and I'll run your BOFU questions across every engine: whether you appear today, how you're described, and who's taking your place. Free, before we talk.
 
-<a href="https://calendly.com/geraldgerez/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.

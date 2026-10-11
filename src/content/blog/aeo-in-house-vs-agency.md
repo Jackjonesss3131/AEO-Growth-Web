@@ -107,7 +107,7 @@ What you shouldn't expect is a number for the board by day 30. What you should d
 
 ## Quick answers
 
-**Can my SEO agency do this?** They can do 2 and part of 3, because it resembles work they already do. Part 4 isn't SEO. Ask your agency the same question you'd ask any new vendor: what exactly do you measure, and how do you verify the description is accurate? The answer tells you whether they built real capability or relabelled existing deliverables. More on what carries over and what doesn't in [AEO vs SEO](https://www.aeogrowth.co/blog/aeo-vs-seo-blog/).
+**Can my SEO agency do this?** They can do 2 and part of 3, because it resembles work they already do. Part 4 isn't SEO. Ask your agency the same question you'd ask any new vendor: what exactly do you measure, and how do you verify the description is accurate? The answer tells you whether they built real capability or relabelled existing deliverables. More on what carries over and what doesn't in [AEO vs SEO](https://www.aeogrowth.co/blog/aeo-vs-seo/).
 
 **Do I need a full-time hire?** Almost never. The load is heavy for the first two months and drops considerably after. It's project-shaped, not headcount-shaped.
 
@@ -134,4 +134,4 @@ You don't have to decide this blind, and you don't have to start with a call. Tw
 - **[Crawler Check](https://www.aeogrowth.co/ai-crawler-check)** — what each AI bot actually receives when it visits your site. Two minutes.
 - **[Positioning Check](https://www.aeogrowth.co/positioning-check)** — which version of your company got captured in the snapshots the models read. Forty seconds.
 
-If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and I'll tell you what the models say about you right now, before we talk. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and I'll tell you what the models say about you right now, before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

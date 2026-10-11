@@ -153,7 +153,7 @@ The order matters. Each step makes the next one worth more.
 
 **6. Measure monthly.** Rerun the same questions, per engine, and watch the five columns. When something moves, trace it back to the source that moved it.
 
-It's worth reading [AEO vs SEO](/blog/aeo-vs-seo-blog/) for why ranking alone doesn't produce any of this, and [AEO vs GEO](/blog/aeo-vs-geo-blog/) for why the engines don't agree with each other.
+It's worth reading [AEO vs SEO](/blog/aeo-vs-seo/) for why ranking alone doesn't produce any of this, and [AEO vs GEO](/blog/aeo-vs-geo/) for why the engines don't agree with each other.
 
 ## Quick answers
 
@@ -174,4 +174,4 @@ It depends on the engine and on how much outdated information exists about you. 
 
 ---
 
-I run this audit for attribution and marketing analytics companies: the unbranded questions your buyers actually ask, across every major engine, with the specific pages shaping each answer. I run it on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+I run this audit for attribution and marketing analytics companies: the unbranded questions your buyers actually ask, across every major engine, with the specific pages shaping each answer. I run it on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

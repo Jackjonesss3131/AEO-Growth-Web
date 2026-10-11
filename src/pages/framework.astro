@@ -2,15 +2,25 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE, AUTHOR_NAME } from '../consts';
+import FormattedDate from '../components/FormattedDate.astro';
+import {
+	AUTHOR_NAME,
+	SITE_URL,
+	FRAMEWORK_LAYERS,
+	FRAMEWORK_TITLE,
+	FRAMEWORK_DESCRIPTION,
+	FRAMEWORK_PUBLISHED,
+} from '../consts';
 
 export const prerender = true;
 
+// Visible date (same format as blog posts), schema datePublished and sitemap lastmod.
+// Set in consts.ts (FRAMEWORK_PUBLISHED).
+const pubDate = new Date(`${FRAMEWORK_PUBLISHED}T12:00:00Z`);
+
 const layers = [
 	{
-		n: 1,
-		name: 'Retrieval',
-		question: 'Can the engine reach and read your pages at all?',
+		...FRAMEWORK_LAYERS[0],
 		fails: [
 			'The page renders client-side and the crawler receives an empty shell. Most AI crawlers do not execute JavaScript.',
 			'robots.txt allows the bot, but a WAF or bot-fight rule returns 403 to the same user agent.',
@@ -22,9 +32,7 @@ const layers = [
 		fix: 'Server-side render or pre-render the pages that matter. Allow search and user-triggered bots at the firewall, not just in robots.txt. Verify bots by IP range instead of blocking the user agent.',
 	},
 	{
-		n: 2,
-		name: 'Citation',
-		question: 'Does the engine use your content as a source?',
+		...FRAMEWORK_LAYERS[1],
 		fails: [
 			'The page is retrievable but answers nothing a buyer asks, so nothing pulls it into an answer.',
 			'A competitor covers the same question with more sources pointing at it.',
@@ -36,9 +44,7 @@ const layers = [
 		fix: 'Write the page that answers the question directly, state the citable claim early, give it a visible date, and earn mentions on pages you do not control.',
 	},
 	{
-		n: 3,
-		name: 'Interpretation',
-		question: 'Does the engine understand what your content says?',
+		...FRAMEWORK_LAYERS[2],
 		fails: [
 			'The page says what you do but never names the category, so the model infers one.',
 			'Your title, meta description, H1, schema and llms.txt each describe the company differently. The model picks one.',
@@ -50,9 +56,7 @@ const layers = [
 		fix: 'One description of the company, repeated identically everywhere you control. Then correct the third-party records, starting with the ones that have the most citations pointing at them.',
 	},
 	{
-		n: 4,
-		name: 'Expression',
-		question: 'How does the engine describe you in the final answer?',
+		...FRAMEWORK_LAYERS[3],
 		fails: [
 			'You are cited accurately and described in the category you left two years ago.',
 			'You are mentioned in a list of ten, which is not the same as being recommended.',
@@ -68,12 +72,17 @@ const layers = [
 const schema = {
 	'@context': 'https://schema.org',
 	'@type': 'Article',
-	headline: 'The four layers of AI answer failure',
-	description:
-		'A framework for diagnosing why a company is missing or misdescribed in AI-generated answers: retrieval, citation, interpretation, and expression.',
-	author: { '@id': 'https://www.aeogrowth.co/#gerald' },
-	publisher: { '@id': 'https://www.aeogrowth.co/#business' },
-	mainEntityOfPage: 'https://www.aeogrowth.co/framework',
+	headline: FRAMEWORK_TITLE,
+	// Same text as the meta description, so every field on the page agrees.
+	description: FRAMEWORK_DESCRIPTION,
+	author: { '@id': `${SITE_URL}/#gerald` },
+	publisher: { '@id': `${SITE_URL}/#business` },
+	isPartOf: { '@id': `${SITE_URL}/#website` },
+	datePublished: pubDate.toISOString(),
+	dateModified: pubDate.toISOString(),
+	mainEntityOfPage: `${SITE_URL}/framework`,
+	url: `${SITE_URL}/framework`,
+	inLanguage: 'en',
 	about: layers.map((l) => ({
 		'@type': 'DefinedTerm',
 		name: l.name,
@@ -86,10 +95,10 @@ const schema = {
 <html lang="en">
 	<head>
 		<BaseHead
-			title={`The four layers of AI answer failure — ${SITE_TITLE}`}
-			description="Retrieval, citation, interpretation, expression. A framework for diagnosing why a company is missing or misdescribed in AI-generated answers, and what each layer takes to fix."
+			title={`${FRAMEWORK_TITLE} — ${AUTHOR_NAME}`}
+			description={FRAMEWORK_DESCRIPTION}
+			schema={schema}
 		/>
-		<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
 	</head>
 	<body>
 		<Header />
@@ -97,7 +106,8 @@ const schema = {
 		<main>
 			<article class="prose">
 				<p class="eyebrow">Framework</p>
-				<h1>The four layers of AI answer failure</h1>
+				<p class="post-date"><FormattedDate date={pubDate} /></p>
+				<h1>{FRAMEWORK_TITLE}</h1>
 
 				<p class="lead">
 					"We don't show up in ChatGPT" is four different problems wearing the same sentence. They

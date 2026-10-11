@@ -99,4 +99,4 @@ No. Most companies named in an AI answer don't get the citation pointing at thei
 
 ---
 
-If you'd rather see the source map for your category than build it by hand, that's the first thing the audit produces: every question, every engine, every cited page, and how you're described in each. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you'd rather see the source map for your category than build it by hand, that's the first thing the audit produces: every question, every engine, every cited page, and how you're described in each. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

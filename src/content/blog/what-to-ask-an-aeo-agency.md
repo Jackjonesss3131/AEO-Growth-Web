@@ -97,4 +97,4 @@ Changes to your own site register soonest. Changes to how third parties describe
 
 ---
 
-If you want the diagnosis before deciding anything, that's what the audit is. I run it on your domain before we talk. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If you want the diagnosis before deciding anything, that's what the audit is. I run it on your domain before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

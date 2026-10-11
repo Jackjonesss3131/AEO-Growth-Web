@@ -3,19 +3,72 @@
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
-import { SITE_TITLE } from '../consts';
+import { DEFAULT_OG_IMAGE } from '../og-image';
+import {
+	SITE_TITLE,
+	SITE_URL,
+	AUTHOR_NAME,
+	JOB_TITLE,
+	LINKEDIN_URL,
+	BUSINESS_DESCRIPTION,
+} from '../consts';
 import { Font } from 'astro:assets';
 
 interface Props {
 	title: string;
 	description: string;
+	// Social image. Defaults to DEFAULT_OG_IMAGE (src/og-image.ts).
 	image?: ImageMetadata;
+	// Page-specific JSON-LD (one object or several). Rendered after the site-wide graph.
+	schema?: object | object[];
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = DEFAULT_OG_IMAGE, schema } = Astro.props;
+const ogImageURL = new URL(image.src, Astro.site);
+const pageSchemas = schema ? ([] as object[]).concat(schema) : [];
+
+// Site-wide entities. Pages reference them by @id (#gerald, #business, #website).
+const siteSchema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'Person',
+			'@id': `${SITE_URL}/#gerald`,
+			name: AUTHOR_NAME,
+			url: `${SITE_URL}/about`,
+			sameAs: [LINKEDIN_URL],
+			jobTitle: JOB_TITLE,
+			description:
+				'AEO and GEO for B2B SaaS. Helping companies get found, cited, and described correctly in AI-generated answers.',
+		},
+		{
+			'@type': 'ProfessionalService',
+			'@id': `${SITE_URL}/#business`,
+			name: AUTHOR_NAME,
+			url: SITE_URL,
+			founder: { '@id': `${SITE_URL}/#gerald` },
+			description: BUSINESS_DESCRIPTION,
+			areaServed: 'Worldwide',
+			knowsAbout: [
+				'Answer Engine Optimization',
+				'Generative Engine Optimization',
+				'B2B SaaS Marketing',
+				'AI Search Visibility',
+				'Content Strategy',
+			],
+			sameAs: [LINKEDIN_URL],
+		},
+		{
+			'@type': 'WebSite',
+			'@id': `${SITE_URL}/#website`,
+			url: SITE_URL,
+			name: SITE_TITLE,
+			publisher: { '@id': `${SITE_URL}/#gerald` },
+		},
+	],
+};
 ---
 
 <!-- Global Metadata -->
@@ -31,40 +84,12 @@ const { title, description, image = FallbackImage } = Astro.props;
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
-<script type="application/ld+json">
+<script type="application/ld+json" set:html={JSON.stringify(siteSchema)} is:inline />
 {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      "@id": "https://www.aeogrowth.co/#gerald",
-      "name": "Gerald Gerez",
-      "url": "https://www.aeogrowth.co/about",
-      "sameAs": ["https://www.linkedin.com/in/geraldgerez/"],
-      "jobTitle": "AEO & GEO Specialist",
-      "description": "AEO and GEO for B2B SaaS. Helping companies get found, cited, and described correctly in AI-generated answers."
-    },
-    {
-      "@type": "ProfessionalService",
-      "@id": "https://www.aeogrowth.co/#business",
-      "name": "AEO Growth",
-      "url": "https://www.aeogrowth.co",
-      "founder": { "@id": "https://www.aeogrowth.co/#gerald" },
-      "description": "Answer Engine Optimization and Generative Engine Optimization for B2B SaaS companies. Services include AI mention audits, schema architecture, citation alignment campaigns, and AI measurement dashboards.",
-      "areaServed": "Worldwide",
-      "knowsAbout": ["Answer Engine Optimization","Generative Engine Optimization","B2B SaaS Marketing","AI Search Visibility","Content Strategy"],
-      "sameAs": ["https://www.linkedin.com/in/geraldgerez/"]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://www.aeogrowth.co/#website",
-      "url": "https://www.aeogrowth.co",
-      "name": "AEO Growth",
-      "publisher": { "@id": "https://www.aeogrowth.co/#gerald" }
-    }
-  ]
+	pageSchemas.map((s) => (
+		<script type="application/ld+json" set:html={JSON.stringify(s)} is:inline />
+	))
 }
-</script>
 
 <Font cssVariable="--font-atkinson" preload />
 
@@ -77,29 +102,26 @@ const { title, description, image = FallbackImage } = Astro.props;
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7H1DV0XP9J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-7H1DV0XP9J');
-</script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7H1DV0XP9J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-7H1DV0XP9J');
-</script>
-
-</head>
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:image:width" content={String(image.width)} />
+<meta property="og:image:height" content={String(image.height)} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageURL} />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7H1DV0XP9J" is:inline></script>
+<script is:inline>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+	gtag('config', 'G-7H1DV0XP9J');
+</script>

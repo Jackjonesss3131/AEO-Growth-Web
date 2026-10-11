@@ -109,7 +109,7 @@ You can do a useful version of this in about an hour. It won't scale, and that's
 
 **1. Write 20–30 buyer questions.** In your prospects' words, not your homepage's. Attach real constraints: CRM, team size, industry, sales cycle, budget, compliance. Never include your brand name — asking *"is [your company] good"* introduces the brand yourself and tells you nothing useful.
 
-**2. Run them across ChatGPT, Perplexity, Gemini and Google's AI Mode.** Track engines separately. They don't draw from the same sources, which I covered in [AEO vs GEO](/blog/aeo-vs-geo-blog/).
+**2. Run them across ChatGPT, Perplexity, Gemini and Google's AI Mode.** Track engines separately. They don't draw from the same sources, which I covered in [AEO vs GEO](/blog/aeo-vs-geo/).
 
 **3. Record six columns per answer.** Recommended / mentioned / absent. The exact sentence describing you. Category correct? Segment correct? Competitors recommended. Sources cited.
 
@@ -164,4 +164,4 @@ A full audit when something changes — a repositioning, a launch, a rename, a n
 
 ---
 
-If you'd like to see what the models say about your company today — recommended or only mentioned, and described how — I run the audit on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldgerez/growth-plg).
+If you'd like to see what the models say about your company today — recommended or only mentioned, and described how — I run the audit on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

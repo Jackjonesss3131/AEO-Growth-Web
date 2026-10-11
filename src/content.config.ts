@@ -14,6 +14,10 @@ const blog = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
+			// Social preview image (og:image / twitter:image). Path relative to the post,
+			// e.g. ogImage: '../../assets/og/my-post.jpg' (1200x630 recommended).
+			// Falls back to heroImage, then to the site default set in BaseHead.astro.
+			ogImage: z.optional(image()),
 		}),
 });
 

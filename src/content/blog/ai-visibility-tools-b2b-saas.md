@@ -93,4 +93,4 @@ Not necessarily. If your positioning is clean and your team can act on findings,
 
 ---
 
-If you've got a tool and the numbers don't explain themselves, that's the gap I work in. I run the audit on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldgerez/growth-plg).
+If you've got a tool and the numbers don't explain themselves, that's the gap I work in. I run the audit on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).
