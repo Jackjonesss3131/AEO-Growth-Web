@@ -3,7 +3,14 @@
 // (scripts/batch-audit.js). Change the logic here and both pick it up.
 // Plain TypeScript with erasable types only, so Node can run it directly (type stripping).
 
-export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+// fetch used by the checks. A wrapper that queues requests (the batch script) sets
+// `handlesTimeouts = true`; the checks then pass `timeoutMs` (time the request itself may take,
+// counted from when it is actually sent) and `deadline` (epoch ms when the whole check must
+// stop) instead of an AbortSignal, so time spent waiting in the queue isn't charged to the
+// request. The site uses plain fetch and AbortSignals, as before.
+export type FetchLike = ((input: string, init?: RequestInit & { timeoutMs?: number; deadline?: number }) => Promise<Response>) & {
+  handlesTimeouts?: boolean;
+};
 export interface PositioningCheckOptions {
   /** fetch implementation (the batch script passes one with retries and logging). */
   fetch?: FetchLike;
@@ -71,13 +78,14 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
   for (let attempt = 0; attempt <= retries; attempt++) {
     const timeout = Math.min(ms, timeLeft(b) - 500);
     if (timeout < 1000) break;
+    const managed = b.fetch.handlesTimeouts === true;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
+    const timer = managed ? undefined : setTimeout(() => controller.abort(), timeout);
     try {
       const res = await b.fetch(url, {
         headers: { 'User-Agent': ua, Accept: '*/*' },
         redirect: 'follow',
-        signal: controller.signal,
+        ...(managed ? { timeoutMs: timeout, deadline: b.until - 500 } : { signal: controller.signal }),
       });
       const text = await readCapped(res);
       clearTimeout(timer);
