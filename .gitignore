@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# batch-audit output and input lists: prospect research, never commit (the repo is public)
+results*.csv
+results*.json
+results*.jsonl
+*.errors.log
+domains*.csv
+audits/

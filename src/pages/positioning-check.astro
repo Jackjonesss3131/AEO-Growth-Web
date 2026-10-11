@@ -331,7 +331,7 @@ export const prerender = true;
         cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a call'));
 
         const method = el('p', { class: 'pc-method' },
-          'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes. A crawl is matched to a version only when the archive snapshots on both sides of it show that same version; otherwise it is counted as "can\'t tell". Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
+          'Method: homepage captures from the Internet Archive closest to 36, 24, 12, 6 and 3 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes. A crawl is matched to a version only when the archive snapshots on both sides of it show that same version; otherwise it is counted as "can\'t tell". Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
 
         output.innerHTML = '';
         const sections = data.archive.ok
