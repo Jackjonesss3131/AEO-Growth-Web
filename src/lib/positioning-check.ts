@@ -30,7 +30,8 @@ const UA_BROWSER =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
 
-const TARGET_MONTHS = [36, 24, 12, 6];
+// The 3-month point covers recent crawls; without it most of them fell between snapshots.
+const TARGET_MONTHS = [36, 24, 12, 6, 3];
 // Vercel kills the function at maxDuration (60 s in astro.config.mjs) and returns a plain-text
 // "A server error has occurred" page that the frontend can't parse. Keep a wide margin below it.
 const DEFAULT_BUDGET_MS = 40000;
@@ -247,7 +248,8 @@ function overlap(field: string, main: string) {
 }
 
 // ---------- Internet Archive ----------
-// For each target date, ask the CDX index for one capture inside a window around it (limit=1).
+// For each target date, ask the CDX index for the first capture on or after it (limit=1), and
+// if there is none, the last capture before it (limit=-1), each within WINDOW_MONTHS.
 // Narrow queries stay fast even for sites archived many times a day; a single query over the
 // whole three years did not (it timed out for stripe.com). The availability API is only a
 // fallback: it often answers {"archived_snapshots": {}} for heavily archived sites.
@@ -256,17 +258,24 @@ const WINDOW_MONTHS = 3;
 const archiveHost = (h: string) => h.replace(/^www\./, '');
 
 async function snapshotNear(b: Budget, host: string, target: Date) {
-  const from = new Date(target); from.setMonth(from.getMonth() - WINDOW_MONTHS);
-  const to = new Date(target); to.setMonth(to.getMonth() + WINDOW_MONTHS);
-  const rows = await reqJson(
-    b,
-    `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${ymd(from)}&to=${ymd(to)}` +
-      `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=1&output=json`,
-    20000
-  );
-  if (Array.isArray(rows)) {
-    const ts = Array.isArray(rows[1]) ? String(rows[1][0]) : '';
-    return { responded: true, ts: /^\d{14}$/.test(ts) ? ts : null };
+  const before = new Date(target); before.setMonth(before.getMonth() - WINDOW_MONTHS);
+  const after = new Date(target); after.setMonth(after.getMonth() + WINDOW_MONTHS);
+  if (after > new Date()) after.setTime(Date.now());
+  const query = (from: Date, to: Date, limit: number) =>
+    reqJson(
+      b,
+      `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${ymd(from)}&to=${ymd(to)}` +
+        `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=${limit}&output=json`,
+      20000
+    );
+  const firstTs = (rows: any) => {
+    const ts = Array.isArray(rows) && Array.isArray(rows[1]) ? String(rows[1][0]) : '';
+    return /^\d{14}$/.test(ts) ? ts : null;
+  };
+  const rowsAfter = await query(target, after, 1);
+  if (Array.isArray(rowsAfter)) {
+    const ts = firstTs(rowsAfter) ?? firstTs(await query(before, target, -1));
+    return { responded: true, ts };
   }
   const info = await reqJson(
     b,
