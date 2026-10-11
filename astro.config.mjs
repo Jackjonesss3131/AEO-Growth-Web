@@ -45,7 +45,27 @@ function lastmodFor(url) {
 	return buildDate;
 }
 
+// ---------- server bundle fix ----------
+// @astrojs/vercel 11.0.13 leaves a bare `import "rolldown"` in the server function (from its
+// build-time middleware helper). Vercel ships rolldown without its native binding, so the
+// function crashed on start with "Cannot find native binding" → every /api/* route returned
+// FUNCTION_INVOCATION_FAILED. rolldown is never used at runtime, so replace it with a stub.
+/** @type {import('vite').Plugin} */
+const stubRolldownInServer = {
+	name: 'stub-rolldown-in-server',
+	enforce: 'pre',
+	resolveId(id) {
+		if (id === 'rolldown') return '\0rolldown-stub';
+	},
+	load(id) {
+		if (id === '\0rolldown-stub') {
+			return 'export const rolldown = () => { throw new Error("rolldown is build-time only"); }; export default {};';
+		}
+	},
+};
+
 export default defineConfig({
+	vite: { plugins: [stubRolldownInServer] },
 	site: SITE,
 	output: 'server',
 	adapter: vercel({ maxDuration: 60 }),
