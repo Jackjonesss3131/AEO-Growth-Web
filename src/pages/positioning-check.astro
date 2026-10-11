@@ -166,10 +166,20 @@ export const prerender = true;
         if (!cc.captures.length) {
           return 'Our Common Crawl sample came back empty. We check a handful of monthly indexes, not all of them, so this is not evidence that you are missing from it.';
         }
-        if (!s || !s.capturesOnOldVersion) {
-          return 'All ' + cc.captures.length + ' crawls we found captured your current version. Your record is up to date.';
+        const total = cc.captures.length;
+        const old = cc.captures.filter(function (c) { return c.version !== 'current' && c.version !== 'unknown'; }).length;
+        const unknown = cc.captures.filter(function (c) { return c.version === 'unknown'; }).length;
+        const unknownNote = unknown
+          ? ' ' + (unknown === 1 ? '1 crawl falls' : unknown + ' crawls fall') +
+            ' between archive snapshots of different versions, so we can\'t tell which one ' + (unknown === 1 ? 'it' : 'they') + ' captured.'
+          : '';
+        if (unknown === total) {
+          return 'We found ' + total + ' crawls, but the archive snapshots around them are too sparse to tell which version of your homepage they captured.';
         }
-        return s.capturesOnOldVersion + ' of the ' + s.capturesTotal + ' crawls we found captured an older version of your homepage.';
+        if (!old) {
+          return (unknown ? 'None of the crawls we could date captured an older version.' : 'All ' + total + ' crawls we found captured your current version. Your record is up to date.') + unknownNote;
+        }
+        return old + ' of the ' + total + ' crawls we found captured an older version of your homepage.' + unknownNote;
       }
 
       function verdict(data) {
@@ -264,6 +274,7 @@ export const prerender = true;
         }
 
         const keys = data.history.map(function (v) { return v.date; }).concat(['current']);
+        if (cc.byVersion.unknown) keys.push('unknown');
         let max = 1;
         keys.forEach(function (k) { if ((cc.byVersion[k] || 0) > max) max = cc.byVersion[k]; });
 
@@ -273,7 +284,7 @@ export const prerender = true;
           const fill = el('div', { class: 'pc-bar-fill' });
           fill.style.width = ((n / max) * 100) + '%';
           bars.append(el('div', { class: 'pc-bar' },
-            el('span', null, k === 'current' ? 'Current version' : monthYear(k) + ' version'),
+            el('span', null, k === 'current' ? 'Current version' : k === 'unknown' ? 'Can\'t tell' : monthYear(k) + ' version'),
             el('div', { class: 'pc-bar-track' }, fill),
             el('span', null, String(n))
           ));
@@ -320,7 +331,7 @@ export const prerender = true;
         cta.append(el('a', { href: CALENDLY, target: '_blank', rel: 'noopener' }, 'Book a call'));
 
         const method = el('p', { class: 'pc-method' },
-          'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes and are matched to the version live on that date, so the split is an estimate. Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
+          'Method: homepage captures from the Internet Archive closest to 36, 24, 12 and 6 months ago. Captures with the same title and near-identical description count as one version. Crawl dates come from a sample of four Common Crawl indexes. A crawl is matched to a version only when the archive snapshots on both sides of it show that same version; otherwise it is counted as "can\'t tell". Change is measured by shared keywords in title and description. Complete results are cached for 24 hours.');
 
         output.innerHTML = '';
         const sections = data.archive.ok

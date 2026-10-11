@@ -230,39 +230,71 @@ function overlap(field: string, main: string) {
 }
 
 // ---------- Internet Archive ----------
-async function archivedAt(b: Budget, hosts: string[], months: number) {
-  const stamp = ymd(monthsAgo(months));
+// One CDX query per host returns at most one capture per month for the whole window. That is
+// faster and more reliable than asking the availability API once per target date, which often
+// answers {"archived_snapshots": {}} even for heavily archived sites.
+type ArchiveIndex = { responded: boolean; byHost: Record<string, string[]> };
+
+async function archiveIndex(b: Budget, hosts: string[]): Promise<ArchiveIndex> {
+  const from = ymd(monthsAgo(Math.max(...TARGET_MONTHS) + 3));
+  const to = ymd(new Date());
+  const byHost: Record<string, string[]> = {};
   let responded = false;
-
-  for (const host of hosts) {
-    // 1) Availability API: fast, but often answers {"archived_snapshots": {}} even for heavily
-    //    archived sites. 2) Fallback: the CDX index, which is slower but reliable.
-    let snap: { timestamp: string } | null = null;
-    const info = await reqJson(
-      b,
-      `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${stamp}`,
-      8000
-    );
-    if (info) responded = true;
-    const closest = info?.archived_snapshots?.closest;
-    if (closest?.available && closest.timestamp) snap = { timestamp: String(closest.timestamp) };
-
-    if (!snap) {
-      const from = ymd(monthsAgo(months + 2));
-      const to = ymd(monthsAgo(Math.max(months - 2, 0)));
+  await Promise.all(
+    hosts.map(async (host) => {
       const rows = await reqJson(
         b,
         `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(host)}&from=${from}&to=${to}` +
-          `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&limit=1&output=json`,
-        12000
+          `&filter=statuscode:200&filter=mimetype:text/html&fl=timestamp&collapse=timestamp:6&output=json`,
+        15000,
+        1
       );
-      if (Array.isArray(rows)) responded = true;
-      const ts = Array.isArray(rows) && Array.isArray(rows[1]) ? rows[1][0] : null;
-      if (typeof ts === 'string' && /^\d{14}$/.test(ts)) snap = { timestamp: ts };
-    }
-    if (!snap) continue;
+      if (!Array.isArray(rows)) return;
+      responded = true;
+      byHost[host] = rows
+        .slice(1)
+        .map((r: unknown) => (Array.isArray(r) ? String(r[0]) : ''))
+        .filter((ts: string) => /^\d{14}$/.test(ts));
+    })
+  );
+  return { responded, byHost };
+}
 
-    const page = await req(b, `https://web.archive.org/web/${snap.timestamp}id_/https://${host}/`, UA_TOOL, 12000, 1);
+const tsTime = (ts: string) => Date.UTC(+ts.slice(0, 4), +ts.slice(4, 6) - 1, +ts.slice(6, 8));
+
+// Closest capture to the target date, within ±4 months.
+function closestStamp(stamps: string[], target: Date) {
+  let best: string | null = null;
+  let bestGap = Infinity;
+  for (const ts of stamps) {
+    const gap = Math.abs(tsTime(ts) - target.getTime());
+    if (gap < bestGap) { best = ts; bestGap = gap; }
+  }
+  return best && bestGap <= 122 * 86400000 ? best : null;
+}
+
+async function archivedAt(b: Budget, hosts: string[], months: number, indexP: Promise<ArchiveIndex>) {
+  const target = monthsAgo(months);
+  const index = await indexP;
+  let responded = index.responded;
+
+  for (const host of hosts) {
+    let ts = closestStamp(index.byHost[host] || [], target);
+
+    // Fallback when the CDX index didn't answer for this host: the availability API.
+    if (!ts && !index.byHost[host]) {
+      const info = await reqJson(
+        b,
+        `https://archive.org/wayback/available?url=${encodeURIComponent(host)}&timestamp=${ymd(target)}`,
+        8000
+      );
+      if (info) responded = true;
+      const closest = info?.archived_snapshots?.closest;
+      if (closest?.available && /^\d{14}$/.test(String(closest.timestamp))) ts = String(closest.timestamp);
+    }
+    if (!ts) continue;
+
+    const page = await req(b, `https://web.archive.org/web/${ts}id_/https://${host}/`, UA_TOOL, 12000, 1);
     if (page.status !== 200 || !page.text) continue;
 
     const read = readPage(page.text);
@@ -271,8 +303,8 @@ async function archivedAt(b: Budget, hosts: string[], months: number) {
     return {
       responded: true,
       snap: {
-        date: tsToDate(snap.timestamp),
-        archiveUrl: `https://web.archive.org/web/${snap.timestamp}/https://${host}/`,
+        date: tsToDate(ts),
+        archiveUrl: `https://web.archive.org/web/${ts}/https://${host}/`,
         ...read,
       },
     };
@@ -380,12 +412,13 @@ async function handle(url: URL) {
   const hosts = [...new Set([liveHost, typedHost])];
   const today = isoDay(new Date());
 
+  const archiveIdx = archiveIndex(budget, hosts);
   const [llms, robots, cc, wikidata, ...archived] = await Promise.all([
     req(budget, `https://${liveHost}/llms.txt`, UA_BROWSER, 8000),
     req(budget, `https://${liveHost}/robots.txt`, UA_BROWSER, 8000),
     commonCrawl(budget, hosts),
     wikidataEntry(budget, liveHost),
-    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m)),
+    ...TARGET_MONTHS.map((m) => archivedAt(budget, hosts, m, archiveIdx)),
   ]);
 
   const live = readPage(home.text);
@@ -422,12 +455,26 @@ async function handle(url: URL) {
 
   const oldest = versions[0];
 
-  const boundaries = [
-    ...versions.map((v) => ({ key: v.date, start: v.date })),
-    { key: 'current', start: liveSince || today },
+  // Which homepage version a crawl most likely captured. We only know the page at the dates of
+  // the archive captures (and today). A crawl between two captures of the same version got that
+  // version; a crawl between captures of different versions, or before the oldest capture, is
+  // reported as 'unknown' instead of guessed.
+  const versionOfSnap = (date: string) => {
+    if (liveSince && date >= liveSince) return 'current';
+    let key = 'unknown';
+    for (const v of versions) if (v.date <= date) key = v.date;
+    return key;
+  };
+  const timeline = [
+    ...snaps.map((sn) => ({ date: sn.date, key: versionOfSnap(sn.date) })),
+    { date: today, key: 'current' },
   ];
-  const versionAt = (date: string) =>
-    boundaries.reduce((chosen, b) => (b.start <= date ? b.key : chosen), boundaries[0].key);
+  const versionAt = (date: string) => {
+    const prev = [...timeline].reverse().find((p) => p.date <= date);
+    const next = timeline.find((p) => p.date >= date);
+    if (!prev || !next) return 'unknown';
+    return prev.key === next.key ? prev.key : 'unknown';
+  };
 
   const captures = cc.ok
     ? cc.dates.map((d) => ({ date: d, version: versionAt(d) })).sort((a, b) => b.date.localeCompare(a.date))
@@ -460,7 +507,8 @@ async function handle(url: URL) {
         oldTitle: oldest ? oldest.fields.title : null,
         newTitle: live.fields.title,
         capturesTotal: captures.length,
-        capturesOnOldVersion: captures.filter((c) => c.version !== 'current').length,
+        capturesOnOldVersion: captures.filter((c) => c.version !== 'current' && c.version !== 'unknown').length,
+        capturesUnknown: captures.filter((c) => c.version === 'unknown').length,
       }
     : null;
 
