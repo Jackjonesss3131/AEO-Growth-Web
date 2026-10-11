@@ -1,0 +1,17 @@
+Domains in input: 5
+Already done: 0. To process now: 5. Concurrency 3, timeout 60s per domain.
+Output: /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.csv, /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.json  ·  errors: /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.errors.log
+
+[1/5] hubspot.com                  ok        35s  | crawler=ok crawl_matches=cant_tell  | remaining 4, failed 0, ETA 2m23s
+[2/5] stripe.com                   ok        39s  | crawler=ok crawl_matches=cant_tell  | remaining 3, failed 0, ETA 59s
+[3/5] notion.so                    ok        53s  | crawler=blocked crawl_matches=yes  | remaining 2, failed 0, ETA 35s
+[4/5] linear.app                   ok        39s  | crawler=ok crawl_matches=cant_tell  | remaining 1, failed 0, ETA 19s
+[5/5] intercom.com                 ok        55s  | crawler=ok crawl_matches=cant_tell  | remaining 0, failed 0, ETA 0s
+
+Finished 5 domains in 1m34s (0 failed, average 19s per domain at concurrency 3).
+→ /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.csv
+→ /home/runner/work/AEO-Growth-Web/AEO-Growth-Web/out/results.json
+
+real	1m42.831s
+user	0m1.447s
+sys	0m0.252s
