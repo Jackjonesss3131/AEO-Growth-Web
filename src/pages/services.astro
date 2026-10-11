@@ -12,6 +12,9 @@ import {
 	MONTHLY_PRICE,
 	MONTHLY_PRICE_VALUE,
 	SERVICES_DESCRIPTION,
+	FREE_CHECK_NAME,
+	FREE_CHECK_SCOPE,
+	AUDIT_SCOPE,
 } from '../consts';
 
 export const prerender = true;
@@ -339,14 +342,16 @@ const schema = {
 			</section>
 
 			<section class="close-cta">
-				<h2>Start with the findings</h2>
+				<h2>Start with a free {FREE_CHECK_NAME}</h2>
 				<p>
-					Send me your domain and what you sell. I'll run your buyers' questions across every engine
-					and send back what they say about you — whether you're recommended, how you're described,
-					and who appears in your place. Five a month.
+					Send me your domain and what you sell. Before we talk, I'll run {FREE_CHECK_SCOPE}. It's a
+					quick read, not the audit.
+				</p>
+				<p>
+					The audit is the full version — {AUDIT_SCOPE}. It's {AUDIT_PRICE}, and I run five a month.
 				</p>
 				<div class="hero-cta">
-					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Request the audit</a>
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Get the free {FREE_CHECK_NAME}</a>
 					<a href="/positioning-check/" class="btn-ghost">Check your positioning first</a>
 				</div>
 			</section>

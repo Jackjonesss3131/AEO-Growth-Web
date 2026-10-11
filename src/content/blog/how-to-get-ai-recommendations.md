@@ -164,7 +164,7 @@ Anyone promising a date for a specific engine is guessing. What you can control 
 
 Recommendations aren't won with a single tactic. They're the result of a model having enough consistent, current evidence to reach a verdict about you. Our work is building that evidence, in order.
 
-**Phase 1 — The recommendation audit.** Before we talk, I run the unbranded questions your buyers actually ask across ChatGPT, Perplexity, Gemini, Claude and Google's AI results. For each answer I document whether you're recommended, only cited, or missing — which competitors are recommended instead, and which sources support them. You get the specific pages and descriptions shaping each answer, not a score.
+**Phase 1 — The recommendation audit.** I run the unbranded questions your buyers actually ask across ChatGPT, Perplexity, Gemini and Google's AI results. For each answer I document whether you're recommended, only cited, or missing — which competitors are recommended instead, and which sources support them. You get the specific pages and descriptions shaping each answer, not a score.
 
 **Phase 2 — Technical architecture.** We make sure every engine can reach, parse and trust your pages: crawl access, indexing, structured data, and a site architecture where your category, segments and proof are easy to find. If two domains are splitting your history, we resolve that here.
 
@@ -174,7 +174,7 @@ Recommendations aren't won with a single tactic. They're the result of a model h
 
 The phases run in order because each one depends on the last. Content on top of an unresolved entity doesn't compound. Measurement without a fixed baseline tells you nothing.
 
-If you want to see what the models recommend today when your buyers ask — and where you're missing — [the audit comes first](https://calendly.com/geraldeoleo/growth-plg).
+If you want a first look at what the models recommend when your buyers ask, start with a free Shortlist Check: three or four of your buyers' questions in one engine, run before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
 
 ## Quick answers
 

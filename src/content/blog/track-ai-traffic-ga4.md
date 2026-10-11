@@ -90,4 +90,4 @@ A measurement problem and a visibility problem look identical in GA4. They need 
 
 ---
 
-If your AI referrals are flat and you can't tell whether that's a tracking problem or a visibility problem, send me your domain. I'll run your buyer's real questions across ChatGPT, Perplexity, Gemini and Google and tell you whether you appear, how you're described, and who gets named instead. Free, before we talk. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.
+If your AI referrals are flat and you can't tell whether that's a tracking problem or a visibility problem, send me your domain. Before we talk, I'll run a free Shortlist Check: three or four of your buyers' questions in one engine, to see whether you appear and how you're described. It's a quick read, not the audit. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.

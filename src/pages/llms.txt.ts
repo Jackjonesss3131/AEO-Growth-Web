@@ -16,6 +16,8 @@ import {
 	CALENDLY_URL,
 	LINKEDIN_URL,
 	BLOG_CATEGORIES,
+	FREE_CHECK_NAME,
+	FREE_CHECK_SCOPE,
 } from '../consts';
 
 // /llms.txt (https://llmstxt.org). Built from the same constants and posts as the site,
@@ -37,6 +39,8 @@ export const GET: APIRoute = async () => {
 		BUSINESS_DESCRIPTION,
 		'',
 		`Pricing: the audit is ${AUDIT_PRICE}, one time. Ongoing work is ${MONTHLY_PRICE} per month, no contract.`,
+		'',
+		`Before a first call: a free ${FREE_CHECK_NAME} — ${FREE_CHECK_SCOPE}. It is not the audit.`,
 		'',
 		`Framework — ${FRAMEWORK_TITLE}:`,
 		...FRAMEWORK_LAYERS.map((l) => `${l.n}. ${l.name}: ${l.question}`),

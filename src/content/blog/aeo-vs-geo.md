@@ -205,7 +205,7 @@ No. Google states that its AI features rely on the same SEO fundamentals as the 
 
 The three layers above — be worth using, be described correctly, measure per engine — are the exact order we follow with clients.
 
-First, I audit your domain across ChatGPT, Perplexity, Gemini and Google's AI results. Not just whether you show up, but how you're described: category, positioning, claims. That audit runs before we ever talk, so the first call starts with findings.
+First comes the audit: your domain across ChatGPT, Perplexity, Gemini and Google's AI results. Not just whether you show up, but how you're described: category, positioning, claims. Before we ever talk, I run a free Shortlist Check — three or four of your buyers' questions in one engine — so the first call starts with something real; the audit is the full version.
 
 Then we fix the entity layer — your description across directories, review sites and your own pages — before applying any content tactics. The order matters: GEO tactics on an inconsistent identity amplify the confusion.
 
@@ -213,4 +213,4 @@ Once the foundation is clean, we optimize your content to be cited, and track de
 
 If you want to see how this work relates to what you're already doing with SEO — what changed, what didn't, and which metrics cover which layer — I lay that out in <a href="/blog/aeo-vs-seo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs SEO: What Actually Changed</a>.
 
-<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the free Shortlist Check is done before we talk.

@@ -166,4 +166,4 @@ A full audit when something changes — a repositioning, a launch, a rename, a n
 
 ---
 
-If you'd like to see what the models say about your company today — recommended or only mentioned, and described how — I run the audit on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you'd like to see what the models say about your company today — recommended or only mentioned, and described how — before we talk I run a free Shortlist Check on your domain: three or four of your buyers' questions in one engine. The full audit is everything this post describes. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

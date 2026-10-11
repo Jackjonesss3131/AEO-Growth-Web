@@ -126,7 +126,7 @@ Sequence matters here more than in most AEO work. Publishing new pages on top of
 
 The order above starts with the record rather than the content on purpose. Content built on a broken entity doesn't compound — it gets filed under whichever category the model already settled on.
 
-First I take your product and ICP and build the real decision questions your buyer asks, with their stack, team size and constraints attached. Then I run them across ChatGPT, Perplexity, Gemini and Google before we talk, so the first call opens with findings: where you're in the shortlist, how you're described, and who takes your place when you're not.
+First I take your product and ICP and build the real decision questions your buyer asks, with their stack, team size and constraints attached. Before we talk, I run three or four of them in one engine — a free Shortlist Check — so the first call opens with something real. The full run across ChatGPT, Perplexity, Gemini and Google is the audit: where you sit in the shortlist, how you're described, and who takes your place when you're not.
 
 From there it's sequenced — fix what describes you wrong, publish the pages that answer the constrained questions, then measure the same questions every month. The audit is a fixed-scope deliverable; full detail is on the <a href="/services/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">services page</a>.
 
@@ -139,4 +139,4 @@ Two free checks before you talk to anyone, both on your own domain:
 - **<a href="/positioning-check/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Positioning Check</a>** — which version of your company the crawls captured. Forty seconds.
 - **<a href="/ai-crawler-check/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Crawler Check</a>** — what each AI bot receives when it visits your site. Two minutes.
 
-If the snapshot on record still describes the product you replaced, send me your domain and I'll tell you what the models say about you right now: whether you appear, whether they call you an agent, and who gets named instead. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.
+If the snapshot on record still describes the product you replaced, send me your domain and, before we talk, I'll run a free Shortlist Check: three or four of your buyers' questions in one engine — whether you appear, whether it calls you an agent, and how you're described. <a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a>.

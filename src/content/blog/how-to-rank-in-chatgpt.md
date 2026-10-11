@@ -182,9 +182,9 @@ If inclusion is high and recommendation is low, you have a positioning problem, 
 
 ## Want to know what ChatGPT says about you today?
 
-I run hundreds of real buyer prompts across ChatGPT, Perplexity, Gemini and AI Overviews to map where you appear, how you're described, and which sources shape the answer in your category. [See how the audit works](/ai-search-optimization/).
+I run hundreds of real buyer prompts across ChatGPT, Perplexity, Gemini and AI Overviews to map where you appear, how you're described, and which sources shape the answer in your category. [See how the audit works](/services/).
 
-I'll run it on your domain before we talk, so the call starts with findings instead of questions.
+Before we talk, I run a free Shortlist Check on your domain — three or four of your buyers' questions in one engine — so the call starts with something real instead of questions.
 
 [Book a call](https://calendly.com/geraldeoleo/growth-plg)
 

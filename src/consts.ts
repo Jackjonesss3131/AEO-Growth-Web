@@ -15,6 +15,11 @@ export const AUDIT_PRICE_VALUE = 1000;
 export const MONTHLY_PRICE = '$2,500';
 export const MONTHLY_PRICE_VALUE = 2500;
 
+// Free pre-call review. Deliberately small and named, so it is never confused with the paid audit.
+export const FREE_CHECK_NAME = 'Shortlist Check';
+export const FREE_CHECK_SCOPE = "three or four of your buyers' questions in one engine, to see whether you appear and how you're described";
+export const AUDIT_SCOPE = 'every question across ChatGPT, Perplexity, Gemini and Google, the sources behind each answer, and the fix list';
+
 // <title> of the home page (other pages use "<Page> — AUTHOR_NAME").
 export const HOME_TITLE = `${AUTHOR_NAME} — AEO consultant for B2B SaaS`;
 export const SITE_DESCRIPTION = `${AUTHOR_NAME}, independent AEO & GEO consultant for B2B SaaS. Get found, cited, and described correctly in AI answers. ${AUDIT_PRICE} audit, ${MONTHLY_PRICE} per month.`;

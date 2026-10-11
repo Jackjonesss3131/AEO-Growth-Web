@@ -75,7 +75,7 @@ What you shouldn't expect is a clean number for a board deck by day 30. What you
 
 Applying the same questions to myself, since it'd be odd not to.
 
-I run the audit on your domain before we talk, so the first call starts with findings rather than a pitch. The deliverable is yours either way, including the right to take it elsewhere. You get the raw answers per engine — the exact descriptions, the cited sources, the competitors that appeared — not a score.
+Before we talk, I run a free Shortlist Check on your domain — three or four of your buyers' questions in one engine — so the first call starts with something real rather than a pitch. The audit itself is paid and fixed at {AUDIT_PRICE}. Its deliverable is yours either way, including the right to take it elsewhere. You get the raw answers per engine — the exact descriptions, the cited sources, the competitors that appeared — not a score.
 
 I work alone. That means the person doing the analysis is the person you talk to. It also means I can't produce content at agency volume or run large off-site PR programs in parallel. If you need production at scale, an agency with a bench is the better buy.
 
@@ -99,4 +99,4 @@ Changes to your own site register soonest. Changes to how third parties describe
 
 ---
 
-If you want the diagnosis before deciding anything, that's what the audit is. I run it on your domain before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you want the diagnosis before deciding anything, that's what the audit is. Before we talk, I run a free Shortlist Check — three or four of your buyers' questions in one engine — so you can see whether the full audit is worth it. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

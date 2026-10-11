@@ -169,4 +169,4 @@ Buying content before fixing the entity. If the web describes your company three
 
 ---
 
-If you want to start with the diagnosis rather than a retainer, that's what I'd suggest to anyone. I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer — so the call starts with findings instead of a pitch. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you want to start with the diagnosis rather than a retainer, that's what I'd suggest to anyone. Before we talk, I run a free Shortlist Check: three or four of your buyers' questions in one engine, to see whether you appear and how you're described — so the call starts with something real instead of a pitch. It isn't the audit — the {AUDIT_PRICE} audit runs every question across ChatGPT, Perplexity, Gemini and Google, maps the sources behind each answer and hands you the fix list. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

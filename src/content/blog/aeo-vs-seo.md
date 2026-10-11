@@ -143,10 +143,10 @@ It depends on the engine and on how much outdated information already exists abo
 
 We don't start with a pitch. We start with data.
 
-Before any call, I run a full audit on your domain across ChatGPT, Perplexity, Gemini and Google's AI results — the same four-stage check described above: retrieval, citation, interpretation, expression. You see exactly where you appear, where you don't, and what the models say about you when they do.
+Before any call, I run a free Shortlist Check: three or four of your buyers' questions in one engine, to see whether you appear and how you're described. The audit is the full version: every question across ChatGPT, Perplexity, Gemini and Google's AI results, through the same four-stage check described above — retrieval, citation, interpretation, expression. That's where you see exactly where you appear, where you don't, and what the models say about you when they do.
 
 On the call, we walk through findings, not slides. From there, the work follows the layers: fix what's wrong in how you're described, make your content worth citing, and measure the results per engine, monthly.
 
 If you want to understand how generative engines decide which sources to use — and what the research says actually works — I break that down in <a href="/blog/aeo-vs-geo/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">AEO vs GEO: Same Thing or Different Disciplines?</a>.
 
-<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the free Shortlist Check is done before we talk.

@@ -197,4 +197,4 @@ Changes to your own site register soonest in engines that search the web on ever
 
 ---
 
-If you'd rather see the diagnosis before doing any of this, I run the audit on your domain before we talk — the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you'd rather see the diagnosis before doing any of this, that's the audit: the unbranded questions your buyers ask, across every major engine, with the specific pages shaping each answer. Before we talk, I run a free Shortlist Check — three or four of those questions in one engine. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

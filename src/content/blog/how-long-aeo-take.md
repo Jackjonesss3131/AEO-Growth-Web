@@ -102,10 +102,10 @@ Four months in, you're not "ranking for attribution." You're the named answer to
 
 The order is the same one I run with every client, and it starts at the bottom on purpose.
 
-First I take your product and your ICP and build the real decision questions your buyer asks — stack, team size and budget attached. Then I run them across ChatGPT, Perplexity, Gemini and Google before we talk, so the first call opens with findings: where you're in the shortlist, how you're described, who takes your place when you're not.
+First I take your product and your ICP and build the real decision questions your buyer asks — stack, team size and budget attached. Before we talk, I run three or four of them in one engine — a free Shortlist Check — so the first call opens with something real. The full run across ChatGPT, Perplexity, Gemini and Google is the audit: that's where you see where you sit in the shortlist, how you're described, and who takes your place when you're not.
 
 From there the work is ordered — fix what describes you wrong before publishing anything, build the pages that answer the constrained questions, then measure the same questions every month. On expectations, I'll tell you plainly: first signs tend to show on Perplexity within weeks, and a shortlist you can hold across engines is a two-to-four-month build on your winnable questions — not a week, and not a one-time fix. Full scope is on the <a href="/services/" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">services page</a>.
 
-Want to know where your clock actually stands? Send me your domain and I'll run your BOFU questions across every engine: whether you appear today, how you're described, and who's taking your place. Free, before we talk.
+Want to know where your clock actually stands? Send me your domain and I'll run a free Shortlist Check: three or four of your BOFU questions in one engine — whether you appear today and how you're described. The full picture across every engine is the {AUDIT_PRICE} audit.
 
-<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the audit is done before we talk.
+<a href="https://calendly.com/geraldeoleo/growth-plg" style="color: #2563eb; text-decoration: underline; text-underline-offset: 2px;">Book a call</a> — the free Shortlist Check is done before we talk.

@@ -176,4 +176,4 @@ It depends on the engine and on how much outdated information exists about you. 
 
 ---
 
-I run this audit for attribution and marketing analytics companies: the unbranded questions your buyers actually ask, across every major engine, with the specific pages shaping each answer. I run it on your domain before we talk, so the call starts with findings rather than questions. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+I run the audit for attribution and marketing analytics companies: the unbranded questions your buyers actually ask, across every major engine, with the specific pages shaping each answer. Before we talk, I run a free Shortlist Check — three or four of those questions in one engine — so the call starts with something real rather than questions. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

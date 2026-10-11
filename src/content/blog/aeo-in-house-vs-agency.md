@@ -136,4 +136,4 @@ You don't have to decide this blind, and you don't have to start with a call. Tw
 - **[Crawler Check](https://www.aeogrowth.co/ai-crawler-check)** — what each AI bot actually receives when it visits your site. Two minutes.
 - **[Positioning Check](https://www.aeogrowth.co/positioning-check)** — which version of your company got captured in the snapshots the models read. Forty seconds.
 
-If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and I'll tell you what the models say about you right now, before we talk. [Book a call](https://calendly.com/geraldeoleo/growth-plg).
+If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and, before we talk, I'll run a free Shortlist Check: three or four of your buyers' questions in one engine, to see whether you appear and how you're described. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

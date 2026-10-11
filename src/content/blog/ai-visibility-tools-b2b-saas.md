@@ -95,4 +95,4 @@ Not necessarily. If your positioning is clean and your team can act on findings,
 
 ---
 
-If you've got a tool and the numbers don't explain themselves, that's the gap I work in. I run the audit on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you've got a tool and the numbers don't explain themselves, that's the gap I work in, and it's what the audit explains. Before we talk, I run a free Shortlist Check — three or four of your buyers' questions in one engine — so the call starts with something concrete. [See how the audit works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).

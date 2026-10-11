@@ -78,4 +78,4 @@ A profile that still describes the company you were two years ago. It passes eve
 
 ---
 
-If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. I run it on your domain before we talk. [See how it works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).
+If you want to know which sources are shaping the answers about your company — review profiles, community threads, competitors' guides or your own pages — that's what the audit maps. Before we talk, I run a free Shortlist Check — three or four of your buyers' questions in one engine — so you can see whether the full audit is worth it. [See how the audit works](/services/), or [book a call](https://calendly.com/geraldeoleo/growth-plg).
