@@ -1,7 +1,8 @@
 ---
 title: "Why ChatGPT Recommends Your Competitor's Attribution Tool"
-description: "Marketing attribution and analytics buyers now shortlist vendors inside AI answers. Why the models pick the tools they pick, who wrote the buyer's guides they learn from, and what an attribution SaaS can fix first."
+description: "Attribution buyers now shortlist vendors inside AI answers. Why models pick the tools they pick, who wrote the guides they learn from, and what to fix first."
 pubDate: 'Sep 24 2026'
+ogImage: '../../assets/og/why-chatgpt-recommends-competitor-attribution-tool.jpg'
 ---
 
 **The short answer:** AI engines recommend the attribution and marketing analytics tools that the web describes clearly, consistently and in the buyer's terms. In this category, most of the buyer's guides those engines learn from are written by the vendors themselves. If your competitors wrote the guides and you're not in them — or you're in them under the wrong label — the model learns the category from their version of it.

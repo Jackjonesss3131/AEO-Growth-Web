@@ -1,7 +1,8 @@
 ---
 title: "How to Choose an AEO Agency: Real 2026 Prices and Red Flags"
-description: "Real 2026 price bands for AEO and GEO work, the questions to ask before signing, the red flags that predict a wasted retainer, and when a solo specialist beats an agency."
+description: "Real 2026 price bands for AEO work, the questions to ask before signing, the red flags behind wasted retainers, and when a solo specialist wins."
 pubDate: 'Sep 26 2026'
+ogImage: '../../assets/og/how-to-choose-an-aeo-agency.jpg'
 ---
 
 **The short answer:** most AEO proposals fail for one of three reasons — you bought monitoring when you needed diagnosis, you bought content when your entity was broken, or you signed a twelve-month retainer before anyone could tell you what was wrong. Start with a paid audit, insist on recommendation and description metrics rather than mention counts, and don't commit to a long retainer until someone has shown you the specific pages shaping your answers.

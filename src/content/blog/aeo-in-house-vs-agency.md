@@ -1,7 +1,8 @@
 ---
 title: "AEO In-House or Outsourced? The Half Your Team Won't Finish"
-description: "The real calculation for a B2B SaaS in 2026: which half of the work your team can do, which half never gets finished internally, what each path costs with published figures, and three signals that in-house won't get there."
+description: "Which half of AEO your team can own, which half never gets finished in-house, what each path really costs, and 3 signs in-house won't get there."
 pubDate: 'Oct 6 2026'
+ogImage: '../../assets/og/aeo-in-house-vs-agency.jpg'
 ---
 
 **The short answer:** if you have someone on content with real hours and the patience for six months, you can do half of this in-house and it will work. The other half is the half that decides whether you appear at all — correcting the third-party sources that describe you wrong. It isn't hard, it's tedious, and it's never Monday's priority. Before you decide either way, buy a diagnosis first. It's the cheapest thing in this category and it tells you which half is actually your problem.

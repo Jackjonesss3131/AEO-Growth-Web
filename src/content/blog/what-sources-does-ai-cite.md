@@ -1,7 +1,8 @@
 ---
 title: "What Sources Does AI Cite About You? How to Find Them"
-description: "How to find the pages actually shaping the AI answers about your company, and what to do about the ones you don't control."
+description: "How to find the exact pages shaping AI answers about your company, and what to do about the ones you don't control."
 pubDate: 'Sep 30 2026'
+ogImage: '../../assets/og/what-sources-does-ai-cite.jpg'
 ---
 
 **The short answer:** it depends on the engine and the question, which is why borrowed percentages are useless here. What matters is which sources shape *your* answers — and you can find that out in about an hour.

@@ -1,7 +1,8 @@
 ---
 title: "How to Implement AEO in Your GTM (Start at BOFU, Not TOFU)"
-description: "Implementing AEO across your whole funnel is unpredictable. Start at BOFU: take your product, define who uses it and in what case, and turn that into your buyer's decision questions. With the 2026 data on why the shortlist now forms inside a chat window."
+description: "Don't roll AEO out across the whole funnel. Start at BOFU: turn who uses your product, and when, into the decision questions buyers now ask AI."
 pubDate: 'Oct 5 2026'
+ogImage: '../../assets/og/how-to-implement-aeo-in-your-gtm.jpg'
 ---
 
 **The short answer:** don't try to cover the whole funnel. Start at BOFU. Take your product, ask who would use it and in what specific case, and turn that into the questions your buyer asks the model right before deciding. Those questions are your plan. Everything else is noise until you win those.
