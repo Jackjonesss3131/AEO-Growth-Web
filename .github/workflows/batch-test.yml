@@ -15,8 +15,11 @@ jobs:
           node-version: '22'
       - run: |
           node -v
-          printf 'domain,company_name\nstripe.com,Stripe\nhttps://www.notion.so/,Notion\nhubspot.com,HubSpot\nlinear.app,Linear\nwww.intercom.com,Intercom\n' > domains-test.csv
+          git fetch -q origin main && git checkout origin/main -- scripts src && git log -1 --format='testing main %h' origin/main
           mkdir -p out
+          curl -s -o out/site-crawler.json -w '%{http_code} %{time_total}s\n' "https://www.aeogrowth.co/api/check-crawlers?url=stripe.com&cb=$RANDOM" > out/site.log
+          curl -s -o out/site-positioning.json -w '%{http_code} %{time_total}s\n' "https://www.aeogrowth.co/api/positioning?domain=stripe.com&cb=$RANDOM" >> out/site.log
+          printf 'domain,company_name\nstripe.com,Stripe\nhttps://www.notion.so/,Notion\nhubspot.com,HubSpot\nlinear.app,Linear\nwww.intercom.com,Intercom\n' > domains-test.csv
           { time node scripts/batch-audit.js --input domains-test.csv --output out/results ; } > out/run.log 2>&1 || true
           mkdir -p out/first && cp out/results.csv out/first/results.csv
           { time node scripts/batch-audit.js --input domains-test.csv --output out/results --resume --retry-failed ; } > out/run2.log 2>&1 || true
