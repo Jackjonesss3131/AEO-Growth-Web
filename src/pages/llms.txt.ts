@@ -15,6 +15,7 @@ import {
 	FRAMEWORK_DESCRIPTION,
 	CALENDLY_URL,
 	LINKEDIN_URL,
+	BLOG_CATEGORIES,
 } from '../consts';
 
 // /llms.txt (https://llmstxt.org). Built from the same constants and posts as the site,
@@ -49,10 +50,18 @@ export const GET: APIRoute = async () => {
 		`- [Crawler Check](${SITE_URL}/ai-crawler-check/): Free tool. Check if ChatGPT, Claude, Perplexity and Google can read your site, and what they find when they crawl it.`,
 		`- [Positioning Check](${SITE_URL}/positioning-check/): Free tool. See how your homepage described your company over time, and which version AI training data most likely captured.`,
 		'',
-		'## Blog',
-		'',
-		...posts.map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.description}`),
-		'',
+		...BLOG_CATEGORIES.flatMap((c) => {
+			const inTopic = posts.filter((p) => p.data.category === c.slug);
+			if (!inTopic.length) return [];
+			return [
+				`## Blog: ${c.name}`,
+				'',
+				c.blurb,
+				'',
+				...inTopic.map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.description}`),
+				'',
+			];
+		}),
 		'## Contact',
 		'',
 		`- [Book a call](${CALENDLY_URL})`,

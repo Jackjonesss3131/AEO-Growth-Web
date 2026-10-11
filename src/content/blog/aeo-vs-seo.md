@@ -2,6 +2,7 @@
 title: "AEO vs SEO: Ranking #1 No Longer Means You Get Chosen"
 description: "SEO gets you ranked. AEO decides whether an AI model picks you and how it describes you. What changed, what didn't, and why you still need both."
 pubDate: 'Sep 21 2026'
+category: 'basics'
 ogImage: '../../assets/og/aeo-vs-seo.jpg'
 ---
 

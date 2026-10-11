@@ -2,6 +2,7 @@
 title: "Cited by AI, Described as the Wrong Company"
 description: "Most AEO audits stop at 'did you appear?' The costly failure is one layer deeper: AI cites you accurately and still files you in the wrong category."
 pubDate: 'Sep 20 2026'
+category: 'basics'
 ogImage: '../../assets/og/being-cited-isnt-being-understood.jpg'
 ---
 

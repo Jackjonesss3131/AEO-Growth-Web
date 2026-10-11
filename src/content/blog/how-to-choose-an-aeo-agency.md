@@ -2,6 +2,7 @@
 title: "How to Choose an AEO Agency: Real 2026 Prices and Red Flags"
 description: "Real 2026 price bands for AEO work, the questions to ask before signing, the red flags behind wasted retainers, and when a solo specialist wins."
 pubDate: 'Sep 26 2026'
+category: 'hiring'
 ogImage: '../../assets/og/how-to-choose-an-aeo-agency.jpg'
 ---
 

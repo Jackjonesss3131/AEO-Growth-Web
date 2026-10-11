@@ -2,6 +2,7 @@
 title: "How to Track AI Traffic in GA4 (Much of It Arrives Unlabeled)"
 description: "AI referrals are about 1% of sessions, and a third to two-thirds arrive unlabeled. The GA4 setup that captures what it can, and how to report it honestly."
 pubDate: 'Oct 7 2026'
+category: 'measurement'
 ogImage: '../../assets/og/track-ai-traffic-ga4.jpg'
 ---
 

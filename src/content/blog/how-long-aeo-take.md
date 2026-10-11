@@ -2,6 +2,7 @@
 title: "How Long Does AEO Take? Days to Crawl, Months to Get Picked"
 description: "AEO runs on two clocks: crawls take days, recommendations take months. What to expect engine by engine, with 2026 recrawl data."
 pubDate: 'Oct 3 2026'
+category: 'measurement'
 ogImage: '../../assets/og/how-long-aeo-take.jpg'
 ---
 

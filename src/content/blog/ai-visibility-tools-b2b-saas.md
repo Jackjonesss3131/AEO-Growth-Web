@@ -2,6 +2,7 @@
 title: "AI Visibility Tools for B2B SaaS: What They Don't Measure"
 description: "What AI visibility tools actually meter, the engine-gating trap in entry tiers, and where a dashboard stops helping a B2B SaaS team."
 pubDate: 'Sep 28 2026'
+category: 'measurement'
 ogImage: '../../assets/og/ai-visibility-tools-b2b-saas.jpg'
 ---
 

@@ -5,12 +5,13 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { SITE_URL } from '../consts';
+import { SITE_URL, BLOG_CATEGORIES } from '../consts';
 import { DEFAULT_OG_IMAGE } from '../og-image';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, ogImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, ogImage, category } = Astro.props;
+const topic = BLOG_CATEGORIES.find((c) => c.slug === category);
 
 // Social image: ogImage from frontmatter → heroImage → site default.
 const socialImage = ogImage ?? heroImage ?? DEFAULT_OG_IMAGE;
@@ -30,6 +31,7 @@ const schema = {
 	url: canonicalURL,
 	image: new URL(socialImage.src, Astro.site).href,
 	inLanguage: 'en',
+	...(topic ? { articleSection: topic.name } : {}),
 };
 ---
 
@@ -43,7 +45,10 @@ const schema = {
 
 		<main>
 			<article class="prose">
-				<p class="post-date"><FormattedDate date={pubDate} /></p>
+				<p class="post-date">
+					{topic && (<><a class="post-topic" href={`/blog/#${topic.slug}`}>{topic.name}</a> · </>)}
+					<FormattedDate date={pubDate} />
+				</p>
 				<h1>{title}</h1>
 				{updatedDate && (
 					<p class="post-updated">Updated <FormattedDate date={updatedDate} /></p>
@@ -60,5 +65,9 @@ const schema = {
 		</main>
 
 		<Footer />
+		<style>
+			.post-topic { color: var(--accent-ink); text-decoration: none; font-weight: 600; }
+			.post-topic:hover { text-decoration: underline; text-underline-offset: 2px; }
+		</style>
 	</body>
 </html>

@@ -2,6 +2,7 @@
 title: "How to Appear in ChatGPT Answers: 8 Steps, in Order"
 description: "A prioritized checklist for B2B SaaS, starting with the failure that makes everything else pointless: AI crawlers that can't read your pages."
 pubDate: 'Sep 27 2026'
+category: 'getting-recommended'
 ogImage: '../../assets/og/how-to-appear-in-chatgpt-answers.jpg'
 ---
 

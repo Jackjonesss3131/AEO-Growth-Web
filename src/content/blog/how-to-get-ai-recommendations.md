@@ -2,6 +2,7 @@
 title: "How to Get AI Recommendations: Why Citations Aren't Enough"
 description: "Being cited by ChatGPT, Perplexity or Gemini isn't being recommended. What separates a mention, a citation and a recommendation, and how to get shortlisted."
 pubDate: 'Sep 23 2026'
+category: 'basics'
 ogImage: '../../assets/og/how-to-get-ai-recommendations.jpg'
 ---
 

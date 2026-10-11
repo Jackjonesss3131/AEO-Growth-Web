@@ -2,6 +2,7 @@
 title: "Why ChatGPT Still Calls Your AI Agent a Chatbot"
 description: "Your category went from chatbot to agent in 18 months. The sources AI reads didn't. Why you're still filed under the old category, and how to fix it."
 pubDate: 'Oct 6 2026'
+category: 'by-category'
 ogImage: '../../assets/og/why-chatgpt-calls-your-agent-a-chatbot.jpg'
 ---
 

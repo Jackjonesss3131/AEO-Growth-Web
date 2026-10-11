@@ -2,6 +2,7 @@
 title: "Why ChatGPT Recommends Your Competitor's Attribution Tool"
 description: "Attribution buyers now shortlist vendors inside AI answers. Why models pick the tools they pick, who wrote the guides they learn from, and what to fix first."
 pubDate: 'Sep 24 2026'
+category: 'by-category'
 ogImage: '../../assets/og/why-chatgpt-recommends-competitor-attribution-tool.jpg'
 ---
 

@@ -2,6 +2,7 @@
 title: "The AEO Advantage Competitors Can't Copy: Your Product Data"
 description: "The most durable way to get cited by AI: publish a number other articles need. How to find that number inside your product and publish it."
 pubDate: 'Oct 1 2026'
+category: 'getting-recommended'
 ogImage: '../../assets/og/product-data-aeo-advantage.jpg'
 ---
 

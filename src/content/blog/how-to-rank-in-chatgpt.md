@@ -2,6 +2,7 @@
 title: "How to Rank in ChatGPT When There's No Position One"
 description: "There's no position one in ChatGPT. How it decides which companies show up, what SEO still does for you, and what to measure instead of rank."
 pubDate: 'Sep 23 2026'
+category: 'basics'
 ogImage: '../../assets/og/how-to-rank-in-chatgpt.jpg'
 ---
 

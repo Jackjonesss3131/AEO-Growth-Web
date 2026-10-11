@@ -2,6 +2,7 @@
 title: "What Sources Does AI Cite About You? How to Find Them"
 description: "How to find the exact pages shaping AI answers about your company, and what to do about the ones you don't control."
 pubDate: 'Sep 30 2026'
+category: 'getting-recommended'
 ogImage: '../../assets/og/what-sources-does-ai-cite.jpg'
 ---
 

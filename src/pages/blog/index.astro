@@ -4,12 +4,22 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { AUTHOR_NAME } from '../../consts';
+import { AUTHOR_NAME, BLOG_CATEGORIES, BLOG_START_HERE } from '../../consts';
 
 export const prerender = true;
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Posts grouped by topic, newest first inside each topic.
+const sections = BLOG_CATEGORIES.map((c) => ({
+	...c,
+	posts: posts.filter((p) => p.data.category === c.slug),
+})).filter((s) => s.posts.length);
+
+const startHere = BLOG_START_HERE.map((id) => posts.find((p) => p.id === id)).filter(
+	(p): p is (typeof posts)[number] => !!p,
 );
 ---
 
@@ -18,7 +28,7 @@ const posts = (await getCollection('blog')).sort(
 	<head>
 		<BaseHead
 			title={`Blog — ${AUTHOR_NAME}`}
-			description="Notes on how B2B SaaS companies get found, cited, and described in AI-generated answers."
+			description="Notes on how B2B SaaS companies get found, cited, and described in AI-generated answers, grouped by topic: basics, doing the work, measuring it, and hiring help."
 		/>
 	</head>
 	<body>
@@ -29,28 +39,134 @@ const posts = (await getCollection('blog')).sort(
 				<p class="eyebrow">Blog</p>
 				<h1>Notes from the messy end</h1>
 				<p>
-					What I find when I look at how AI systems actually describe B2B SaaS companies — and what
-					it takes to change it.
+					AI engines now build the shortlist for B2B software. Most companies don't know whether
+					they're on it, or how they're described when they are. That's the one problem I write about.
+				</p>
+				<p>
+					These notes come from running audits on real domains. The numbers are sourced, and most
+					posts end with something you can check on your own site. They're grouped by where you are:
+					new to AEO, doing the work, measuring it, or deciding who should do it.
 				</p>
 			</section>
 
-			{posts.length === 0 ? (
-				<p class="empty">No posts yet.</p>
-			) : (
-				<ul class="post-list">
-					{posts.map((post) => (
-						<li>
-							<a href={`/blog/${post.id}/`}>
-								<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
-								<h2 class="post-title">{post.data.title}</h2>
-								<p class="post-desc">{post.data.description}</p>
-							</a>
-						</li>
-					))}
-				</ul>
+			{startHere.length > 0 && (
+				<section class="start-here" aria-labelledby="start-here-title">
+					<h2 id="start-here-title">New here? Start with these</h2>
+					<ol>
+						{startHere.map((post, i) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<span class="start-n">{i + 1}</span>
+									<span class="start-title">{post.data.title}</span>
+								</a>
+							</li>
+						))}
+					</ol>
+				</section>
 			)}
+
+			<nav class="topic-nav" aria-label="Blog topics">
+				{sections.map((s) => (
+					<a href={`#${s.slug}`}>
+						{s.name} <span>{s.posts.length}</span>
+					</a>
+				))}
+			</nav>
+
+			{sections.map((s) => (
+				<section class="topic" id={s.slug} aria-labelledby={`${s.slug}-title`}>
+					<header class="topic-head">
+						<h2 id={`${s.slug}-title`}>{s.name}</h2>
+						<p>{s.blurb}</p>
+					</header>
+					<ul class="post-list">
+						{s.posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
+									<h3 class="post-title">{post.data.title}</h3>
+									<p class="post-desc">{post.data.description}</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			))}
 		</main>
 
 		<Footer />
+
+		<style>
+			.blog-head p + p { margin-top: 0.9rem; }
+
+			.start-here {
+				max-width: var(--read);
+				margin: 0 0 2.5rem;
+				padding: 1.4rem 1.6rem;
+				border: 1px solid var(--line);
+				border-radius: 14px;
+				background: var(--accent-soft);
+			}
+			.start-here h2 {
+				margin: 0 0 0.9rem;
+				font-size: 0.82rem;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				color: var(--accent-ink);
+			}
+			.start-here ol { list-style: none; margin: 0; padding: 0; }
+			.start-here li + li { margin-top: 0.55rem; }
+			.start-here a {
+				display: flex;
+				gap: 0.75rem;
+				align-items: baseline;
+				color: var(--ink);
+				text-decoration: none;
+				font-weight: 600;
+				line-height: 1.4;
+			}
+			.start-here a:hover .start-title { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
+			.start-n {
+				flex: none;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 1.5rem;
+				height: 1.5rem;
+				border-radius: 50%;
+				background: var(--accent);
+				color: #fff;
+				font-size: 0.78rem;
+			}
+
+			.topic-nav {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+				margin: 0 0 1rem;
+				padding-bottom: 1.5rem;
+			}
+			.topic-nav a {
+				padding: 0.4rem 0.8rem;
+				border: 1px solid var(--line-strong);
+				border-radius: 999px;
+				font-size: 0.88rem;
+				color: var(--ink);
+				text-decoration: none;
+			}
+			.topic-nav a:hover { border-color: var(--accent); color: var(--accent-ink); }
+			.topic-nav span { color: var(--muted); margin-left: 0.2rem; }
+
+			.topic { padding-top: 1.5rem; scroll-margin-top: 1.5rem; }
+			.topic-head { max-width: var(--read); margin-bottom: 1rem; }
+			.topic-head h2 { margin: 0 0 0.35rem; font-size: 1.45rem; color: var(--ink); }
+			.topic-head p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+			@media (max-width: 640px) {
+				.start-here { padding: 1.1rem 1.15rem; }
+				.topic-head h2 { font-size: 1.25rem; }
+			}
+		</style>
 	</body>
 </html>

@@ -2,6 +2,7 @@
 title: "How to Implement AEO in Your GTM (Start at BOFU, Not TOFU)"
 description: "Don't roll AEO out across the whole funnel. Start at BOFU: turn who uses your product, and when, into the decision questions buyers now ask AI."
 pubDate: 'Oct 5 2026'
+category: 'getting-recommended'
 ogImage: '../../assets/og/how-to-implement-aeo-in-your-gtm.jpg'
 ---
 
