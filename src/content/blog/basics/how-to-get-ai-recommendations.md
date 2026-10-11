@@ -2,8 +2,7 @@
 title: "How to Get AI Recommendations: Why Citations Aren't Enough"
 description: "Being cited by ChatGPT, Perplexity or Gemini isn't being recommended. What separates a mention, a citation and a recommendation, and how to get shortlisted."
 pubDate: 'Sep 23 2026'
-category: 'basics'
-ogImage: '../../assets/og/how-to-get-ai-recommendations.jpg'
+ogImage: '../../../assets/og/how-to-get-ai-recommendations.jpg'
 ---
 
 **The short answer:** a citation means an AI model used your page as a source. A recommendation means it told the buyer to consider your product. The first is about your content. The second is about your company — whether the model understands what you sell, who it's for, and why it fits the buyer's situation better than the alternatives.

@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import { AUTHOR_NAME, BLOG_CATEGORIES, BLOG_START_HERE } from '../../consts';
+import { categoryOf, slugOf } from '../../blog';
 
 export const prerender = true;
 
@@ -12,13 +13,13 @@ const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-// Posts grouped by topic, newest first inside each topic.
+// Posts grouped by topic (their folder in src/content/blog/), newest first inside each topic.
 const sections = BLOG_CATEGORIES.map((c) => ({
 	...c,
-	posts: posts.filter((p) => p.data.category === c.slug),
+	posts: posts.filter((p) => categoryOf(p).slug === c.slug),
 })).filter((s) => s.posts.length);
 
-const startHere = BLOG_START_HERE.map((id) => posts.find((p) => p.id === id)).filter(
+const startHere = BLOG_START_HERE.map((id) => posts.find((p) => slugOf(p) === id)).filter(
 	(p): p is (typeof posts)[number] => !!p,
 );
 ---
@@ -55,7 +56,7 @@ const startHere = BLOG_START_HERE.map((id) => posts.find((p) => p.id === id)).fi
 					<ol>
 						{startHere.map((post, i) => (
 							<li>
-								<a href={`/blog/${post.id}/`}>
+								<a href={`/blog/${slugOf(post)}/`}>
 									<span class="start-n">{i + 1}</span>
 									<span class="start-title">{post.data.title}</span>
 								</a>
@@ -82,7 +83,7 @@ const startHere = BLOG_START_HERE.map((id) => posts.find((p) => p.id === id)).fi
 					<ul class="post-list">
 						{s.posts.map((post) => (
 							<li>
-								<a href={`/blog/${post.id}/`}>
+								<a href={`/blog/${slugOf(post)}/`}>
 									<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
 									<h3 class="post-title">{post.data.title}</h3>
 									<p class="post-desc">{post.data.description}</p>

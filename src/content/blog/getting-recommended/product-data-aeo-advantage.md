@@ -2,8 +2,7 @@
 title: "The AEO Advantage Competitors Can't Copy: Your Product Data"
 description: "The most durable way to get cited by AI: publish a number other articles need. How to find that number inside your product and publish it."
 pubDate: 'Oct 1 2026'
-category: 'getting-recommended'
-ogImage: '../../assets/og/product-data-aeo-advantage.jpg'
+ogImage: '../../../assets/og/product-data-aeo-advantage.jpg'
 ---
 
 **The short answer:** AI engines cite content that is specific, attributable and checkable. The most durable version of that is original data — a benchmark, a study or an aggregate from your own product that nobody else can produce. Every other tactic can be copied by a competitor next quarter. A number only you have can't be.

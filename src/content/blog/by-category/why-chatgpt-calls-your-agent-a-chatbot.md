@@ -2,8 +2,7 @@
 title: "Why ChatGPT Still Calls Your AI Agent a Chatbot"
 description: "Your category went from chatbot to agent in 18 months. The sources AI reads didn't. Why you're still filed under the old category, and how to fix it."
 pubDate: 'Oct 6 2026'
-category: 'by-category'
-ogImage: '../../assets/og/why-chatgpt-calls-your-agent-a-chatbot.jpg'
+ogImage: '../../../assets/og/why-chatgpt-calls-your-agent-a-chatbot.jpg'
 ---
 
 **The short answer:** your product changed, your website changed, and roughly forty other pages describing you didn't. Models don't weigh your claim against theirs — they go with the version that has more sources behind it, which is the old one. The fix isn't saying "agent" more often on your own site. It's correcting the record everywhere else, in that order, before you publish anything new.

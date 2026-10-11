@@ -2,8 +2,7 @@
 title: "G2 Reviews Won't Get You Cited by AI. Here's What They Do"
 description: "Review profiles work as an eligibility check, not a citation source. What that means before you spend more on G2 and Capterra."
 pubDate: 'Sep 29 2026'
-category: 'getting-recommended'
-ogImage: '../../assets/og/g2-capterra-ai-recommendations.jpg'
+ogImage: '../../../assets/og/g2-capterra-ai-recommendations.jpg'
 ---
 
 **The short answer:** review profiles get you *considered*, not cited. AI engines appear to check that you exist as a real product in a real category before naming you — and then cite something else entirely. That should change what you expect from the spend, not whether you spend it.

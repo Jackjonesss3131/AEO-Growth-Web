@@ -19,6 +19,7 @@ import {
 	FREE_CHECK_NAME,
 	FREE_CHECK_SCOPE,
 } from '../consts';
+import { categoryOf, slugOf } from '../blog';
 
 // /llms.txt (https://llmstxt.org). Built from the same constants and posts as the site,
 // so it always says the same thing as the title, meta description, schema and pages.
@@ -55,14 +56,14 @@ export const GET: APIRoute = async () => {
 		`- [Positioning Check](${SITE_URL}/positioning-check/): Free tool. See how your homepage described your company over time, and which version AI training data most likely captured.`,
 		'',
 		...BLOG_CATEGORIES.flatMap((c) => {
-			const inTopic = posts.filter((p) => p.data.category === c.slug);
+			const inTopic = posts.filter((p) => categoryOf(p).slug === c.slug);
 			if (!inTopic.length) return [];
 			return [
 				`## Blog: ${c.name}`,
 				'',
 				c.blurb,
 				'',
-				...inTopic.map((p) => `- [${p.data.title}](${SITE_URL}/blog/${p.id}/): ${p.data.description}`),
+				...inTopic.map((p) => `- [${p.data.title}](${SITE_URL}/blog/${slugOf(p)}/): ${p.data.description}`),
 				'',
 			];
 		}),

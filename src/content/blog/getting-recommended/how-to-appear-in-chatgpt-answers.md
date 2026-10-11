@@ -2,8 +2,7 @@
 title: "How to Appear in ChatGPT Answers: 8 Steps, in Order"
 description: "A prioritized checklist for B2B SaaS, starting with the failure that makes everything else pointless: AI crawlers that can't read your pages."
 pubDate: 'Sep 27 2026'
-category: 'getting-recommended'
-ogImage: '../../assets/og/how-to-appear-in-chatgpt-answers.jpg'
+ogImage: '../../../assets/og/how-to-appear-in-chatgpt-answers.jpg'
 ---
 
 **The short answer:** start by confirming AI crawlers can actually read your pages, because most of them don't run JavaScript. Then make sure they're allowed in. Then give them content that answers your buyer's real questions with specifics they can quote, and make sure the rest of the web describes your company the same way you do.

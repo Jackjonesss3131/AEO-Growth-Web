@@ -2,8 +2,7 @@
 title: "AEO vs SEO: Ranking #1 No Longer Means You Get Chosen"
 description: "SEO gets you ranked. AEO decides whether an AI model picks you and how it describes you. What changed, what didn't, and why you still need both."
 pubDate: 'Sep 21 2026'
-category: 'basics'
-ogImage: '../../assets/og/aeo-vs-seo.jpg'
+ogImage: '../../../assets/og/aeo-vs-seo.jpg'
 ---
 
 **The short answer:** SEO optimizes for being ranked on a page of links. AEO — answer engine optimization — optimizes for being selected, cited, and described correctly inside an answer an AI writes.

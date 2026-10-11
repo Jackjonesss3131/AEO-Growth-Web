@@ -25,12 +25,13 @@ function frontmatterDate(frontmatter, key) {
 
 /** @type {Map<string, Date>} */
 const postDates = new Map();
-for (const file of readdirSync(BLOG_DIR)) {
-	if (!/\.(md|mdx)$/.test(file)) continue;
+// Posts live in topic subfolders (src/content/blog/<category>/<slug>.md), so read recursively.
+for (const file of /** @type {string[]} */ (readdirSync(BLOG_DIR, { recursive: true }))) {
+	if (!/\.(md|mdx)$/.test(file) || /(^|\/)(README\.md|_[^/]*)$/.test(file)) continue;
 	const text = readFileSync(new URL(file, BLOG_DIR), 'utf8');
 	const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
 	const date = frontmatterDate(fm, 'updatedDate') ?? frontmatterDate(fm, 'pubDate');
-	if (date) postDates.set(file.replace(/\.(md|mdx)$/, ''), date);
+	if (date) postDates.set(file.replace(/^.*\//, '').replace(/\.(md|mdx)$/, ''), date);
 }
 const newestPost = [...postDates.values()].sort((a, b) => b.getTime() - a.getTime())[0];
 const buildDate = new Date();

@@ -2,8 +2,7 @@
 title: "What to Ask an AEO Agency Before You Sign: A Vendor Checklist"
 description: "The questions to ask any AEO vendor, the deliverables a proposal should name, and what a realistic first 90 days looks like."
 pubDate: 'Oct 2 2026'
-category: 'hiring'
-ogImage: '../../assets/og/what-to-ask-an-aeo-agency.jpg'
+ogImage: '../../../assets/og/what-to-ask-an-aeo-agency.jpg'
 ---
 
 **The short answer:** ask for the prompt set, the engine list and a sample report before you sign anything. If a vendor can't show you what a month of work produces, the scope isn't defined yet.

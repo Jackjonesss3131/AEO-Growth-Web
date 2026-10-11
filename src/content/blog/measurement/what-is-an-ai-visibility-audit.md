@@ -2,8 +2,7 @@
 title: "What Is an AI Visibility Audit? (Most Just Count Mentions)"
 description: "Most AI visibility audits just count mentions. That's monitoring, not diagnosis. What a real audit tells you, and how to run a basic one yourself."
 pubDate: 'Sep 25 2026'
-category: 'measurement'
-ogImage: '../../assets/og/what-is-an-ai-visibility-audit.jpg'
+ogImage: '../../../assets/og/what-is-an-ai-visibility-audit.jpg'
 ---
 
 **The short answer:** an AI visibility audit tells you what AI engines say about your company when your buyers ask about your category — and why. Most audits stop at the first half. They report how often you appear and how you compare to competitors, which is useful monitoring. It isn't a diagnosis, and it rarely tells you what to change.

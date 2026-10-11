@@ -5,13 +5,13 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { SITE_URL, BLOG_CATEGORIES } from '../consts';
+import { SITE_URL } from '../consts';
 import { DEFAULT_OG_IMAGE } from '../og-image';
 
-type Props = CollectionEntry<'blog'>['data'];
+// `topic` comes from the post's folder (see src/blog.ts), passed in by pages/blog/[...slug].astro.
+type Props = CollectionEntry<'blog'>['data'] & { topic?: { slug: string; name: string } };
 
-const { title, description, pubDate, updatedDate, heroImage, ogImage, category } = Astro.props;
-const topic = BLOG_CATEGORIES.find((c) => c.slug === category);
+const { title, description, pubDate, updatedDate, heroImage, ogImage, topic } = Astro.props;
 
 // Social image: ogImage from frontmatter → heroImage → site default.
 const socialImage = ogImage ?? heroImage ?? DEFAULT_OG_IMAGE;
