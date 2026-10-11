@@ -20,8 +20,10 @@ jobs:
           curl -s -o out/site-crawler.json -w '%{http_code} %{time_total}s\n' "https://www.aeogrowth.co/api/check-crawlers?url=stripe.com&cb=$RANDOM" > out/site.log
           curl -s -o out/site-positioning.json -w '%{http_code} %{time_total}s\n' "https://www.aeogrowth.co/api/positioning?domain=stripe.com&cb=$RANDOM" >> out/site.log
           printf 'domain,company_name\nstripe.com,Stripe\nhttps://www.notion.so/,Notion\nhubspot.com,HubSpot\nlinear.app,Linear\nwww.intercom.com,Intercom\n' > domains-test.csv
+          if grep -q site-only trigger.txt; then sleep 0; else
           { time node scripts/batch-audit.js --input domains-test.csv --output out/results ; } > out/run.log 2>&1 || true
           mkdir -p out/first && cp out/results.csv out/first/results.csv
           { time node scripts/batch-audit.js --input domains-test.csv --output out/results --resume --retry-failed ; } > out/run2.log 2>&1 || true
+          fi # SITE_ONLY
           git config user.name probe; git config user.email probe@users.noreply.github.com
           git add -f out && git commit -m "batch test result" && git push
