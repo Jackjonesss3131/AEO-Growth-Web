@@ -3,9 +3,7 @@
 // (scripts/batch-audit.js). Change the logic here and both pick it up.
 // Plain TypeScript with erasable types only, so Node can run it directly (type stripping).
 
-// `timeoutMs` is a hint for wrappers that queue requests (the batch script): it is the time the
-// request itself may take, counted from when it actually starts. Plain fetch ignores it.
-export type FetchLike = (input: string, init?: RequestInit & { timeoutMs?: number }) => Promise<Response>;
+export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
 export interface PositioningCheckOptions {
   /** fetch implementation (the batch script passes one with retries and logging). */
   fetch?: FetchLike;
@@ -80,7 +78,6 @@ async function req(b: Budget, url: string, ua = UA_BROWSER, ms = 10000, retries 
         headers: { 'User-Agent': ua, Accept: '*/*' },
         redirect: 'follow',
         signal: controller.signal,
-        timeoutMs: timeout,
       });
       const text = await readCapped(res);
       clearTimeout(timer);

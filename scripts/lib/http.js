@@ -5,15 +5,13 @@
 const RETRY_STATUS = new Set([429, 503]);
 const MAX_ATTEMPTS = 3;
 
-// Services that rate-limit hard. Requests to them are queued per host so a batch with
-// several domains in flight doesn't hammer them all at once.
+// Hosts that answer 503 "slow down" when several domains query them at once. Requests to them
+// wait for a free slot. The wait counts against each request's own time limit, so a check never
+// overruns its time budget because of the queue (it just gets fewer answers from that host).
+// Wayback is not queued: queuing it made whole checks time out in testing.
 const HOST_LIMITS = {
-  'web.archive.org': 4,
-  'archive.org': 3,
-  'index.commoncrawl.org': 2, // answers 503 "slow down" quickly when pushed
-  'query.wikidata.org': 2,
+  'index.commoncrawl.org': 2,
 };
-const DEFAULT_REQUEST_MS = 20000;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -55,17 +53,12 @@ export function makeBatchFetch({ onError, domain, tool }) {
     let host = '';
     try { host = new URL(url).hostname; } catch { /* invalid URL: let fetch throw */ }
     const limited = limiterFor(host);
-    const queued = host in HOST_LIMITS;
-    // For queued hosts the caller's timeout would keep running while the request waits for
-    // its turn, so it is replaced by our own timeout that starts when the request is sent
-    // (init.timeoutMs, passed by the check modules). Other hosts keep the caller's signal.
-    const signalFor = () => (queued ? AbortSignal.timeout(init.timeoutMs ?? DEFAULT_REQUEST_MS) : init.signal);
-    let signal = init.signal;
+    const signal = init.signal;
 
     for (let attempt = 1; ; attempt++) {
       const started = Date.now();
       try {
-        const res = await limited(() => { signal = signalFor(); return fetch(url, { ...init, signal }); });
+        const res = await limited(() => fetch(url, init));
         if (RETRY_STATUS.has(res.status) && attempt < MAX_ATTEMPTS && !signal?.aborted) {
           const wait = Math.min(retryAfterMs(res) ?? 1000 * 2 ** (attempt - 1), 10000) + Math.random() * 300;
           onError({ domain, tool, kind: 'retry', url, status: res.status, attempt, waitMs: Math.round(wait) });

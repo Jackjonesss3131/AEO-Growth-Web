@@ -306,3 +306,5 @@ process.on('SIGINT', () => {
 await Promise.all(Array.from({ length: Math.min(concurrency, total) }, worker));
 console.log(`\nFinished ${done} domains in ${fmt(Date.now() - runStart)} (${failed} failed, average ${fmt((Date.now() - runStart) / done)} per domain at concurrency ${concurrency}).`);
 console.log(`→ ${files.csv}\n→ ${files.json}${failed ? `\n→ errors: ${files.errors} (re-run failed ones with --resume --retry-failed)` : ''}`);
+// Exit now: requests abandoned by a timed-out check may still be open and would keep Node alive.
+process.exit(0);
