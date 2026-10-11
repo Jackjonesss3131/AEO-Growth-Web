@@ -1,0 +1,6 @@
+﻿domain,company_name,crawler_status,crawler_detail,current_description,historical_descriptions,latest_crawl_date,crawl_matches_current,mismatch_severity,error
+stripe.com,Stripe,ok,,,,,cant_tell,cant_tell,positioning: TimeoutError: positioning check for stripe.com timed out after 60s
+notion.so,Notion,blocked,"robots.txt blocks Amazonbot (Disallow: /); server refuses requests sent with the user agent of Googlebot (HTTP 403, but served 122 words vs 424 to a browser), Bingbot (HTTP 403, but served 122 words vs 424 to a browser) — sites that verify real bots by IP may still let the real crawler in",,,,cant_tell,cant_tell,positioning: TimeoutError: positioning check for notion.so timed out after 60s
+hubspot.com,HubSpot,ok,,,,,cant_tell,cant_tell,positioning: TimeoutError: positioning check for hubspot.com timed out after 60s
+linear.app,Linear,ok,,,,,cant_tell,cant_tell,positioning: TimeoutError: positioning check for linear.app timed out after 60s
+intercom.com,Intercom,ok,,,,,cant_tell,cant_tell,positioning: TimeoutError: positioning check for intercom.com timed out after 60s
