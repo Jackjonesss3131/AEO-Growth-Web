@@ -1,5 +1,5 @@
 ---
-title: "AEO vs GEO: Same Thing or Different Disciplines?"
+title: "AEO vs GEO: Same Thing? What the Research Actually Shows"
 description: "AEO and GEO get used interchangeably, but they came from different places and ask different questions. Where each term came from, what the research actually shows, and which one a B2B SaaS team needs."
 pubDate: 'Sep 22 2026'
 ---

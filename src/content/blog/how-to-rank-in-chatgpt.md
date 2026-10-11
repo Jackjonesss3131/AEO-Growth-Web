@@ -1,5 +1,5 @@
 ---
-title: 'How to Rank in ChatGPT (And Why "Rank" Is the Wrong Word)'
+title: "How to Rank in ChatGPT When There's No Position One"
 description: "There's no position one in ChatGPT. Here's how it decides which companies appear in its answers, what SEO still does for you, and what to measure instead of rankings."
 pubDate: 'Sep 23 2026'
 ---

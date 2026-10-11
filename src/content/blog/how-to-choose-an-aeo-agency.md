@@ -1,5 +1,5 @@
 ---
-title: "How to Choose an AEO Agency for B2B SaaS (Without Wasting Six Months)"
+title: "How to Choose an AEO Agency: Real 2026 Prices and Red Flags"
 description: "Real 2026 price bands for AEO and GEO work, the questions to ask before signing, the red flags that predict a wasted retainer, and when a solo specialist beats an agency."
 pubDate: 'Sep 26 2026'
 ---

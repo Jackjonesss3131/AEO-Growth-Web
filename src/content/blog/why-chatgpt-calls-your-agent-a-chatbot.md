@@ -1,5 +1,5 @@
 ---
-title: "Why ChatGPT Recommends Your Competitor's AI Agent (And Still Calls Yours a Chatbot)"
+title: "Why ChatGPT Still Calls Your AI Agent a Chatbot"
 description: "Your category renamed itself from chatbot to agent in about eighteen months. The sources the models read didn't follow. Why AI agent companies get filed under the category they left, what it costs on the shortlist, and the order to fix it in."
 pubDate: 'Oct 6 2026'
 ---

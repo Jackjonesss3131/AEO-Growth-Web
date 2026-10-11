@@ -1,5 +1,5 @@
 ---
-title: "How to Appear in ChatGPT Answers: A Prioritized Checklist for B2B SaaS"
+title: "How to Appear in ChatGPT Answers: 8 Steps, in Order"
 description: "A prioritized checklist for B2B SaaS: what actually determines whether AI engines can read, use and recommend your site — starting with the technical failure that makes everything else pointless."
 pubDate: 'Sep 27 2026'
 ---

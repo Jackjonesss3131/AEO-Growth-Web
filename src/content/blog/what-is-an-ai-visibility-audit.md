@@ -1,5 +1,5 @@
 ---
-title: "What Is an AI Visibility Audit (And Why Most Miss the Point)"
+title: "What Is an AI Visibility Audit? (Most Just Count Mentions)"
 description: "Most AI visibility audits report how often you're mentioned. That's a monitoring metric, not a diagnosis. What a real audit should tell you, what the tools measure, and how to run a basic one yourself."
 pubDate: 'Sep 25 2026'
 ---

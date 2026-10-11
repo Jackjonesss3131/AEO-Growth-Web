@@ -1,5 +1,5 @@
 ---
-title: "AEO vs SEO: What Actually Changed"
+title: "AEO vs SEO: Ranking #1 No Longer Means You Get Chosen"
 description: "SEO measures whether you rank. AEO measures whether an AI model chooses you, and what it says about you when it does. What changed, what didn't, and why you need both."
 pubDate: 'Sep 21 2026'
 ---

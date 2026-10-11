@@ -1,5 +1,5 @@
 ---
-title: "Do G2 and Capterra Reviews Get You Recommended by AI?"
+title: "G2 Reviews Won't Get You Cited by AI. Here's What They Do"
 description: "Review profiles work as an eligibility check, not a citation source. What that means for a B2B SaaS deciding how much to spend on review platforms."
 pubDate: 'Sep 29 2026'
 ---

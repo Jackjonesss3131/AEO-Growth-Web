@@ -1,5 +1,5 @@
 ---
-title: "What Sources Does AI Cite — And How Do You Get Into Them?"
+title: "What Sources Does AI Cite About You? How to Find Them"
 description: "How to find the pages actually shaping the AI answers about your company, and what to do about the ones you don't control."
 pubDate: 'Sep 30 2026'
 ---

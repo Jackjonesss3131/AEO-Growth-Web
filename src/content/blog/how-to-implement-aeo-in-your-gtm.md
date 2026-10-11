@@ -1,5 +1,5 @@
 ---
-title: "How to Implement AEO in Your GTM"
+title: "How to Implement AEO in Your GTM (Start at BOFU, Not TOFU)"
 description: "Implementing AEO across your whole funnel is unpredictable. Start at BOFU: take your product, define who uses it and in what case, and turn that into your buyer's decision questions. With the 2026 data on why the shortlist now forms inside a chat window."
 pubDate: 'Oct 5 2026'
 ---

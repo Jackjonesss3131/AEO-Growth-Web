@@ -1,5 +1,5 @@
 ---
-title: "How to Track AI Traffic in GA4 (And How to Report It Without Overselling It)"
+title: "How to Track AI Traffic in GA4 (Much of It Arrives Unlabeled)"
 description: "AI referrals are around 1% of sessions, and between a third and two-thirds of them never arrive labeled. The GA4 setup that captures what's capturable, why the conversion stat everyone quotes comes from a single client, and the five lines worth putting on a monthly report."
 pubDate: 'Oct 7 2026'
 ---

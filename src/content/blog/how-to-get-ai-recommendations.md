@@ -1,5 +1,5 @@
 ---
-title: "How to Get AI Recommendations (Not Just Citations)"
+title: "How to Get AI Recommendations: Why Citations Aren't Enough"
 description: "Being cited by ChatGPT, Perplexity or Gemini doesn't mean you're being recommended. What separates a mention, a citation and a recommendation, and what a B2B SaaS company needs to make the shortlist."
 pubDate: 'Sep 23 2026'
 ---

@@ -1,5 +1,5 @@
 ---
-title: "Should We Do AEO In-House or Hire Someone?"
+title: "AEO In-House or Outsourced? The Half Your Team Won't Finish"
 description: "The real calculation for a B2B SaaS in 2026: which half of the work your team can do, which half never gets finished internally, what each path costs with published figures, and three signals that in-house won't get there."
 pubDate: 'Oct 6 2026'
 ---

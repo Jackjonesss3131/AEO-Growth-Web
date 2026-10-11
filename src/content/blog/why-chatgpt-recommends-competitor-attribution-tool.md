@@ -1,5 +1,5 @@
 ---
-title: "Why ChatGPT Recommends Your Competitor's Attribution Tool (And Not Yours)"
+title: "Why ChatGPT Recommends Your Competitor's Attribution Tool"
 description: "Marketing attribution and analytics buyers now shortlist vendors inside AI answers. Why the models pick the tools they pick, who wrote the buyer's guides they learn from, and what an attribution SaaS can fix first."
 pubDate: 'Sep 24 2026'
 ---

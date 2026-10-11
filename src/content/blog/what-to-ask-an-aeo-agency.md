@@ -1,5 +1,5 @@
 ---
-title: "What to Ask an AEO Agency Before You Sign"
+title: "What to Ask an AEO Agency Before You Sign: A Vendor Checklist"
 description: "The questions I'd ask any vendor selling AEO to a B2B SaaS, the deliverables a proposal should name, and what a realistic first 90 days looks like."
 pubDate: 'Oct 2 2026'
 ---

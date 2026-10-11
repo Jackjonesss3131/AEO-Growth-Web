@@ -1,5 +1,5 @@
 ---
-title: "Being Cited Isn't Being Understood"
+title: "Cited by AI, Described as the Wrong Company"
 description: "Most AEO audits stop at whether your brand appeared. The interesting failures happen one layer deeper — when AI cites you accurately and still describes you as the wrong company."
 pubDate: 'Sep 20 2026'
 ---
