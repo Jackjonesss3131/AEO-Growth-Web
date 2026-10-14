@@ -40,6 +40,8 @@ Nobody publishes prices, so here's what the market reports. These ranges come fr
 | Experienced freelancer | $125–$250/hr, or $3,500–$6,000/mo | [Fuel Online](https://fuelonline.com/ai-seo-geo/ai-seo-pricing-aeo-geo-cost-2026/) |
 | GEO added to an existing SEO retainer | +20–30% of current monthly fee | [Frase, via Young Company](https://youngcompany.com/knowledge-base/how-much-do-marketing-agencies-charge-for-aio-geo-and-seo-in-2026/) |
 
+**These are market rates, not my prices.** Mine are {AUDIT_PRICE} for the audit and {MONTHLY_PRICE} a month, published on [my services page](/services).
+
 Two things stand out.
 
 **There's a floor, and it's widely agreed on.** [One agency writes](https://theremarkableagency.com/blog/aeo-geo-agency-cost) that below roughly $1,500 a month you're almost always buying rebranded SEO. [Another says](https://houseofmvps.com/ai-search-optimization-cost) retainers under about $2,000 are common but often turn out to be traditional SEO content relabelled as AI search work. Different companies, same warning.
