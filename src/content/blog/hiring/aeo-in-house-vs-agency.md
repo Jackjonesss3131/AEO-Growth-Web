@@ -63,7 +63,7 @@ You can verify this signal yourself before reading further. Models learn from sn
 
 | Engagement | Typical range |
 | --- | --- |
-| One-time audit | $1,000–$5,000 |
+| One-time audit | $399–$5,000 |
 | Monthly measurement, standalone | from $500 |
 | Growth-stage retainer | $3,000–$8,000/mo |
 | Mid-market retainer | $2,000–$10,000/mo |

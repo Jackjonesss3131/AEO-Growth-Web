@@ -56,7 +56,7 @@ A lot of AEO retainers are productized packages — a scan, a report, a few fixe
 
 ## Start with an audit
 
-The lowest-risk way in is a paid audit rather than a retainer. Standalone audits in this market generally run between $1,000 and $5,000.
+The lowest-risk way in is a paid audit rather than a retainer. Standalone audits in this market run from about $399 for fixed-price specialist audits to $5,000 at agencies — the [full price breakdown is here](/blog/how-to-choose-an-aeo-agency/).
 
 A good one should leave you able to do one of three things: hire them, hand the findings to your own team, or walk away knowing what's wrong. Ask whether the deliverable is yours to keep and to share with another vendor. If the audit only makes sense as a lead-in to their retainer, it wasn't an audit.
 
@@ -88,7 +88,7 @@ Full scope is on the [services page](/services/). Market price bands to benchmar
 A per-engine report of your prompt set showing whether you were recommended, mentioned or absent, the exact descriptions used, the sources cited, competitors that appeared, and a specific fix tied to each finding.
 
 **How much does it cost?**
-Most B2B engagements run $2,000–$10,000 per month, with standalone audits between $1,000 and $5,000.
+Most B2B engagements run $2,000–$10,000 per month, with standalone audits between $399 and $5,000.
 
 **Should I start with a retainer?**
 Usually not. An audit costs less, tells you what's wrong, and leaves you free to decide who fixes it.

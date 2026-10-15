@@ -21,10 +21,44 @@ const includes = [
 	"25 buyer questions, run across ChatGPT, Perplexity, Gemini and Google's AI results",
 	'Compared against 3 named competitors',
 	'Every cited source mapped, with the exact URLs',
+	'A complete audience map: where your buyers ask, which engine answers, and which sources decide it',
 	'Crawler access and entity consistency checked',
 	'A prioritized fix list, ranked by impact',
 	'A 30-minute walkthrough call',
 ];
+
+// Illustrative audience map. Fictional company, fictional numbers — never present as a client result.
+const mapIntents = [
+	{ label: '"Best … for …"', n: 9 },
+	{ label: '"X vs Y"', n: 7 },
+	{ label: '"Alternatives to …"', n: 5 },
+	{ label: '"Does it integrate with …"', n: 4 },
+];
+
+const mapEngines = [
+	{ name: 'ChatGPT', appeared: 6, recommended: 2 },
+	{ name: 'Perplexity', appeared: 11, recommended: 5 },
+	{ name: 'Gemini', appeared: 4, recommended: 1 },
+	{ name: "Google's AI results", appeared: 8, recommended: 3 },
+];
+
+// status: 'you' = you are cited and described correctly, 'wrong' = you are cited but misdescribed,
+// 'them' = only competitors are cited, 'none' = nobody owns it yet.
+const mapSources = [
+	{ name: 'Review platforms', share: 31, status: 'wrong', note: 'Listed, but under a category you left in 2024' },
+	{ name: 'Reddit & Slack communities', share: 22, status: 'them', note: 'Competitor A named in 14 threads, you in 0' },
+	{ name: 'Comparison articles', share: 19, status: 'them', note: '6 of 8 written by Competitor B' },
+	{ name: 'Your own site', share: 12, status: 'you', note: 'Cited for pricing, never for use cases' },
+	{ name: 'YouTube walkthroughs', share: 9, status: 'none', note: 'No one owns this yet — open ground' },
+	{ name: 'Integration marketplaces', share: 7, status: 'wrong', note: 'Two listings, two different descriptions' },
+];
+
+const statusLabel = {
+	you: 'You, described correctly',
+	wrong: 'You, but misdescribed',
+	them: 'Competitors only',
+	none: 'Nobody yet',
+} as const;
 
 const schema = [
 	{
@@ -135,11 +169,111 @@ const schema = [
 					<a href="/positioning-check/" class="btn-ghost">Check your positioning first</a>
 				</div>
 
+			</article>
+
+			<section class="amap" aria-labelledby="amap-title">
+				<div class="amap-head">
+					<p class="eyebrow">What the audience map looks like</p>
+					<h2 id="amap-title">Where your buyers are, and who they hear about</h2>
+					<p>
+						The centrepiece of the audit. One diagram that follows your buyer from the question they
+						type, to the engine that answers, to the sources that engine trusted — and marks, at every
+						step, whether you were there.
+					</p>
+					<p class="amap-disclaimer">
+						Illustrative example. The company, competitors and numbers below are fictional.
+					</p>
+				</div>
+
+				<figure class="amap-fig">
+					<div class="amap-legend" aria-label="Legend">
+						{Object.entries(statusLabel).map(([k, v]) => (
+							<span class="amap-key"><i class={`dot dot-${k}`}></i>{v}</span>
+						))}
+					</div>
+
+					<div class="amap-tier">
+						<p class="amap-step"><span>1</span> Where the question starts</p>
+						<div class="amap-intents">
+							{mapIntents.map((q) => (
+								<div class="amap-intent">
+									<p class="amap-intent-n">{q.n}</p>
+									<p class="amap-intent-l">{q.label}</p>
+								</div>
+							))}
+						</div>
+						<p class="amap-caption">25 buyer questions, grouped by intent.</p>
+					</div>
+
+					<div class="amap-flow" aria-hidden="true"></div>
+
+					<div class="amap-tier">
+						<p class="amap-step"><span>2</span> Which engine answers</p>
+						<div class="amap-engines">
+							{mapEngines.map((e) => (
+								<div class="amap-engine">
+									<p class="amap-engine-name">{e.name}</p>
+									<div class="amap-bar" role="img" aria-label={`Appeared in ${e.appeared} of 25 answers, recommended in ${e.recommended}`}>
+										<span class="amap-bar-seen" style={`width:${(e.appeared / 25) * 100}%`}></span>
+										<span class="amap-bar-rec" style={`width:${(e.recommended / 25) * 100}%`}></span>
+									</div>
+									<p class="amap-engine-stat">
+										<strong>{e.appeared}/25</strong> appeared · <strong>{e.recommended}</strong> recommended
+									</p>
+								</div>
+							))}
+						</div>
+						<p class="amap-caption">
+							<i class="sw sw-seen"></i> mentioned &nbsp; <i class="sw sw-rec"></i> actually recommended
+						</p>
+					</div>
+
+					<div class="amap-flow" aria-hidden="true"></div>
+
+					<div class="amap-tier">
+						<p class="amap-step"><span>3</span> Where the engine got the answer</p>
+						<ul class="amap-sources">
+							{mapSources.map((s) => (
+								<li class={`amap-source amap-${s.status}`}>
+									<div class="amap-source-top">
+										<p class="amap-source-name"><i class={`dot dot-${s.status}`}></i>{s.name}</p>
+										<p class="amap-source-share">{s.share}%<span> of citations</span></p>
+									</div>
+									<div class="amap-share"><span style={`width:${s.share * 3}%`}></span></div>
+									<p class="amap-source-note">{s.note}</p>
+								</li>
+							))}
+						</ul>
+						<p class="amap-caption">Every source behind these shares comes with its exact URL in the audit.</p>
+					</div>
+
+					<div class="amap-flow" aria-hidden="true"></div>
+
+					<div class="amap-tier amap-verdict">
+						<p class="amap-step"><span>4</span> What the map says to fix first</p>
+						<ol>
+							<li><strong>Review platforms.</strong> The biggest single source, and it files you in the wrong category. Correcting it changes every engine at once.</li>
+							<li><strong>Communities.</strong> 22% of citations, zero presence. This is where Competitor A is winning, not on its own site.</li>
+							<li><strong>YouTube.</strong> Nobody owns it yet. The cheapest ground to take before someone else does.</li>
+						</ol>
+					</div>
+				</figure>
+			</section>
+
+			<article class="prose prose-cont">
 				<h2>What you get back</h2>
 
 				<p>
 					A document short enough to read in one sitting, plus the call to walk through it. Not a
 					visibility score — the specific things that decide whether a buyer hears your name.
+				</p>
+
+				<h3>The audience map</h3>
+				<p>
+					The diagram above, built on your domain: which questions your buyers ask, which engine each
+					one goes to, which sources those engines trust, and where you are present, absent or
+					misdescribed along the way. It is the one page that shows where your audience actually gets
+					its answer — and therefore where the work goes.
 				</p>
 
 				<h3>The 25 questions, and what each engine answered</h3>
@@ -254,5 +388,90 @@ const schema = [
 		</main>
 
 		<Footer />
+
+		<style>
+			.prose-cont { padding-top: 1rem; }
+
+			.amap {
+				--you: #1f5f4f;
+				--wrong: #b7791f;
+				--them: #b4463c;
+				--none: #aeb4bd;
+				margin: 1.5rem 0 1rem;
+				padding: 3rem 2.25rem;
+				background: var(--sand);
+				border: 1px solid var(--line);
+				border-radius: 18px;
+			}
+			.amap-head { max-width: var(--read); margin-bottom: 2rem; }
+			.amap-head h2 { margin: .4rem 0 .8rem; font-size: 1.6rem; letter-spacing: -.02em; color: var(--ink); line-height: 1.2; }
+			.amap-head p { margin: 0 0 .8rem; line-height: 1.65; }
+			.amap-disclaimer { font-size: .85rem; color: var(--muted); font-style: italic; }
+
+			.amap-fig { margin: 0; }
+
+			.amap-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin-bottom: 1.5rem; font-size: .85rem; color: var(--muted); }
+			.amap-key { display: inline-flex; align-items: center; gap: .45rem; }
+			.dot { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; flex: none; }
+			.dot-you { background: var(--you); }
+			.dot-wrong { background: var(--wrong); }
+			.dot-them { background: var(--them); }
+			.dot-none { background: transparent; border: 2px dashed var(--none); }
+
+			.amap-tier { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 1.4rem 1.5rem; }
+			.amap-step { margin: 0 0 1rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); display: flex; align-items: center; gap: .6rem; font-weight: 600; }
+			.amap-step span { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: .75rem; letter-spacing: 0; }
+			.amap-caption { margin: .9rem 0 0; font-size: .82rem; color: var(--muted); }
+
+			.amap-flow { width: 2px; height: 1.6rem; margin: 0 auto; background: repeating-linear-gradient(to bottom, var(--line-strong) 0 4px, transparent 4px 8px); position: relative; }
+			.amap-flow::after { content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--line-strong); }
+
+			.amap-intents { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+			.amap-intent { border: 1px solid var(--line); border-radius: 10px; padding: .85rem .9rem; }
+			.amap-intent-n { margin: 0; font-size: 1.6rem; font-weight: 700; color: var(--ink); line-height: 1; }
+			.amap-intent-l { margin: .4rem 0 0; font-size: .85rem; font-family: var(--mono); color: var(--body); }
+
+			.amap-engines { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+			.amap-engine { border: 1px solid var(--line); border-radius: 10px; padding: .85rem .9rem; }
+			.amap-engine-name { margin: 0 0 .6rem; font-weight: 600; color: var(--ink); font-size: .95rem; }
+			.amap-engine-stat { margin: .55rem 0 0; font-size: .8rem; color: var(--muted); }
+			.amap-engine-stat strong { color: var(--ink); }
+			.amap-bar { position: relative; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+			.amap-bar span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+			.amap-bar-seen { background: #a9c6bd; }
+			.amap-bar-rec { background: var(--you); }
+			.sw { display: inline-block; width: .8rem; height: .5rem; border-radius: 2px; vertical-align: middle; margin-right: .25rem; }
+			.sw-seen { background: #a9c6bd; }
+			.sw-rec { background: var(--you); }
+
+			.amap-sources { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+			.amap-source { border: 1px solid var(--line); border-left: 4px solid var(--none); border-radius: 10px; padding: .85rem 1rem; }
+			.amap-you { border-left-color: var(--you); }
+			.amap-wrong { border-left-color: var(--wrong); }
+			.amap-them { border-left-color: var(--them); }
+			.amap-none { border-left-style: dashed; }
+			.amap-source-top { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; }
+			.amap-source-name { margin: 0; font-weight: 600; color: var(--ink); font-size: .95rem; display: flex; align-items: center; gap: .5rem; }
+			.amap-source-share { margin: 0; font-weight: 700; color: var(--ink); white-space: nowrap; }
+			.amap-source-share span { font-weight: 400; font-size: .78rem; color: var(--muted); }
+			.amap-share { height: 6px; background: var(--line); border-radius: 3px; margin: .55rem 0; overflow: hidden; }
+			.amap-share span { display: block; height: 100%; background: var(--ink); opacity: .55; border-radius: 3px; }
+			.amap-source-note { margin: 0; font-size: .85rem; color: var(--body); line-height: 1.5; }
+
+			.amap-verdict { border-color: var(--accent); background: var(--accent-soft); }
+			.amap-verdict ol { margin: 0; padding-left: 1.2rem; }
+			.amap-verdict li { margin-bottom: .55rem; line-height: 1.6; font-size: .95rem; }
+			.amap-verdict li:last-child { margin-bottom: 0; }
+
+			@media (max-width: 860px) {
+				.amap-intents, .amap-engines { grid-template-columns: repeat(2, 1fr); }
+			}
+			@media (max-width: 640px) {
+				.amap { padding: 2rem 1rem; border-radius: 14px; margin-left: -.5rem; margin-right: -.5rem; }
+				.amap-head h2 { font-size: 1.3rem; }
+				.amap-tier { padding: 1.1rem 1rem; }
+				.amap-sources { grid-template-columns: 1fr; }
+			}
+		</style>
 	</body>
 </html>
