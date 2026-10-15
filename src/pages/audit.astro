@@ -1,0 +1,258 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import {
+	CALENDLY_URL,
+	SITE_URL,
+	AUDIT_PRICE,
+	AUDIT_PRICE_VALUE,
+	AUDIT_TITLE,
+	AUDIT_DESCRIPTION,
+	MONTHLY_PRICE,
+	FREE_CHECK_NAME,
+	FREE_CHECK_SCOPE,
+} from '../consts';
+
+export const prerender = true;
+
+// What the buyer gets. Single source of truth for the page body and the Offer schema.
+const includes = [
+	"25 buyer questions, run across ChatGPT, Perplexity, Gemini and Google's AI results",
+	'Compared against 3 named competitors',
+	'Every cited source mapped, with the exact URLs',
+	'Crawler access and entity consistency checked',
+	'A prioritized fix list, ranked by impact',
+	'A 30-minute walkthrough call',
+];
+
+const schema = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Service',
+		'@id': `${SITE_URL}/audit#service`,
+		name: 'AEO audit for B2B SaaS',
+		serviceType: 'Answer engine optimization (AEO) audit',
+		description: AUDIT_DESCRIPTION,
+		url: `${SITE_URL}/audit`,
+		provider: { '@id': `${SITE_URL}/#business` },
+		areaServed: 'Worldwide',
+		audience: { '@type': 'BusinessAudience', name: 'B2B SaaS companies' },
+		offers: {
+			'@type': 'Offer',
+			name: 'The audit',
+			description: includes.join('. ') + '.',
+			price: AUDIT_PRICE_VALUE,
+			priceCurrency: 'USD',
+			url: `${SITE_URL}/audit`,
+			availability: 'https://schema.org/LimitedAvailability',
+		},
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		'@id': `${SITE_URL}/audit#faq`,
+		mainEntity: [
+			{
+				'@type': 'Question',
+				name: 'How much does the AEO audit cost?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: `${AUDIT_PRICE}, one time. It is credited in full toward your first month if you continue with ongoing work at ${MONTHLY_PRICE} a month.`,
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'How long does the audit take?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: 'Five business days from the point I have your domain and what you sell.',
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'Do I keep the findings if I do not hire you?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: 'Yes. The deliverable is yours either way, including the right to act on it yourself or hand it to another vendor.',
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'What do you need from me?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: 'Your domain, what you sell, and who you sell it to. No access, no onboarding form.',
+				},
+			},
+		],
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={AUDIT_TITLE} description={AUDIT_DESCRIPTION} schema={schema} />
+	</head>
+	<body>
+		<Header />
+
+		<main>
+			<article class="prose">
+				<p class="eyebrow">The audit</p>
+				<h1>AEO audit for B2B SaaS — {AUDIT_PRICE}</h1>
+
+				<p class="lead">
+					One fixed-price diagnosis of what ChatGPT, Perplexity, Gemini and Google's AI results say
+					about your company, who they recommend instead, and where every one of those answers came
+					from.
+				</p>
+
+				<p>
+					Most companies in this category start by buying a monitoring dashboard or a retainer. Both
+					assume you already know what is broken. This is the step before that: it tells you which of
+					the four failure layers is actually costing you the answer, so whatever you do next is
+					scoped from findings instead of guesses.
+				</p>
+
+				<h2>The audit — {AUDIT_PRICE}, one time</h2>
+
+				<ul>
+					{includes.map((i) => <li>{i}</li>)}
+				</ul>
+
+				<p>
+					Delivered in five business days. Credited in full toward your first month if you continue.
+				</p>
+
+				<p>
+					I run five a month. Each one is manual work on a real domain, so that's the honest limit.
+				</p>
+
+				<div class="prose-cta">
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book the audit</a>
+					<a href="/positioning-check/" class="btn-ghost">Check your positioning first</a>
+				</div>
+
+				<h2>What you get back</h2>
+
+				<p>
+					A document short enough to read in one sitting, plus the call to walk through it. Not a
+					visibility score — the specific things that decide whether a buyer hears your name.
+				</p>
+
+				<h3>The 25 questions, and what each engine answered</h3>
+				<p>
+					Your buyers' real decision questions, with their constraints attached, not generic category
+					prompts. Recorded per engine, because the engines disagree with each other far more often
+					than a single blended number lets on.
+				</p>
+
+				<h3>Who appeared in your place</h3>
+				<p>
+					Measured against 3 competitors you name. Often the companies winning those answers are not
+					the ones on your battlecards — that gap is usually the most useful page of the document.
+				</p>
+
+				<h3>Every cited source, with the exact URLs</h3>
+				<p>
+					The pages the engines actually drew from, including the third-party profiles, directories
+					and old articles describing you in terms you left behind. You can open each one.
+				</p>
+
+				<h3>Crawler access and entity consistency</h3>
+				<p>
+					Whether AI crawlers can read your pages at all, and whether your title, meta description,
+					H1, schema and llms.txt tell the same story about what your company is. Internal
+					disagreement is cheap to fix and a surprising number of cases end there.
+				</p>
+
+				<h3>A prioritized fix list, ranked by impact</h3>
+				<p>
+					What to change, in what order, and what each item is expected to move. Yours to keep either
+					way — act on it internally, or take it to another vendor.
+				</p>
+
+				<h2>Timeline</h2>
+
+				<table>
+					<thead>
+						<tr><th>Step</th><th>What happens</th></tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><strong>Day 0</strong></td>
+							<td>You send your domain, what you sell, and 3 competitors. Nothing else — no access, no onboarding form.</td>
+						</tr>
+						<tr>
+							<td><strong>Days 1–5</strong></td>
+							<td>I run the 25 questions across all four engines, map every cited source, and check crawler access and entity consistency.</td>
+						</tr>
+						<tr>
+							<td><strong>Day 5</strong></td>
+							<td>The document lands, and we book the 30-minute walkthrough call.</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h2>Before you pay anything</h2>
+
+				<p>
+					Two tools on this site run on your own domain with no signup: a
+					<a href="/ai-crawler-check/">crawler check</a> and a
+					<a href="/positioning-check/">positioning check</a>. If both come back clean, you may not
+					need the audit at all, and I would rather you found that out for free.
+				</p>
+
+				<p>
+					There is also a free {FREE_CHECK_NAME} before any call — {FREE_CHECK_SCOPE}. It is a quick
+					read, deliberately not the audit.
+				</p>
+
+				<h2>Common questions</h2>
+
+				<h3>What happens after the audit?</h3>
+				<p>
+					Nothing you have not asked for. If you want the work done, ongoing engagements are
+					{MONTHLY_PRICE} a month with no contract, and the {AUDIT_PRICE} is credited in full toward
+					your first month. If you would rather implement internally, the fix list is written to be
+					handed to your own team. Full terms are on the <a href="/services/">services page</a>.
+				</p>
+
+				<h3>Is this just a report?</h3>
+				<p>
+					It is a diagnosis with the evidence attached. Every claim in it points at a specific engine
+					answer or a specific URL, so you can verify it rather than take my word for it.
+				</p>
+
+				<h3>How is this different from an AI visibility tool?</h3>
+				<p>
+					A tool monitors and tells you a number changed. This tells you why, and which page to
+					change. If your positioning is already clean and you have a team that can act on findings,
+					a tool may be enough on its own.
+				</p>
+
+				<h3>Why only five a month?</h3>
+				<p>
+					Every one is run by hand on a real domain. Five is what I can do without the quality
+					dropping, so that is the published limit rather than a scarcity tactic.
+				</p>
+			</article>
+
+			<section class="close-cta">
+				<h2>Start with the diagnosis.</h2>
+				<p>
+					{AUDIT_PRICE}, five business days, credited toward your first month if you continue. Five a
+					month.
+				</p>
+				<div class="hero-cta">
+					<a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Book the audit</a>
+					<a href="/services/" class="btn-ghost">See the full engagement</a>
+				</div>
+			</section>
+		</main>
+
+		<Footer />
+	</body>
+</html>

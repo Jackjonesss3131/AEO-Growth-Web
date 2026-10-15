@@ -33,14 +33,14 @@ Nobody publishes prices, so here's what the market reports. These ranges come fr
 
 | Engagement | Typical range | Sources |
 | --- | --- | --- |
-| One-time audit | $1,000–$5,000 | [Pierview](https://www.pierview.ai/guides/how-to-price-aeo-geo-services), [OutreachBloom](https://outreachbloom.com/aeo-geo-pricing-guide/) |
+| One-time audit | $399–$5,000 | Published vendor pricing (below), [Pierview](https://www.pierview.ai/guides/how-to-price-aeo-geo-services), [OutreachBloom](https://outreachbloom.com/aeo-geo-pricing-guide/) |
 | Growth-stage retainer | $3,000–$8,000/mo | [Pierview](https://www.pierview.ai/guides/how-to-price-aeo-geo-services), [Digital Elevator](https://thedigitalelevator.com/blog/aeo-and-geo-pricing-guide/) |
 | Mid-market retainer | $2,000–$10,000/mo | [Digital Elevator](https://thedigitalelevator.com/blog/aeo-and-geo-pricing-guide/), [OutreachBloom](https://outreachbloom.com/aeo-geo-pricing-guide/) |
 | Enterprise | $10,000–$25,000+/mo | [Digital Elevator](https://thedigitalelevator.com/blog/aeo-and-geo-pricing-guide/) |
 | Experienced freelancer | $125–$250/hr, or $3,500–$6,000/mo | [Fuel Online](https://fuelonline.com/ai-seo-geo/ai-seo-pricing-aeo-geo-cost-2026/) |
 | GEO added to an existing SEO retainer | +20–30% of current monthly fee | [Frase, via Young Company](https://youngcompany.com/knowledge-base/how-much-do-marketing-agencies-charge-for-aio-geo-and-seo-in-2026/) |
 
-**These are market rates, not my prices.** Mine are {AUDIT_PRICE} for the audit and {MONTHLY_PRICE} a month, published on [my services page](/services).
+**These are market rates, not my prices.** Mine are {AUDIT_PRICE} for the [audit](/audit/) and {MONTHLY_PRICE} a month, published on [my services page](/services/).
 
 Two things stand out.
 
@@ -58,7 +58,25 @@ Two things stand out.
 
 The single best risk-reduction move is refusing to sign a long retainer first.
 
-A standalone audit runs $1,000–$5,000. It's the lower-risk starting point, especially if your team can implement recommendations internally. Retainers are hard to sell to clients who want proof before committing — which is precisely why the audit exists as a product.
+Standalone audits span a much wider band than the guides suggest. The frequently quoted $1,000–$5,000 range describes the agency end of the market; it misses an entire tier of fixed-price audits sitting well below it.
+
+| Vendor | Audit price |
+| --- | --- |
+| Arobis | $399 |
+| TriRank | $399 |
+| Citant | $440 |
+| AEO Growth (mine) | {AUDIT_PRICE} |
+| Omnitics | $900 |
+| Foursets | $999 |
+| Profitec | $1,000 |
+
+Above roughly $1,000 you're into agency territory, where audits run to $5,000 and are usually scoped as the opening phase of a retainer.
+
+The spread is not primarily a quality signal. What moves it is scope: how many questions get run, how many engines, whether third-party sources are traced to specific URLs or summarised, and whether a human walks you through the findings. A $399 audit covering four prompts in one engine and a $2,500 audit covering fifty across four are not the same product at different prices.
+
+So ask for the scope, not the band. How many questions, which engines, how many named competitors, are the cited sources listed as URLs you can open, and is the deliverable yours to take elsewhere. Two quotes a thousand dollars apart often turn out to be the same work — or wildly different work at the same number.
+
+It's still the lower-risk starting point compared to a retainer, especially if your team can implement recommendations internally. Retainers are hard to sell to clients who want proof before committing — which is precisely why the audit exists as a product.
 
 A good audit should leave you able to do one of three things: hire them with confidence, hand the findings to your own team, or walk away having learned what's wrong. If the audit only makes sense as a lead-in to their retainer, it wasn't an audit.
 
@@ -151,7 +169,7 @@ What you should *not* expect: a number you can put in a board deck by day 30. Wh
 ## Quick answers
 
 **How much does an AEO agency cost?**
-Most B2B engagements run $2,000–$10,000 per month in 2026, with growth-stage companies typically at $3,000–$8,000 and enterprise programs above $10,000. One-time audits run $1,000–$5,000.
+Most B2B engagements run $2,000–$10,000 per month in 2026, with growth-stage companies typically at $3,000–$8,000 and enterprise programs above $10,000. One-time audits span $399–$5,000, with fixed-price specialist audits clustering between $399 and $1,000 and agency audits above that.
 
 **Is cheap AEO worth it?**
 Below roughly $1,500–$2,000 per month, multiple agencies in the category say you're usually buying traditional SEO relabelled as AI search work. Ask what's specifically different from an SEO deliverable.

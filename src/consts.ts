@@ -10,8 +10,8 @@ export const JOB_TITLE = 'AEO consultant';
 
 // Prices. Change them here and they update everywhere: home, /services, schema, llms.txt,
 // and any blog post that writes {AUDIT_PRICE} or {MONTHLY_PRICE} (replaced at build time).
-export const AUDIT_PRICE = '$1,000';
-export const AUDIT_PRICE_VALUE = 1000;
+export const AUDIT_PRICE = '$499';
+export const AUDIT_PRICE_VALUE = 499;
 export const MONTHLY_PRICE = '$2,500';
 export const MONTHLY_PRICE_VALUE = 2500;
 
@@ -30,6 +30,11 @@ export const SERVICES_DESCRIPTION = `Answer engine optimization and GEO for B2B 
 // What the business does, in /services wording only. Used in the ProfessionalService schema and llms.txt.
 export const BUSINESS_DESCRIPTION =
 	"Answer engine optimization and GEO for B2B SaaS. An audit of what ChatGPT, Perplexity, Gemini and Google's AI results say about your company and where that information comes from; the fixes — crawler access, schema markup, listing corrections and buyer-intent pages; and monthly measurement of what the engines say.";
+
+// /audit: the dedicated audit page. Title is exact (not suffixed like other pages),
+// because it is the one page meant to rank on the price itself.
+export const AUDIT_TITLE = `AEO Audit for B2B SaaS — ${AUDIT_PRICE} | ${AUTHOR_NAME}`;
+export const AUDIT_DESCRIPTION = `A one-time ${AUDIT_PRICE} AEO audit for B2B SaaS: 25 buyer questions across ChatGPT, Perplexity, Gemini and Google's AI results, 3 named competitors, every cited source mapped, and a prioritized fix list. Delivered in five business days.`;
 
 // Meta description of /about (also used as the ProfilePage schema description).
 export const ABOUT_DESCRIPTION = `${AUTHOR_NAME} — AEO and GEO for B2B SaaS. Independent consultant, previously product-led growth.`;
