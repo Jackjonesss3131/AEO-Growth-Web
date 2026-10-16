@@ -20,7 +20,7 @@ It is written for B2B SaaS companies anywhere from pre-seed to Series C who are 
 
 | Option | Stage it fits | Published floor | Terms |
 | --- | --- | --- | --- |
-| [AEO Growth](https://www.aeogrowth.co/services) | Pre-seed to Series A, post-product | {AUDIT_PRICE} audit, then {MONTHLY_PRICE}/mo | No contract, cancel any time |
+| [AEO Growth](https://www.aeogrowth.co/services/) | Pre-seed to Series A, post-product | {AUDIT_PRICE} audit, then {MONTHLY_PRICE}/mo | No contract, cancel any time |
 | [Obility](https://www.obilityb2b.com/pricing/) | Hyper-growth B2B tech | $2,850+/mo advisory · $5,450/mo SEO & GEO core | Month-to-month, 45-day notice |
 | [PipeRocket Digital](https://piperocket.digital/saas-seo-agency/ai-seo-consultant/) | Teams that can execute in-house | $3,500/mo advisory · $4,000 one-time sprint | Scoped per engagement |
 | [DerivateX](https://derivatex.agency/pricing/) | $5M–$50M ARR | $5,000 / $8,000 / $12,000 per month | 90-day pilot, no lock-in |

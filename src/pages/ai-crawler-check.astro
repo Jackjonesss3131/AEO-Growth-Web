@@ -316,7 +316,7 @@ export const prerender = true;
 				statusLine.textContent = `Analyzing ${url}…`;
 
 				try {
-					const res = await fetch('/api/check-crawlers?url=' + encodeURIComponent(url), { signal: run.signal });
+					const res = await fetch('/api/check-crawlers/?url=' + encodeURIComponent(url), { signal: run.signal });
 					const data = await res.json().catch(() => null);
 					if (run !== current) return;
 

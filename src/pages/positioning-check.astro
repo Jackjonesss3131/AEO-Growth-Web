@@ -350,7 +350,7 @@ export const prerender = true;
         statusLine.textContent = 'Reading your homepage, the Internet Archive and Common Crawl.';
         output.hidden = true;
 
-        fetch('/api/positioning?domain=' + encodeURIComponent(domain))
+        fetch('/api/positioning/?domain=' + encodeURIComponent(domain))
           .catch(function () {
             throw new Error('We could not reach the server. Check your connection and try again.');
           })

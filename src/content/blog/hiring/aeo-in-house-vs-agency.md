@@ -17,7 +17,7 @@ I sell this work, so I have an obvious stake here. Which is why I'm going to be 
 *Difficulty:* low to execute, high to design. Anyone can open ChatGPT. Few people know what to ask, because the questions that matter carry the buyer's stack, team size and budget attached — and they aren't the questions you'd guess.
 
 **2. The technical layer.** Making sure AI crawlers can read you without JavaScript.
-*Difficulty:* low if you have a developer. Do this in-house, always. Don't pay anyone for it. Two minutes with the [Crawler Check](https://www.aeogrowth.co/ai-crawler-check) settles it — paste a URL, see exactly what each bot receives. If it comes back empty, stop everything else: nothing you publish exists to the models until that's fixed.
+*Difficulty:* low if you have a developer. Do this in-house, always. Don't pay anyone for it. Two minutes with the [Crawler Check](https://www.aeogrowth.co/ai-crawler-check/) settles it — paste a URL, see exactly what each bot receives. If it comes back empty, stop everything else: nothing you publish exists to the models until that's fixed.
 
 **3. The pages that decide the answer.** Comparisons, integrations, segment pages, pricing and proof.
 *Difficulty:* medium. The hard part isn't writing, it's specificity. Your team will ship the generic page, because it's easier and because nobody internally wants to be the one who decides which segment you're talking to.
@@ -53,7 +53,7 @@ And there's a fourth: if you already have an SEO agency, the market adds roughly
 
 **Your company changed and the web didn't notice.** Repositioning, new category, new product, a merger, two domains. Here part 4 is 80% of the work, it's the most tedious, and it's what a team with twelve other priorities never finishes. Old descriptions don't expire on their own — they compete with the new one until someone corrects them.
 
-You can verify this signal yourself before reading further. Models learn from snapshots of the web, and those snapshots have dates. Paste your domain into the [Positioning Check](https://www.aeogrowth.co/positioning-check) to see how your homepage described you over the last three years, and which version the recent crawls captured. If the version on record isn't the company you sell today, you have your answer and there's no further debate about doing this in-house.
+You can verify this signal yourself before reading further. Models learn from snapshots of the web, and those snapshots have dates. Paste your domain into the [Positioning Check](https://www.aeogrowth.co/positioning-check/) to see how your homepage described you over the last three years, and which version the recent crawls captured. If the version on record isn't the company you sell today, you have your answer and there's no further debate about doing this in-house.
 
 **You compete against an incumbent who wrote the guides.** When your category's comparison content was written by your competitor, or by someone they sponsored, you don't get out of that by publishing on your own blog. In attribution software, six of the nine results I checked were published by companies selling attribution software. That doesn't get displaced from the inside.
 
@@ -72,7 +72,7 @@ You can verify this signal yourself before reading further. Models learn from sn
 
 There's a floor on full retainers, and most of the category agrees on it: below roughly $1,500–$2,000 per month, what's usually being sold is traditional SEO with a new label. If you're quoted less for a full program, ask which deliverable is specifically different from an SEO one. A standalone measurement subscription is a different product and sits below that floor legitimately — it isn't the work, it's the scoreboard.
 
-For reference, my own audit is fixed at {AUDIT_PRICE}, and ongoing work after it is {MONTHLY_PRICE} a month with no contract. The numbers are on the [services page](https://www.aeogrowth.co/services).
+For reference, my own audit is fixed at {AUDIT_PRICE}, and ongoing work after it is {MONTHLY_PRICE} a month with no contract. The numbers are on the [services page](https://www.aeogrowth.co/services/).
 
 **In-house:** half a person for six months, plus whatever it costs to discover what doesn't work by trial and error. Don't compare these on price. Compare them on whether they finish. A cheap internal path that never completes part 4 costs more than outsourcing, because you lose the six months anyway and still don't have the diagnosis.
 
@@ -126,13 +126,13 @@ I'm a solo operator, which fits when the problem is diagnostic rather than volum
 
 The diagnosis comes before the proposal, not after. I run your buyer's questions across ChatGPT, Perplexity, Gemini and Google before we speak, so the first call opens with findings instead of a pitch: where you make the shortlist, how you're described, and who takes your place when you don't.
 
-From there the work runs in order — fix what describes you wrong, build the pages that answer the constrained questions, measure the same questions every month. Full scope is on the [services page](https://www.aeogrowth.co/services).
+From there the work runs in order — fix what describes you wrong, build the pages that answer the constrained questions, measure the same questions every month. Full scope is on the [services page](https://www.aeogrowth.co/services/).
 
 ---
 
 You don't have to decide this blind, and you don't have to start with a call. Two free checks, no conversation required:
 
-- **[Crawler Check](https://www.aeogrowth.co/ai-crawler-check)** — what each AI bot actually receives when it visits your site. Two minutes.
-- **[Positioning Check](https://www.aeogrowth.co/positioning-check)** — which version of your company got captured in the snapshots the models read. Forty seconds.
+- **[Crawler Check](https://www.aeogrowth.co/ai-crawler-check/)** — what each AI bot actually receives when it visits your site. Two minutes.
+- **[Positioning Check](https://www.aeogrowth.co/positioning-check/)** — which version of your company got captured in the snapshots the models read. Forty seconds.
 
 If both come back clean, your team can probably carry this and I've just saved you a sales conversation. If either one doesn't, send me your domain and, before we talk, I'll run a free Shortlist Check: three or four of your buyers' questions in one engine, to see whether you appear and how you're described. [Book a call](https://calendly.com/geraldeoleo/growth-plg).

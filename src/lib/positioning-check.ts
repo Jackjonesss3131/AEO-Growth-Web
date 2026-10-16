@@ -28,7 +28,7 @@ export interface PositioningCheckResult {
 
 const UA_BROWSER =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
-const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check)';
+const UA_TOOL = 'AEOGrowthPositioningCheck/1.0 (+https://www.aeogrowth.co/positioning-check/)';
 
 // The 3-month point covers recent crawls; without it most of them fell between snapshots.
 const TARGET_MONTHS = [36, 24, 12, 6, 3];

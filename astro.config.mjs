@@ -68,6 +68,7 @@ const stubRolldownInServer = {
 export default defineConfig({
 	vite: { plugins: [stubRolldownInServer] },
 	site: SITE,
+	trailingSlash: 'always',
 	output: 'server',
 	adapter: vercel({ maxDuration: 60 }),
 	integrations: [
