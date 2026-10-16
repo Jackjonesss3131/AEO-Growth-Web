@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "audit": "node scripts/batch-audit.js"
+    "audit": "node scripts/batch-audit.js",
+    "indexnow": "node scripts/indexnow.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
