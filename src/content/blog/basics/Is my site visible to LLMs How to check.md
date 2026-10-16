@@ -1,3 +1,9 @@
+---
+title: "Is my site visible to LLMs? How to check"
+description: "Your robots.txt can allow every AI crawler and your server can still turn them away. How to check what ChatGPT, Perplexity, Gemini and Google actually receive."
+pubDate: 2026-10-16
+category: "basics"
+---
 # Is my site visible to LLMs? How to check
 
 Oct 16, 2026
